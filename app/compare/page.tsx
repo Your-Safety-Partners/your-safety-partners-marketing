@@ -8,6 +8,8 @@ export const metadata = {
   description: "See how Your Safety Partners stacks up against other safety management solutions on the market.",
 };
 
+export const revalidate = 3600;
+
 export default async function CompareIndex() {
   const comparisons = await getComparisons();
 

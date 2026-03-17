@@ -46,6 +46,17 @@ function BlogCard({ post }: { post: PostOrPage }) {
   );
 }
 
+export const revalidate = 3600;
+
+export const metadata = {
+  title: "Safety Blog | Your Safety Partners",
+  description: "Insights and updates on safety compliance and best practices.",
+  openGraph: {
+    title: "Safety Blog | Your Safety Partners",
+    description: "Insights and updates on safety compliance and best practices.",
+  }
+};
+
 export default async function BlogIndex() {
   const posts = await getPosts();
 

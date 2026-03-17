@@ -5,6 +5,8 @@ export const metadata = {
   description: 'Get in touch with our team to book a demo or learn more about our safety compliance software.',
 };
 
+export const revalidate = 3600;
+
 export default function ContactPage() {
   return (
     <div className="container mx-auto px-4 py-24">

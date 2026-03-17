@@ -16,6 +16,10 @@ export async function generateMetadata({ params }: Props) {
   return {
     title: page.title,
     description: page.metaDescription,
+    openGraph: {
+      title: page.title,
+      description: page.metaDescription,
+    }
   };
 }
 

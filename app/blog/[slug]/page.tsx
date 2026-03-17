@@ -30,6 +30,35 @@ type Props = {
   params: Promise<{ slug: string }>; // Fix: params is a Promise
 };
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getPost(slug);
+
+  if (!post) return {};
+
+  const title = `${post.title} | Your Safety Partners`;
+  const description = post.custom_excerpt || post.excerpt || `Read ${post.title} on Your Safety Partners.`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+      publishedTime: post.published_at || undefined,
+      authors: post.authors?.map(a => a.name).filter(Boolean) as string[],
+      images: post.feature_image ?[post.feature_image] :[],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: post.feature_image ?[post.feature_image] :[],
+    }
+  };
+}
+
 export default async function BlogPost({ params }: Props) {
   // Fix: Unwrap the promise
   const { slug } = await params;

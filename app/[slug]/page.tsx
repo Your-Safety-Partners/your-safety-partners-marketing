@@ -7,6 +7,24 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const client = createClient();
+  const page = await client.getByUID("page", slug).catch(() => null);
+
+  if (!page) return {};
+
+  return {
+    title: page.data.meta_title || `${slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())} | Your Safety Partners`,
+    description: page.data.meta_description,
+    openGraph: {
+      title: page.data.meta_title || `${slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())} | Your Safety Partners`,
+      description: page.data.meta_description || undefined,
+      images: page.data.meta_image?.url ?[page.data.meta_image.url] :[],
+    },
+  };
+}
+
 export default async function Page({ params }: Props) {
   const { slug } = await params;
   const client = createClient();

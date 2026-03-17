@@ -1,6 +1,26 @@
+import { Metadata } from "next";
 import { SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
+
+export const revalidate = 3600; // 1 hour ISR caching
+
+export async function generateMetadata(): Promise<Metadata> {
+  const client = createClient();
+  const page = await client.getSingle("home").catch(() => null);
+
+  if (!page) return { title: "Your Safety Partners" };
+
+  return {
+    title: page.data.meta_title || "Your Safety Partners",
+    description: page.data.meta_description,
+    openGraph: {
+      title: page.data.meta_title || "Your Safety Partners",
+      description: page.data.meta_description || undefined,
+      images: page.data.meta_image?.url ? [page.data.meta_image.url] :[],
+    },
+  };
+}
 
 export default async function Home() {
   const client = createClient();

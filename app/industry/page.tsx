@@ -8,6 +8,8 @@ export const metadata = {
   description: "Discover how our safety compliance software helps businesses across various industries maintain compliance and protect their workforce.",
 };
 
+export const revalidate = 3600;
+
 export default async function IndustryIndex() {
   const industries = await getIndustries();
 
