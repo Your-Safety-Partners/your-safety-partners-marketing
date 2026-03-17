@@ -8,7 +8,8 @@
     "start": "next start",
     "lint:fix": "eslint . --config eslint.config.mjs --ext .js,.jsx,.ts,.tsx --fix",
     "check-types": "tsc --noEmit --pretty",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "slicemachine": "start-slicemachine"
   },
   "imports": {
     "#*": [
@@ -18,13 +19,13 @@
     ]
   },
   "dependencies": {
-    "@prismicio/client": "^7.13.1",
-    "@prismicio/next": "^1.7.0",
-    "@prismicio/react": "^2.9.0",
     "@commitlint/types": "^20.5.0",
     "@hookform/resolvers": "^5.2.2",
     "@logtail/js": "^0.5.8",
     "@logtail/pino": "^0.5.8",
+    "@prismicio/client": "^7.21.6",
+    "@prismicio/next": "^2.2.2",
+    "@prismicio/react": "^3.4.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-popover": "^1.1.15",
@@ -52,8 +53,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@slicemachine/adapter-next": "^0.3.56",
-    "slice-machine-ui": "^2.11.0",
+    "@slicemachine/adapter-next": "^0.3.95",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -61,6 +61,7 @@
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.7",
+    "slice-machine-ui": "^2.21.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
