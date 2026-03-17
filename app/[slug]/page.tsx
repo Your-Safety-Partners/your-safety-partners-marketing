@@ -1,4 +1,7 @@
-// import { notFound } from "next/navigation";
+import { notFound } from "next/navigation";
+import { SliceZone } from "@prismicio/react";
+import { createClient } from "@/prismicio";
+import { components } from "@/slices";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -6,19 +9,21 @@ type Props = {
 
 export default async function Page({ params }: Props) {
   const { slug } = await params;
+  const client = createClient();
   
-  // In the future, this will fetch the document from Prismic
-  // const page = await client.getByUID("page", slug);
-  // if (!page) return notFound();
-
-  return (
-    <div className="container mx-auto px-4 py-24">
-      <h1 className="text-4xl font-bold tracking-tighter mb-6 capitalize">{slug.replace(/-/g, ' ')}</h1>
-      <div className="prose prose-slate dark:prose-invert max-w-none">
-        <p className="text-lg text-muted-foreground">
-          [Prismic Page Placeholder] - This catch-all route (&quot;/{slug}&quot;) will fetch the repeatable &quot;Page&quot; document from Prismic and render its slices.
-        </p>
+  try {
+    const page = await client.getByUID("page", slug);
+    return <SliceZone slices={page.data.slices} components={components} />;
+  } catch (e) {
+    return (
+      <div className="container mx-auto px-4 py-24">
+        <h1 className="text-4xl font-bold tracking-tighter mb-6 capitalize">{slug.replace(/-/g, ' ')}</h1>
+        <div className="prose prose-slate dark:prose-invert max-w-none">
+          <p className="text-lg text-muted-foreground">
+            [Prismic Page Placeholder] - Create a &quot;page&quot; repeatable type in Prismic with UID &quot;{slug}&quot; to replace this.
+          </p>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }

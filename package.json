@@ -18,6 +18,9 @@
     ]
   },
   "dependencies": {
+    "@prismicio/client": "^7.13.1",
+    "@prismicio/next": "^1.7.0",
+    "@prismicio/react": "^2.9.0",
     "@commitlint/types": "^20.5.0",
     "@hookform/resolvers": "^5.2.2",
     "@logtail/js": "^0.5.8",
@@ -49,6 +52,8 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@slicemachine/adapter-next": "^0.3.56",
+    "slice-machine-ui": "^2.11.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
