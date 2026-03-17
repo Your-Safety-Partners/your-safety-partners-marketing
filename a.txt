@@ -1,21 +1,88 @@
 Concatenating directory files...
 File: ./app/industry/[slug]/page.tsx
 ------------------------
+import { notFound } from "next/navigation";
+import { getIndustries, getIndustryBySlug } from "@/lib/outrank";
+import { CheckCircle2 } from "lucide-react";
+import CustomButton from "@/components/custom-ui/custom-button";
+
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
+export async function generateMetadata({ params }: Props) {
+  const { slug } = await params;
+  const page = await getIndustryBySlug(slug);
+  
+  if (!page) return {};
+  
+  return {
+    title: page.title,
+    description: page.metaDescription,
+  };
+}
+
+export async function generateStaticParams() {
+  const industries = await getIndustries();
+  return industries.map((industry) => ({
+    slug: industry.slug,
+  }));
+}
+
 export default async function IndustryPage({ params }: Props) {
   const { slug } = await params;
+  const page = await getIndustryBySlug(slug);
+
+  if (!page) {
+    notFound();
+  }
 
   return (
-    <div className="container mx-auto px-4 py-24">
-      <h1 className="text-4xl font-bold tracking-tighter mb-6 capitalize">Safety Compliance for {slug.replace(/-/g, ' ')}</h1>
-      <div className="prose prose-slate dark:prose-invert max-w-none">
-        <p className="text-lg text-muted-foreground">
-          [Outrank Programmatic Page Placeholder] - This route (&quot;/industry/{slug}&quot;) will pull structured data from Outrank.so to generate highly targeted SEO content for specific industries.
-        </p>
-      </div>
+    <div className="flex flex-col min-h-screen">
+      {/* Hero Section */}
+      <section className="bg-muted/50 py-24 md:py-32">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-6">
+              {page.h1}
+            </h1>
+            <p className="text-xl text-muted-foreground mb-8">
+              {page.subtitle}
+            </p>
+            <CustomButton title="Book a Demo" url="/contact" size="lg" />
+          </div>
+        </div>
+      </section>
+
+      {/* Content & Features Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <div className="lg:col-span-2 space-y-12">
+            {page.contentBlocks.map((block, index) => (
+              <div key={index}>
+                <h2 className="text-2xl font-bold tracking-tight mb-4">{block.heading}</h2>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  {block.paragraph}
+                </p>
+              </div>
+            ))}
+          </div>
+          
+          <div className="lg:col-span-1">
+            <div className="bg-card border border-border rounded-xl p-8 sticky top-24">
+              <h3 className="text-xl font-bold mb-6">Key Capabilities</h3>
+              <ul className="space-y-4">
+                {page.features.map((feature, index) => (
+                  <li key={index} className="flex items-start">
+                    <CheckCircle2 className="h-5 w-5 text-primary shrink-0 mr-3 mt-0.5" />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
@@ -24,13 +91,49 @@ export default async function IndustryPage({ params }: Props) {
 
 File: ./app/industry/page.tsx
 ------------------------
-export default function IndustryIndex() {
+import Link from "next/link";
+import { getIndustries } from "@/lib/outrank";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { ArrowRight } from "lucide-react";
+
+export const metadata = {
+  title: "Industries We Serve | Your Safety Partners",
+  description: "Discover how our safety compliance software helps businesses across various industries maintain compliance and protect their workforce.",
+};
+
+export default async function IndustryIndex() {
+  const industries = await getIndustries();
+
   return (
     <div className="container mx-auto px-4 py-24">
-      <h1 className="text-4xl font-bold tracking-tighter mb-6">Industries We Serve</h1>
-      <p className="text-lg text-muted-foreground mb-12">
-        [Outrank Industry Index Placeholder] - This route (&quot;/industry&quot;) will list the programmatic SEO landing pages driven by Outrank.so.
-      </p>
+      <div className="max-w-3xl mb-16">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tighter mb-6">Industries We Serve</h1>
+        <p className="text-lg text-muted-foreground">
+          Safety compliance isn't one-size-fits-all. Explore our tailored solutions designed to meet the specific regulatory requirements and hazards of your industry.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {industries.map((industry) => (
+          <Link key={industry.slug} href={`/industry/${industry.slug}`} className="block group">
+            <Card className="h-full transition-colors hover:border-primary">
+              <CardHeader>
+                <CardTitle className="group-hover:text-primary transition-colors">
+                  {industry.h1.replace(' Software', '')}
+                </CardTitle>
+                <CardDescription className="line-clamp-2">
+                  {industry.subtitle}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center text-sm font-medium text-primary">
+                  Learn more <ArrowRight className="ml-2 h-4 w-4" />
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }
@@ -209,6 +312,160 @@ export default async function BlogIndex() {
       ) : (
         <p className="text-center text-muted-foreground">No articles found. Please check the Ghost integration.</p>
       )}
+    </div>
+  );
+}
+
+
+
+File: ./app/compare/page.tsx
+------------------------
+import Link from "next/link";
+import { getComparisons } from "@/lib/outrank";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { ArrowRight } from "lucide-react";
+
+export const metadata = {
+  title: "Compare Safety Software | Your Safety Partners",
+  description: "See how Your Safety Partners stacks up against other safety management solutions on the market.",
+};
+
+export default async function CompareIndex() {
+  const comparisons = await getComparisons();
+
+  return (
+    <div className="container mx-auto px-4 py-24">
+      <div className="max-w-3xl mb-16">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tighter mb-6">Compare Alternatives</h1>
+        <p className="text-lg text-muted-foreground">
+          Looking for the right safety software? See detailed breakdowns of how our platform compares to legacy solutions and competitors.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {comparisons.map((comp) => (
+          <Link key={comp.slug} href={`/compare/${comp.slug}`} className="block group">
+            <Card className="h-full transition-colors hover:border-primary">
+              <CardHeader>
+                <CardTitle className="group-hover:text-primary transition-colors">
+                  vs {comp.slug.replace('competitor-', 'Competitor ').toUpperCase()}
+                </CardTitle>
+                <CardDescription className="line-clamp-2">
+                  {comp.subtitle}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center text-sm font-medium text-primary">
+                  Read comparison <ArrowRight className="ml-2 h-4 w-4" />
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
+
+File: ./app/compare/[competitor]/page.tsx
+------------------------
+import { notFound } from "next/navigation";
+import { getComparisons, getComparisonBySlug } from "@/lib/outrank";
+import { CheckCircle2, XCircle } from "lucide-react";
+import CustomButton from "@/components/custom-ui/custom-button";
+
+type Props = {
+  params: Promise<{ competitor: string }>;
+};
+
+export async function generateMetadata({ params }: Props) {
+  const { competitor } = await params;
+  const page = await getComparisonBySlug(competitor);
+  
+  if (!page) return {};
+  
+  return {
+    title: page.title,
+    description: page.metaDescription,
+  };
+}
+
+export async function generateStaticParams() {
+  const comparisons = await getComparisons();
+  return comparisons.map((comp) => ({
+    competitor: comp.slug,
+  }));
+}
+
+export default async function ComparisonPage({ params }: Props) {
+  const { competitor } = await params;
+  const page = await getComparisonBySlug(competitor);
+
+  if (!page) {
+    notFound();
+  }
+
+  const competitorName = competitor.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      {/* Hero Section */}
+      <section className="bg-slate-900 text-white py-24 md:py-32">
+        <div className="container mx-auto px-4 text-center max-w-4xl">
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-6">
+            {page.h1}
+          </h1>
+          <p className="text-xl text-slate-300 mb-10">
+            {page.subtitle}
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <CustomButton title="Start Free Trial" url="/contact" size="lg" />
+            <CustomButton title="Book a Demo" url="/contact" variant="outline" className="text-black" size="lg" />
+          </div>
+        </div>
+      </section>
+
+      {/* Content Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <div className="space-y-16">
+            {page.contentBlocks.map((block, index) => (
+              <div key={index} className="prose prose-slate dark:prose-invert max-w-none">
+                <h2 className="text-3xl font-bold tracking-tight">{block.heading}</h2>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  {block.paragraph}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Feature Comparison Table Equivalent */}
+          <div className="mt-20 border border-border rounded-xl overflow-hidden">
+            <div className="bg-muted px-6 py-4 border-b border-border">
+              <h3 className="font-bold text-lg">Why Choose Your Safety Partners</h3>
+            </div>
+            <div className="divide-y divide-border">
+              {page.features.map((feature, index) => (
+                <div key={index} className="flex items-center justify-between px-6 py-4">
+                  <span className="font-medium">{feature}</span>
+                  <div className="flex items-center gap-8 md:gap-16">
+                    <div className="flex flex-col items-center">
+                      <span className="text-xs text-muted-foreground mb-1 block md:hidden">Us</span>
+                      <CheckCircle2 className="h-6 w-6 text-green-500" />
+                    </div>
+                    <div className="flex flex-col items-center opacity-50">
+                      <span className="text-xs text-muted-foreground mb-1 block md:hidden">{competitorName}</span>
+                      <XCircle className="h-6 w-6 text-red-500" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
@@ -626,6 +883,7 @@ export function Footer() {
           <Link href="/features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</Link>
           <Link href="/pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
           <Link href="/industry" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Industries</Link>
+          <Link href="/compare" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Compare Alternatives</Link>
         </div>
         <div className="flex flex-col gap-2">
           <h3 className="font-semibold mb-2">Company</h3>
@@ -2175,6 +2433,111 @@ export const levelRank: Record<LogLevel, number> = {
   error: 40,
   silent: 50,
 };
+
+
+
+File: ./lib/outrank.ts
+------------------------
+// lib/outrank.ts
+
+/**
+ * Outrank.so Programmatic SEO Data Integration
+ * 
+ * This utility handles fetching and formatting data generated by Outrank.
+ * Currently, it uses mock data. When you are ready to connect Outrank:
+ * 1. If using an API: Replace the mock arrays with a `fetch()` call to Outrank's endpoint.
+ * 2. If using a JSON file: Import the JSON directly (e.g., `import data from '@/data/outrank.json'`).
+ */
+
+export type ProgrammaticSEOPage = {
+  slug: string;
+  title: string;
+  metaDescription: string;
+  h1: string;
+  subtitle: string;
+  contentBlocks: {
+    heading: string;
+    paragraph: string;
+  }[];
+  features: string[];
+};
+
+// Mock Data: Replace with real Outrank API/JSON data
+const MOCK_INDUSTRY_DATA: ProgrammaticSEOPage[] = [
+  {
+    slug: 'construction',
+    title: 'Safety Compliance Software for Construction | Your Safety Partners',
+    metaDescription: 'Ensure OSHA compliance and streamline safety management on construction sites with our dedicated safety software.',
+    h1: 'Construction Safety Compliance Software',
+    subtitle: 'Built specifically for the unique hazards and fast-paced environment of construction sites.',
+    contentBlocks: [
+      { heading: 'Streamline Jobsite Inspections', paragraph: 'Conduct daily hazard assessments and tool-box talks directly from your mobile device.' },
+      { heading: 'Manage Subcontractor Compliance', paragraph: 'Ensure every contractor on site has the proper certifications and training records before stepping foot on the job.' }
+    ],
+    features: ['Mobile Inspections', 'Contractor Portal', 'Offline Mode', 'Incident Reporting']
+  },
+  {
+    slug: 'manufacturing',
+    title: 'Manufacturing Safety & EHS Software | Your Safety Partners',
+    metaDescription: 'Automate lock-out/tag-out procedures and manage factory floor safety with our manufacturing EHS software.',
+    h1: 'Safety Management for Manufacturing',
+    subtitle: 'Reduce downtime and protect your workers with streamlined EHS compliance for the factory floor.',
+    contentBlocks: [
+      { heading: 'Lockout/Tagout Automation', paragraph: 'Digitize your LOTO procedures to ensure absolute compliance and worker safety during machine maintenance.' },
+      { heading: 'Real-time Hazard Tracking', paragraph: 'Empower floor workers to report near-misses and hazards instantly via QR codes.' }
+    ],
+    features: ['LOTO Management', 'QR Code Reporting', 'Training Matrix', 'Audit Trails']
+  }
+];
+
+const MOCK_COMPARE_DATA: ProgrammaticSEOPage[] = [
+  {
+    slug: 'competitor-a',
+    title: 'Your Safety Partners vs Competitor A | Best Alternative 2024',
+    metaDescription: 'See why safety professionals are switching from Competitor A to Your Safety Partners for better compliance management.',
+    h1: 'The Better Alternative to Competitor A',
+    subtitle: 'Stop overpaying for clunky legacy software. See how we compare.',
+    contentBlocks: [
+      { heading: 'Modern, Intuitive Interface', paragraph: 'Unlike Competitor A\'s outdated 90s interface, our platform is built for the modern workforce, requiring zero training to use.' },
+      { heading: 'Transparent Pricing', paragraph: 'We don\'t hide our pricing behind aggressive sales calls. Get all features without the enterprise bloat.' }
+    ],
+    features: ['No Implementation Fees', 'Free Support', 'Unlimited Users', 'Modern UI']
+  }
+];
+
+/**
+ * Fetch all industry pages (used for generating static params and index pages)
+ */
+export async function getIndustries(): Promise<ProgrammaticSEOPage[]> {
+  // TODO: Replace with real data fetch
+  return MOCK_INDUSTRY_DATA;
+}
+
+/**
+ * Fetch a specific industry page by slug
+ */
+export async function getIndustryBySlug(slug: string): Promise<ProgrammaticSEOPage | null> {
+  // TODO: Replace with real data fetch
+  const page = MOCK_INDUSTRY_DATA.find(p => p.slug === slug);
+  return page || null;
+}
+
+/**
+ * Fetch all comparison pages (used for generating static params and index pages)
+ */
+export async function getComparisons(): Promise<ProgrammaticSEOPage[]> {
+  // TODO: Replace with real data fetch
+  return MOCK_COMPARE_DATA;
+}
+
+/**
+ * Fetch a specific comparison page by slug
+ */
+export async function getComparisonBySlug(slug: string): Promise<ProgrammaticSEOPage | null> {
+  // TODO: Replace with real data fetch
+  const page = MOCK_COMPARE_DATA.find(p => p.slug === slug);
+  return page || null;
+}
 
 
 
