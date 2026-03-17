@@ -2,9 +2,6 @@
 import { createSafeActionClient } from 'next-safe-action';
 import { z } from 'zod';
 
-const metadataSchema = z.object({
-  actionName: z.string().optional(),
-});
 
 const customServerErrorHandler = (error: Error) => {
   console.error(

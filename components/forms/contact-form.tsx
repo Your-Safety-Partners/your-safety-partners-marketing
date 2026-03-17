@@ -35,7 +35,7 @@ export function ContactForm() {
     <Card>
       <CardHeader>
         <CardTitle>Book a Demo</CardTitle>
-        <CardDescription>Fill out the form below and we'll contact you to schedule a personalized demo.</CardDescription>
+        <CardDescription>Fill out the form below and we&apos;ll contact you to schedule a personalized demo.</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
