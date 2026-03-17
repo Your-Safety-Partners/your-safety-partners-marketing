@@ -52,12 +52,19 @@ export async function getClientLoggerWithUser(
   company?: string
 ): Promise<Logger> {
   const logger = await clientLoggerPromise;
-  const prefix = `[user: ${userId}]${company ? ` [company: ${company}]` : ''}`;
+  const prefix = `[user: ${userId || 'guest'}]${company ? ` [company: ${company}]` : ''}`;
+  
+  const formatArgs = (args: unknown[]) => {
+    const msg = args.length > 0 ? String(args[0]) : '';
+    const context = args.length > 1 ? args[1] : undefined;
+    return context !== undefined ? [`${prefix} ${msg}`, context] : [`${prefix} ${msg}`];
+  };
+
   return {
-    info: (...args) => logger.info(prefix, ...args),
-    error: (...args) => logger.error(prefix, ...args),
-    warn: (...args) => logger.warn(prefix, ...args),
-    debug: (...args) => logger.debug(prefix, ...args),
+    info: (...args: unknown[]) => logger.info(...formatArgs(args)),
+    error: (...args: unknown[]) => logger.error(...formatArgs(args)),
+    warn: (...args: unknown[]) => logger.warn(...formatArgs(args)),
+    debug: (...args: unknown[]) => logger.debug(...formatArgs(args)),
   };
 }
 
