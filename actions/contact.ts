@@ -15,7 +15,7 @@ export const submitContactForm = actionClient
     if (!rateLimited) {
       console.warn(`Rate limit exceeded for contact form submission from email: ${email}`);
       return {
-        failure: 'Too many requests. Please try again in a moment.',
+        serverError: 'Too many requests. Please try again in a moment.',
       };
     }
 
@@ -30,13 +30,12 @@ export const submitContactForm = actionClient
       // Example: await sendToHubspot({ name, email, company, message });
       // Example: await resend.emails.send({ ... });
 
-      return {
-        success: `Thank you, ${name}! We've received your message and will be in touch shortly.`,
-      };
+      return `Thank you, ${name}! We've received your message and will be in touch shortly.`;
+
     } catch (error) {
       console.error('Failed to process contact form submission:', error);
       return {
-        failure: 'An unexpected error occurred. Please try again.',
+        serverError: 'An unexpected error occurred. Please try again.',
       };
     }
   });

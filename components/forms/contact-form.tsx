@@ -23,10 +23,10 @@ export function ContactForm() {
   const onSubmit = async (data: ContactFormData) => {
     const result = await submitContactForm(data);
 
-    if (result?.failure) {
-      toast.error(result.failure);
-    } else if (result?.success) {
-      toast.success(result.success);
+    if (result?.serverError) {
+      toast.error(result.serverError);
+    } else if (result?.data) {
+      toast.success(result.data);
       reset();
     }
   };
