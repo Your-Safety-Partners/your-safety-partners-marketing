@@ -2,6 +2,7 @@ Concatenating directory files...
 File: ./app/sitemap.ts
 ------------------------
 import { MetadataRoute } from 'next';
+import { PageDocument } from '#prismicio-types.js'; 
 import { createClient } from '@/prismicio';
 import ghost from '@/lib/ghost';
 import { getIndustries, getComparisons } from '@/lib/outrank';
@@ -27,7 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // 2. Prismic Pages
-  let prismicPages: any[] =[];
+  let prismicPages: PageDocument[] = [];
   try {
     prismicPages = await client.getAllByType('page');
   } catch (e) {
