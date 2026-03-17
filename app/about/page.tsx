@@ -44,7 +44,7 @@ export default async function AboutPage() {
       <section className="bg-slate-900 text-white py-24 md:py-32">
         <div className="container mx-auto px-4 text-center max-w-4xl">
           <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-6">
-            We're on a mission to make every workplace safer.
+            On a mission to make every workplace safer.
           </h1>
           <p className="text-xl text-slate-300">
             Your Safety Partners was founded by industry veterans who saw a need for intuitive, powerful, and accessible safety management software.
