@@ -17,16 +17,20 @@ const shouldLog = (
   levelRank[messageLevel] >= levelRank[getEffectiveLogLevel(userId)];
 
 const adaptLogtail = (lt: Logtail, userId?: string): Logger => ({
-  info: (...args: Parameters<Logtail['info']>) => {
+  info: (...args: unknown[]) => {
+    // @ts-expect-error - Logtail expects specific types but we use a generic wrapper
     if (shouldLog('info', userId)) lt.info(...args);
   },
-  error: (...args: Parameters<Logtail['error']>) => {
+  error: (...args: unknown[]) => {
+    // @ts-expect-error - Logtail expects specific types but we use a generic wrapper
     if (shouldLog('error', userId)) lt.error(...args);
   },
-  warn: (...args: Parameters<Logtail['warn']>) => {
+  warn: (...args: unknown[]) => {
+    // @ts-expect-error - Logtail expects specific types but we use a generic wrapper
     if (shouldLog('warn', userId)) lt.warn(...args);
   },
-  debug: (...args: Parameters<Logtail['debug']>) => {
+  debug: (...args: unknown[]) => {
+    // @ts-expect-error - Logtail expects specific types but we use a generic wrapper
     if (shouldLog('debug', userId)) lt.debug(...args);
   },
 });
