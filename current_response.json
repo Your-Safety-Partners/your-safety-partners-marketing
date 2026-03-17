@@ -1,9 +1,13 @@
 {
-  "summary": "Fix the final TypeScript error in `next-safe-action` by updating `lib/server/safe-action.ts` to use the correct API for defining a metadata schema as per v8 of the library.",
+  "summary": "Fix TypeScript errors by creating a typed contact action and removing a deprecated method call from the safe action client.",
   "files": [
     {
+      "file_path": "actions/contact.ts",
+      "code_diff": "<<<<<<< SEARCH\n=======\n'use server';\n\nimport { actionClient } from '@/lib/server/safe-action';\nimport { contactFormSchema, type ContactFormData } from '@/lib/schemas';\n\nexport const submitContactForm = actionClient\n  .schema(contactFormSchema)\n  .action(async ({ parsedInput }: { parsedInput: ContactFormData }) => {\n    // Here you would typically send an email, save to a database, etc.\n    // For now, we'll just log it and return a success message.\n    console.log('New contact form submission:', parsedInput);\n\n    // Simulate a network request\n    await new Promise(resolve => setTimeout(resolve, 1000));\n\n    // This will be sent back to the client.\n    return {\n      data: `Thanks, ${parsedInput.name}! We've received your message and will be in touch shortly.`,\n    };\n  });\n>>>>>>> REPLACE"
+    },
+    {
       "file_path": "lib/server/safe-action.ts",
-      "code_diff": "<<<<<<< SEARCH\nexport const actionClient = createSafeActionClient({\n  handleServerError: customServerErrorHandler,\n  defineMetadataSchema: () => metadataSchema,\n});\n=======\nexport const actionClient = createSafeActionClient({\n  handleServerError: customServerErrorHandler,\n}).defineMetadataSchema(metadataSchema);\n>>>>>>> REPLACE"
+      "code_diff": "<<<<<<< SEARCH\nexport const actionClient = createSafeActionClient({\n  handleServerError: customServerErrorHandler,\n}).defineMetadataSchema(metadataSchema);\n=======\nexport const actionClient = createSafeActionClient({\n  handleServerError: customServerErrorHandler,\n});\n>>>>>>> REPLACE"
     }
   ]
 }
