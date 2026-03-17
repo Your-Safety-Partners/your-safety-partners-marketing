@@ -59,9 +59,11 @@ export enum EmailTemplateType {
   ARTICLE_REVIEW_EXPIRED = 'article-review-expired.tsx',
 }
 
-export default {
+const ENUMS = {
   ROLES,
   CompanyQueryTypes,
   EmailVariableType,
   EmailTemplateType,
 };
+
+export default ENUMS;

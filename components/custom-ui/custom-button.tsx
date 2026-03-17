@@ -10,7 +10,7 @@ type CustomButtonProps = {
   isLoading?: boolean;
   width?: string;
   type?: 'button' | 'submit' | 'reset';
-  buttonProps?: Record<string, any>;
+  buttonProps?: React.ButtonHTMLAttributes<HTMLButtonElement>;
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
   disabled?: boolean;
   leadingIcon?: React.ReactNode;

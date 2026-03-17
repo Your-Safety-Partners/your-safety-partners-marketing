@@ -135,7 +135,7 @@ const CustomInput = <TFieldValues extends FieldValues = FieldValues>({
   };
 
   if (onValueChange) {
-    (commonProps as any).value = controlledValue ?? '';
+    (commonProps as Record<string, unknown>).value = controlledValue ?? '';
   }
 
   const renderInput = () => (

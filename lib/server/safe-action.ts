@@ -14,7 +14,7 @@ const customServerErrorHandler = (error: Error) => {
   if (error && typeof error === 'object' && 'validationErrors' in error) {
     console.error(
       'Zod Validation Errors (from metadata):',
-      JSON.stringify((error as any).validationErrors, null, 2)
+      JSON.stringify((error as Error & { validationErrors?: unknown }).validationErrors, null, 2)
     );
   }
   return error.message || 'An unexpected error occurred on the server.';

@@ -4,10 +4,10 @@ import { Console, Effect, pipe } from 'effect';
 import { getEffectiveLogLevel, levelRank } from '@/lib/shared/logConfig';
 
 export type Logger = {
-  info: (...args: any[]) => void;
-  error: (...args: any[]) => void;
-  warn: (...args: any[]) => void;
-  debug: (...args: any[]) => void;
+  info: (...args: unknown[]) => void;
+  error: (...args: unknown[]) => void;
+  warn: (...args: unknown[]) => void;
+  debug: (...args: unknown[]) => void;
 };
 
 const shouldLog = (
