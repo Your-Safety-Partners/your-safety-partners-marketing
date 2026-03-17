@@ -1,21 +1,17 @@
 {
-  "summary": "Fix all `no-explicit-any` TypeScript errors in the sitemap by providing explicit types for Prismic documents, Ghost posts, and the mapped Outrank routes.",
+  "summary": "Fix the final two TypeScript errors in the sitemap by applying the correct types, `PageDocument` and `PostOrPage`, to the Prismic and Ghost data arrays.",
   "files": [
     {
       "file_path": "app/sitemap.ts",
-      "code_diff": "<<<<<<< SEARCH\nimport { MetadataRoute } from 'next';\nimport { createClient } from '@/prismicio';\nimport ghost from '@/lib/ghost';\nimport { getIndustries, getComparisons } from '@/lib/outrank';\n\nconst baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.yoursafetypartners.com';\n=======\nimport { MetadataRoute } from 'next';\nimport type { PostOrPage } from '@tryghost/content-api';\nimport { createClient } from '@/prismicio';\nimport ghost from '@/lib/ghost';\nimport { getIndustries, getComparisons } from '@/lib/outrank';\nimport { PageDocument } from 'prismicio-types';\n\nconst baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.yoursafetypartners.com';\n>>>>>>> REPLACE"
+      "code_diff": "<<<<<<< SEARCH\nimport { MetadataRoute } from 'next';\nimport { createClient } from '@/prismicio';\nimport ghost from '@/lib/ghost';\nimport { getIndustries, getComparisons } from '@/lib/outrank';\n\nconst baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.yoursafetypartners.com';\n=======\nimport { MetadataRoute } from 'next';\nimport { createClient } from '@/prismicio';\nimport ghost from '@/lib/ghost';\nimport { getIndustries, getComparisons } from '@/lib/outrank';\nimport type { PostOrPage } from '@tryghost/content-api';\nimport type { PageDocument } from 'prismicio-types';\n\nconst baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.yoursafetypartners.com';\n>>>>>>> REPLACE"
     },
     {
       "file_path": "app/sitemap.ts",
-      "code_diff": "<<<<<<< SEARCH\n  }));\n\n  // 2. Prismic Pages\n  let prismicPages: any[] =[];\n  try {\n    prismicPages = await client.getAllByType('page');\n  } catch (e) {\n=======\n  }));\n\n  // 2. Prismic Pages\n  let prismicPages: PageDocument[] = [];\n  try {\n    prismicPages = await client.getAllByType('page');\n  } catch (e) {\n>>>>>>> REPLACE"
+      "code_diff": "<<<<<<< SEARCH\n  }));\n\n  // 2. Prismic Pages\n  let prismicPages: any[] =[];\n  try {\n    prismicPages = await client.getAllByType('page');\n=======\n  }));\n\n  // 2. Prismic Pages\n  let prismicPages: PageDocument[] = [];\n  try {\n    prismicPages = await client.getAllByType('page');\n>>>>>>> REPLACE"
     },
     {
       "file_path": "app/sitemap.ts",
-      "code_diff": "<<<<<<< SEARCH\n    priority: 0.7,\n  }));\n\n  // 3. Ghost Blog Posts\n  let ghostPosts: any[] =[];\n  try {\n    ghostPosts = await ghost.posts.browse({ limit: 'all' });\n  } catch (e) {\n=======\n    priority: 0.7,\n  }));\n\n  // 3. Ghost Blog Posts\n  let ghostPosts: PostOrPage[] = [];\n  try {\n    ghostPosts = await ghost.posts.browse({ limit: 'all' });\n  } catch (e) {\n>>>>>>> REPLACE"
-    },
-    {
-      "file_path": "app/sitemap.ts",
-      "code_diff": "<<<<<<< SEARCH\n    priority: 0.7,\n  }));\n\n  // 4. Outrank Programmatic Pages\n  let industryRoutes: any[] = [];\n  let compareRoutes: any[] =[];\n  try {\n    const industries = await getIndustries();\n    industryRoutes = industries.map((ind) => ({\n=======\n    priority: 0.7,\n  }));\n\n  // 4. Outrank Programmatic Pages\n  let industryRoutes: MetadataRoute.Sitemap = [];\n  let compareRoutes: MetadataRoute.Sitemap = [];\n  try {\n    const industries = await getIndustries();\n    industryRoutes = industries.map((ind) => ({\n>>>>>>> REPLACE"
+      "code_diff": "<<<<<<< SEARCH\n  }));\n\n  // 3. Ghost Blog Posts\n  let ghostPosts: any[] =[];\n  try {\n    ghostPosts = await ghost.posts.browse({ limit: 'all' });\n=======\n  }));\n\n  // 3. Ghost Blog Posts\n  let ghostPosts: PostOrPage[] = [];\n  try {\n    ghostPosts = await ghost.posts.browse({ limit: 'all' });\n>>>>>>> REPLACE"
     }
   ]
 }

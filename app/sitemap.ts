@@ -37,7 +37,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // 3. Ghost Blog Posts
-  let ghostPosts: any[] =[];
+  let ghostPosts: PostOrPage[] = [];
   try {
     ghostPosts = await ghost.posts.browse({ limit: 'all' });
   } catch (e) {
