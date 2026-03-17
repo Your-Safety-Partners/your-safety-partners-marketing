@@ -11,10 +11,9 @@ export default async function Page({ params }: Props) {
   const { slug } = await params;
   const client = createClient();
   
-  try {
-    const page = await client.getByUID("page", slug);
-    return <SliceZone slices={page.data.slices} components={components} />;
-  } catch (e) {
+  const page = await client.getByUID("page", slug).catch(() => null);
+
+  if (!page) {
     return (
       <div className="container mx-auto px-4 py-24">
         <h1 className="text-4xl font-bold tracking-tighter mb-6 capitalize">{slug.replace(/-/g, ' ')}</h1>
@@ -26,4 +25,6 @@ export default async function Page({ params }: Props) {
       </div>
     );
   }
+
+  return <SliceZone slices={page.data.slices} components={components} />;
 }

@@ -16,7 +16,7 @@ export default async function IndustryIndex() {
       <div className="max-w-3xl mb-16">
         <h1 className="text-4xl md:text-5xl font-bold tracking-tighter mb-6">Industries We Serve</h1>
         <p className="text-lg text-muted-foreground">
-          Safety compliance isn't one-size-fits-all. Explore our tailored solutions designed to meet the specific regulatory requirements and hazards of your industry.
+          Safety compliance isn&apos;t one-size-fits-all. Explore our tailored solutions designed to meet the specific regulatory requirements and hazards of your industry.
         </p>
       </div>
 
