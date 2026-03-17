@@ -13,7 +13,7 @@ export default async function BlogPost({ params }: Props) {
       </header>
       <div className="prose prose-slate dark:prose-invert max-w-none">
         <p className="text-lg text-muted-foreground">
-          [Ghost Article Placeholder] - This route ("/blog/{slug}") will fetch the specific blog post content and metadata from the Ghost Content API.
+          [Ghost Article Placeholder] - This route (&quot;/blog/{slug}&quot;) will fetch the specific blog post content and metadata from the Ghost Content API.
         </p>
       </div>
     </article>

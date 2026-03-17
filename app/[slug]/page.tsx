@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+// import { notFound } from "next/navigation";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -16,7 +16,7 @@ export default async function Page({ params }: Props) {
       <h1 className="text-4xl font-bold tracking-tighter mb-6 capitalize">{slug.replace(/-/g, ' ')}</h1>
       <div className="prose prose-slate dark:prose-invert max-w-none">
         <p className="text-lg text-muted-foreground">
-          [Prismic Page Placeholder] - This catch-all route ("/{slug}") will fetch the repeatable "Page" document from Prismic and render its slices.
+          [Prismic Page Placeholder] - This catch-all route (&quot;/{slug}&quot;) will fetch the repeatable &quot;Page&quot; document from Prismic and render its slices.
         </p>
       </div>
     </div>

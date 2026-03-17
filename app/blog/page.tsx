@@ -3,7 +3,7 @@ export default function BlogIndex() {
     <div className="container mx-auto px-4 py-24">
       <h1 className="text-4xl font-bold tracking-tighter mb-6">Safety Blog</h1>
       <p className="text-lg text-muted-foreground mb-12">
-        [Ghost Blog Index Placeholder] - This route ("/blog") will fetch the latest articles, tags, and authors from the Ghost Content API.
+        [Ghost Blog Index Placeholder] - This route (&quot;/blog&quot;) will fetch the latest articles, tags, and authors from the Ghost Content API.
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {/* Placeholder Cards */}
