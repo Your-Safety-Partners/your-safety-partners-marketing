@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next';
+import { PageDocument } from '#prismicio-types.js'; 
 import { createClient } from '@/prismicio';
 import ghost from '@/lib/ghost';
 import { getIndustries, getComparisons } from '@/lib/outrank';
