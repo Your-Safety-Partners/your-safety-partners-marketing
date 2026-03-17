@@ -1,4 +1,87 @@
 Concatenating directory files...
+File: ./app/sitemap.ts
+------------------------
+import { MetadataRoute } from 'next';
+import { createClient } from '@/prismicio';
+import ghost from '@/lib/ghost';
+import { getIndustries, getComparisons } from '@/lib/outrank';
+import { PostOrPage } from '@tryghost/content-api'; 
+
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.yoursafetypartners.com';
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const client = createClient();
+
+  // 1. Static/Base routes
+  const routes =[
+    '',
+    '/contact',
+    '/industry',
+    '/compare',
+    '/blog',
+  ].map((route) => ({
+    url: `${baseUrl}${route}`,
+    lastModified: new Date(),
+    changeFrequency: 'daily' as const,
+    priority: route === '' ? 1 : 0.8,
+  }));
+
+  // 2. Prismic Pages
+  let prismicPages: any[] =[];
+  try {
+    prismicPages = await client.getAllByType('page');
+  } catch (e) {
+    console.error('Sitemap Prismic Error:', e);
+  }
+  const prismicRoutes = prismicPages.map((page) => ({
+    url: `${baseUrl}/${page.uid}`,
+    lastModified: new Date(page.last_publication_date),
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }));
+
+  // 3. Ghost Blog Posts
+  let ghostPosts: PostOrPage[] = [];
+  try {
+    ghostPosts = await ghost.posts.browse({ limit: 'all' });
+  } catch (e) {
+    console.error('Sitemap Ghost Error:', e);
+  }
+  const ghostRoutes = ghostPosts.map((post) => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: new Date(post.updated_at || post.published_at || new Date()),
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }));
+
+  // 4. Outrank Programmatic Pages
+  let industryRoutes: MetadataRoute.Sitemap = [];
+  let compareRoutes: MetadataRoute.Sitemap = [];
+  try {
+    const industries = await getIndustries();
+    industryRoutes = industries.map((ind) => ({
+      url: `${baseUrl}/industry/${ind.slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    }));
+
+    const comparisons = await getComparisons();
+    compareRoutes = comparisons.map((comp) => ({
+      url: `${baseUrl}/compare/${comp.slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    }));
+  } catch (e) {
+    console.error('Sitemap Outrank Error:', e);
+  }
+
+  return [...routes, ...prismicRoutes, ...ghostRoutes, ...industryRoutes, ...compareRoutes];
+}
+
+
+
 File: ./app/contact/page.tsx
 ------------------------
 import { ContactForm } from '@/components/forms/contact-form';
@@ -8,11 +91,13 @@ export const metadata = {
   description: 'Get in touch with our team to book a demo or learn more about our safety compliance software.',
 };
 
+export const revalidate = 3600;
+
 export default function ContactPage() {
   return (
     <div className="container mx-auto px-4 py-24">
       <div className="max-w-2xl mx-auto text-center mb-12">
-        <h1 className="text-4xl font-bold tracking-tighter mb-4">Let's Talk</h1>
+        <h1 className="text-4xl font-bold tracking-tighter mb-4">Let&apos;s Talk</h1>
         <p className="text-lg text-muted-foreground">
           Whether you have a question, want a demo, or need help with a safety plan, we are ready to help.
         </p>
@@ -46,6 +131,10 @@ export async function generateMetadata({ params }: Props) {
   return {
     title: page.title,
     description: page.metaDescription,
+    openGraph: {
+      title: page.title,
+      description: page.metaDescription,
+    }
   };
 }
 
@@ -128,6 +217,8 @@ export const metadata = {
   description: "Discover how our safety compliance software helps businesses across various industries maintain compliance and protect their workforce.",
 };
 
+export const revalidate = 3600;
+
 export default async function IndustryIndex() {
   const industries = await getIndustries();
 
@@ -170,6 +261,7 @@ export default async function IndustryIndex() {
 File: ./app/[slug]/page.tsx
 ------------------------
 // import { notFound } from "next/navigation";
+import { Metadata } from "next"; 
 import { SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
@@ -177,6 +269,24 @@ import { components } from "@/slices";
 type Props = {
   params: Promise<{ slug: string }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const client = createClient();
+  const page = await client.getByUID("page", slug).catch(() => null);
+
+  if (!page) return {};
+
+  return {
+    title: page.data.meta_title || `${slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())} | Your Safety Partners`,
+    description: page.data.meta_description,
+    openGraph: {
+      title: page.data.meta_title || `${slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())} | Your Safety Partners`,
+      description: page.data.meta_description || undefined,
+      images: page.data.meta_image?.url ?[page.data.meta_image.url] :[],
+    },
+  };
+}
 
 export default async function Page({ params }: Props) {
   const { slug } = await params;
@@ -205,6 +315,7 @@ export default async function Page({ params }: Props) {
 File: ./app/blog/[slug]/page.tsx
 ------------------------
 // app/blog/[slug]/page.tsx
+import { Metadata } from "next"; 
 import ghost from "@/lib/ghost";
 import { sanitizeHtmlForDangerouslySetInnerHTML } from "@/lib/utils";
 import { notFound } from "next/navigation";
@@ -235,6 +346,35 @@ export async function generateStaticParams() {
 type Props = {
   params: Promise<{ slug: string }>; // Fix: params is a Promise
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getPost(slug);
+
+  if (!post) return {};
+
+  const title = `${post.title} | Your Safety Partners`;
+  const description = post.custom_excerpt || post.excerpt || `Read ${post.title} on Your Safety Partners.`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+      publishedTime: post.published_at || undefined,
+      authors: post.authors?.map(a => a.name).filter(Boolean) as string[],
+      images: post.feature_image ?[post.feature_image] :[],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: post.feature_image ?[post.feature_image] :[],
+    }
+  };
+}
 
 export default async function BlogPost({ params }: Props) {
   // Fix: Unwrap the promise
@@ -322,6 +462,17 @@ function BlogCard({ post }: { post: PostOrPage }) {
   );
 }
 
+export const revalidate = 3600;
+
+export const metadata = {
+  title: "Safety Blog | Your Safety Partners",
+  description: "Insights and updates on safety compliance and best practices.",
+  openGraph: {
+    title: "Safety Blog | Your Safety Partners",
+    description: "Insights and updates on safety compliance and best practices.",
+  }
+};
+
 export default async function BlogIndex() {
   const posts = await getPosts();
 
@@ -357,6 +508,8 @@ export const metadata = {
   title: "Compare Safety Software | Your Safety Partners",
   description: "See how Your Safety Partners stacks up against other safety management solutions on the market.",
 };
+
+export const revalidate = 3600;
 
 export default async function CompareIndex() {
   const comparisons = await getComparisons();
@@ -417,6 +570,10 @@ export async function generateMetadata({ params }: Props) {
   return {
     title: page.title,
     description: page.metaDescription,
+    openGraph: {
+      title: page.title,
+      description: page.metaDescription,
+    }
   };
 }
 
@@ -583,9 +740,29 @@ export async function GET(request: NextRequest) {
 
 File: ./app/page.tsx
 ------------------------
+import { Metadata } from "next";
 import { SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
+
+export const revalidate = 3600; // 1 hour ISR caching
+
+export async function generateMetadata(): Promise<Metadata> {
+  const client = createClient();
+  const page = await client.getSingle("home").catch(() => null);
+
+  if (!page) return { title: "Your Safety Partners" };
+
+  return {
+    title: page.data.meta_title || "Your Safety Partners",
+    description: page.data.meta_description,
+    openGraph: {
+      title: page.data.meta_title || "Your Safety Partners",
+      description: page.data.meta_description || undefined,
+      images: page.data.meta_image?.url ? [page.data.meta_image.url] :[],
+    },
+  };
+}
 
 export default async function Home() {
   const client = createClient();
@@ -680,6 +857,7 @@ body {
 File: ./app/layout.tsx
 ------------------------
 import type { Metadata } from "next";
+import Script  from "next/script"; 
 import { Toaster } from "sonner"; 
 import { Geist, Geist_Mono } from "next/font/google";
 import { Header } from "@/components/global/header";
@@ -720,6 +898,22 @@ export default function RootLayout({
         <Footer />
         <Toaster />
         <PrismicPreview repositoryName={repositoryName} />
+
+        {/* Google Analytics Setup */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer ||[];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}', {
+              page_path: window.location.pathname,
+            });
+          `}
+        </Script>
       </body>
     </html>
   );
@@ -979,7 +1173,7 @@ export function ContactForm() {
     <Card>
       <CardHeader>
         <CardTitle>Book a Demo</CardTitle>
-        <CardDescription>Fill out the form below and we'll contact you to schedule a personalized demo.</CardDescription>
+        <CardDescription>Fill out the form below and we&apos;ll contact you to schedule a personalized demo.</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -2890,11 +3084,6 @@ File: ./lib/server/safe-action.ts
 ------------------------
 // lib/server/safe-action.ts
 import { createSafeActionClient } from 'next-safe-action';
-import { z } from 'zod';
-
-const metadataSchema = z.object({
-  actionName: z.string().optional(),
-});
 
 const customServerErrorHandler = (error: Error) => {
   console.error(

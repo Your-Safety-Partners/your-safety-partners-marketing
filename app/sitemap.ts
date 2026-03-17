@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next';
 import { createClient } from '@/prismicio';
 import ghost from '@/lib/ghost';
 import { getIndustries, getComparisons } from '@/lib/outrank';
+import { PostOrPage } from '@tryghost/content-api'; 
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.yoursafetypartners.com';
 
@@ -23,7 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // 2. Prismic Pages
-  let prismicPages: any[] =[];
+  let prismicPages: PageDocument[] = [];
   try {
     prismicPages = await client.getAllByType('page');
   } catch (e) {

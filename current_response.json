@@ -1,17 +1,13 @@
 {
-  "summary": "Fix the final two TypeScript errors in the sitemap by applying the correct types, `PageDocument` and `PostOrPage`, to the Prismic and Ghost data arrays.",
+  "summary": "fix(sitemap): Resolve 'no-explicit-any' lint error by importing and using PageDocument type for prismicPages.",
   "files": [
     {
       "file_path": "app/sitemap.ts",
-      "code_diff": "<<<<<<< SEARCH\nimport { MetadataRoute } from 'next';\nimport { createClient } from '@/prismicio';\nimport ghost from '@/lib/ghost';\nimport { getIndustries, getComparisons } from '@/lib/outrank';\n\nconst baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.yoursafetypartners.com';\n=======\nimport { MetadataRoute } from 'next';\nimport { createClient } from '@/prismicio';\nimport ghost from '@/lib/ghost';\nimport { getIndustries, getComparisons } from '@/lib/outrank';\nimport type { PostOrPage } from '@tryghost/content-api';\nimport type { PageDocument } from 'prismicio-types';\n\nconst baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.yoursafetypartners.com';\n>>>>>>> REPLACE"
+      "code_diff": "<<<<<<< SEARCH\nimport { MetadataRoute } from 'next';\nimport { createClient } from '@/prismicio';\nimport ghost from '@/lib/ghost';\nimport { getIndustries, getComparisons } from '@/lib/outrank';\nimport { PostOrPage } from '@tryghost/content-api'; \n=======\nimport { MetadataRoute } from 'next';\nimport { createClient } from '@/prismicio';\nimport type { PageDocument } from '@/prismicio-types';\nimport ghost from '@/lib/ghost';\nimport { getIndustries, getComparisons } from '@/lib/outrank';\nimport { PostOrPage } from '@tryghost/content-api';\n>>>>>>> REPLACE"
     },
     {
       "file_path": "app/sitemap.ts",
-      "code_diff": "<<<<<<< SEARCH\n  }));\n\n  // 2. Prismic Pages\n  let prismicPages: any[] =[];\n  try {\n    prismicPages = await client.getAllByType('page');\n=======\n  }));\n\n  // 2. Prismic Pages\n  let prismicPages: PageDocument[] = [];\n  try {\n    prismicPages = await client.getAllByType('page');\n>>>>>>> REPLACE"
-    },
-    {
-      "file_path": "app/sitemap.ts",
-      "code_diff": "<<<<<<< SEARCH\n  }));\n\n  // 3. Ghost Blog Posts\n  let ghostPosts: any[] =[];\n  try {\n    ghostPosts = await ghost.posts.browse({ limit: 'all' });\n=======\n  }));\n\n  // 3. Ghost Blog Posts\n  let ghostPosts: PostOrPage[] = [];\n  try {\n    ghostPosts = await ghost.posts.browse({ limit: 'all' });\n>>>>>>> REPLACE"
+      "code_diff": "<<<<<<< SEARCH\n  // 2. Prismic Pages\n  let prismicPages: any[] =[];\n  try {\n=======\n  // 2. Prismic Pages\n  let prismicPages: PageDocument[] = [];\n  try {\n>>>>>>> REPLACE"
     }
   ]
 }
