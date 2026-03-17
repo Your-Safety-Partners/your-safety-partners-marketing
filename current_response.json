@@ -1,21 +1,9 @@
 {
-  "summary": "Fix all TypeScript errors by aligning the contact server action with next-safe-action's return types (data/serverError), updating the form component to match, and correctly importing the Toaster component in the root layout.",
+  "summary": "Fix the final TypeScript error in `next-safe-action` by updating `lib/server/safe-action.ts` to use the correct API for defining a metadata schema as per v8 of the library.",
   "files": [
     {
-      "file_path": "actions/contact.ts",
-      "code_diff": "<<<<<<< SEARCH\n    const rateLimited = await Effect.runPromise(globalPOSTRateLimitEffect);\n    if (!rateLimited) {\n      console.warn(`Rate limit exceeded for contact form submission from email: ${email}`);\n      return {\n        failure: 'Too many requests. Please try again in a moment.',\n      };\n    }\n\n    try {\n      const logger = await getLoggerPromise();\n      logger.info(\n        { lead: { name, email, company, message } },\n        'New contact form submission received.'\n      );\n      \n      // TODO: Integrate with your CRM or Email Service\n      // Example: await sendToHubspot({ name, email, company, message });\n      // Example: await resend.emails.send({ ... });\n\n      return {\n        success: `Thank you, ${name}! We've received your message and will be in touch shortly.`,\n      };\n    } catch (error) {\n      console.error('Failed to process contact form submission:', error);\n      return {\n        failure: 'An unexpected error occurred. Please try again.',\n      };\n    }\n=======\n    const rateLimited = await Effect.runPromise(globalPOSTRateLimitEffect);\n    if (!rateLimited) {\n      console.warn(`Rate limit exceeded for contact form submission from email: ${email}`);\n      return {\n        serverError: 'Too many requests. Please try again in a moment.',\n      };\n    }\n\n    try {\n      const logger = await getLoggerPromise();\n      logger.info(\n        { lead: { name, email, company, message } },\n        'New contact form submission received.'\n      );\n      \n      // TODO: Integrate with your CRM or Email Service\n      // Example: await sendToHubspot({ name, email, company, message });\n      // Example: await resend.emails.send({ ... });\n\n      return `Thank you, ${name}! We've received your message and will be in touch shortly.`;\n\n    } catch (error) {\n      console.error('Failed to process contact form submission:', error);\n      return {\n        serverError: 'An unexpected error occurred. Please try again.',\n      };\n    }\n>>>>>>> REPLACE"
-    },
-    {
-      "file_path": "components/forms/contact-form.tsx",
-      "code_diff": "<<<<<<< SEARCH\n  const onSubmit = async (data: ContactFormData) => {\n    const result = await submitContactForm(data);\n\n    if (result?.failure) {\n      toast.error(result.failure);\n    } else if (result?.success) {\n      toast.success(result.success);\n      reset();\n    }\n  };\n=======\n  const onSubmit = async (data: ContactFormData) => {\n    const result = await submitContactForm(data);\n\n    if (result?.serverError) {\n      toast.error(result.serverError);\n    } else if (result?.data) {\n      toast.success(result.data);\n      reset();\n    }\n  };\n>>>>>>> REPLACE"
-    },
-    {
-      "file_path": "app/layout.tsx",
-      "code_diff": "<<<<<<< SEARCH\nimport { Header } from \"@/components/global/header\";\nimport { Footer } from \"@/components/global/footer\";\nimport { PrismicPreview } from \"@prismicio/next\";\nimport { repositoryName } from \"@/prismicio\";\nimport \"./globals.css\";\n=======\nimport { Header } from \"@/components/global/header\";\nimport { Footer } from \"@/components/global/footer\";\nimport { PrismicPreview } from \"@prismicio/next\";\nimport { repositoryName } from \"@/prismicio\";\nimport { Toaster } from \"@/components/ui/sonner\";\nimport \"./globals.css\";\n>>>>>>> REPLACE"
-    },
-    {
-      "file_path": "app/layout.tsx",
-      "code_diff": "<<<<<<< SEARCH\n        <main className=\"flex-1 flex flex-col\">\n          {children}\n        </main>\n        <Footer />\n        <PrismicPreview repositoryName={repositoryName} />\n      </body>\n=======\n        <main className=\"flex-1 flex flex-col\">\n          {children}\n        </main>\n        <Footer />\n        <Toaster />\n        <PrismicPreview repositoryName={repositoryName} />\n      </body>\n>>>>>>> REPLACE"
+      "file_path": "lib/server/safe-action.ts",
+      "code_diff": "<<<<<<< SEARCH\nexport const actionClient = createSafeActionClient({\n  handleServerError: customServerErrorHandler,\n  defineMetadataSchema: () => metadataSchema,\n});\n=======\nexport const actionClient = createSafeActionClient({\n  handleServerError: customServerErrorHandler,\n}).defineMetadataSchema(metadataSchema);\n>>>>>>> REPLACE"
     }
   ]
 }

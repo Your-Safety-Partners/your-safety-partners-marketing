@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Toaster } from "sonner"; 
 import { Geist, Geist_Mono } from "next/font/google";
 import { Header } from "@/components/global/header";
 import { Footer } from "@/components/global/footer";
@@ -38,7 +39,6 @@ export default function RootLayout({
         <Footer />
         <Toaster />
         <PrismicPreview repositoryName={repositoryName} />
-      </body>
       </body>
     </html>
   );

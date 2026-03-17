@@ -1,4 +1,31 @@
 Concatenating directory files...
+File: ./app/contact/page.tsx
+------------------------
+import { ContactForm } from '@/components/forms/contact-form';
+
+export const metadata = {
+  title: 'Contact Us | Your Safety Partners',
+  description: 'Get in touch with our team to book a demo or learn more about our safety compliance software.',
+};
+
+export default function ContactPage() {
+  return (
+    <div className="container mx-auto px-4 py-24">
+      <div className="max-w-2xl mx-auto text-center mb-12">
+        <h1 className="text-4xl font-bold tracking-tighter mb-4">Let's Talk</h1>
+        <p className="text-lg text-muted-foreground">
+          Whether you have a question, want a demo, or need help with a safety plan, we are ready to help.
+        </p>
+      </div>
+      <div className="max-w-xl mx-auto">
+        <ContactForm />
+      </div>
+    </div>
+  );
+}
+
+
+
 File: ./app/industry/[slug]/page.tsx
 ------------------------
 import { notFound } from "next/navigation";
@@ -109,7 +136,7 @@ export default async function IndustryIndex() {
       <div className="max-w-3xl mb-16">
         <h1 className="text-4xl md:text-5xl font-bold tracking-tighter mb-6">Industries We Serve</h1>
         <p className="text-lg text-muted-foreground">
-          Safety compliance isn't one-size-fits-all. Explore our tailored solutions designed to meet the specific regulatory requirements and hazards of your industry.
+          Safety compliance isn&apos;t one-size-fits-all. Explore our tailored solutions designed to meet the specific regulatory requirements and hazards of your industry.
         </p>
       </div>
 
@@ -142,7 +169,7 @@ export default async function IndustryIndex() {
 
 File: ./app/[slug]/page.tsx
 ------------------------
-import { notFound } from "next/navigation";
+// import { notFound } from "next/navigation";
 import { SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
@@ -155,10 +182,9 @@ export default async function Page({ params }: Props) {
   const { slug } = await params;
   const client = createClient();
   
-  try {
-    const page = await client.getByUID("page", slug);
-    return <SliceZone slices={page.data.slices} components={components} />;
-  } catch (e) {
+  const page = await client.getByUID("page", slug).catch(() => null);
+
+  if (!page) {
     return (
       <div className="container mx-auto px-4 py-24">
         <h1 className="text-4xl font-bold tracking-tighter mb-6 capitalize">{slug.replace(/-/g, ' ')}</h1>
@@ -170,6 +196,8 @@ export default async function Page({ params }: Props) {
       </div>
     );
   }
+
+  return <SliceZone slices={page.data.slices} components={components} />;
 }
 
 
@@ -526,8 +554,9 @@ File: ./app/api/draft/route.ts
 import { draftMode } from 'next/headers';
 import { redirectToPreviewURL } from '@prismicio/next';
 import { createClient } from '@/prismicio';
+import { type NextRequest } from 'next/server';
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   const client = createClient();
   const draft = await draftMode();
   draft.enable();
@@ -561,10 +590,9 @@ import { components } from "@/slices";
 export default async function Home() {
   const client = createClient();
   
-  try {
-    const page = await client.getSingle("home");
-    return <SliceZone slices={page.data.slices} components={components} />;
-  } catch (e) {
+  const page = await client.getSingle("home").catch(() => null);
+
+  if (!page) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center py-24 text-center px-4">
         <h1 className="text-4xl md:text-6xl font-bold tracking-tighter text-foreground mb-6">
@@ -576,6 +604,8 @@ export default async function Home() {
       </div>
     );
   }
+
+  return <SliceZone slices={page.data.slices} components={components} />;
 }
 
 
@@ -650,6 +680,7 @@ body {
 File: ./app/layout.tsx
 ------------------------
 import type { Metadata } from "next";
+import { Toaster } from "sonner"; 
 import { Geist, Geist_Mono } from "next/font/google";
 import { Header } from "@/components/global/header";
 import { Footer } from "@/components/global/footer";
@@ -687,6 +718,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <Toaster />
         <PrismicPreview repositoryName={repositoryName} />
       </body>
     </html>
@@ -908,6 +940,100 @@ export function Footer() {
 
 
 
+File: ./components/forms/contact-form.tsx
+------------------------
+'use client';
+
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
+
+import { contactFormSchema, type ContactFormData } from '@/lib/schemas';
+import { submitContactForm } from '@/actions/contact';
+import CustomInput from '@/components/custom-ui/custom-input';
+import CustomButton from '@/components/custom-ui/custom-button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+
+export function ContactForm() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<ContactFormData>({
+    resolver: zodResolver(contactFormSchema),
+  });
+
+  const onSubmit = async (data: ContactFormData) => {
+    const result = await submitContactForm(data);
+
+    if (result?.serverError) {
+      toast.error(result.serverError);
+    } else if (result?.data) {
+      toast.success(result.data);
+      reset();
+    }
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Book a Demo</CardTitle>
+        <CardDescription>Fill out the form below and we'll contact you to schedule a personalized demo.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <CustomInput<ContactFormData>
+            label="Full Name"
+            name="name"
+            register={register}
+            placeholder="Jane Doe"
+            validationError={errors.name?.message}
+            disabled={isSubmitting}
+          />
+          <CustomInput<ContactFormData>
+            label="Work Email"
+            name="email"
+            type="email"
+            register={register}
+            placeholder="jane.doe@company.com"
+            validationError={errors.email?.message}
+            disabled={isSubmitting}
+          />
+          <CustomInput<ContactFormData>
+            label="Company Name (Optional)"
+            name="company"
+            register={register}
+            placeholder="ACME Inc."
+            validationError={errors.company?.message}
+            disabled={isSubmitting}
+          />
+          <CustomInput<ContactFormData>
+            label="Message"
+            name="message"
+            register={register}
+            placeholder="Tell us a little about your safety needs..."
+            validationError={errors.message?.message}
+            multiline
+            rows={4}
+            disabled={isSubmitting}
+          />
+          <div className="flex justify-end">
+            <CustomButton
+              title="Submit Request"
+              type="submit"
+              isLoading={isSubmitting}
+              className="w-full sm:w-auto"
+            />
+          </div>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
+
+
+
 File: ./components/ui/textarea.tsx
 ------------------------
 import * as React from 'react';
@@ -947,6 +1073,63 @@ function Skeleton({ className, ...props }: React.ComponentProps<'div'>) {
 }
 
 export { Skeleton };
+
+
+
+File: ./components/ui/card.tsx
+------------------------
+import * as React from 'react';
+
+import { cn } from '@/lib/utils';
+
+const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn('rounded-lg border bg-card text-card-foreground shadow-sm', className)}
+      {...props}
+    />
+  )
+);
+Card.displayName = 'Card';
+
+const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn('flex flex-col space-y-1.5 p-6', className)} {...props} />
+  )
+);
+CardHeader.displayName = 'CardHeader';
+
+const CardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHeadingElement>>(
+  ({ className, ...props }, ref) => (
+    <h3 ref={ref} className={cn('text-2xl font-semibold leading-none tracking-tight', className)} {...props} />
+  )
+);
+CardTitle.displayName = 'CardTitle';
+
+const CardDescription = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => (
+  <p ref={ref} className={cn('text-sm text-muted-foreground', className)} {...props} />
+));
+CardDescription.displayName = 'CardDescription';
+
+const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn('p-6 pt-0', className)} {...props} />
+  )
+);
+CardContent.displayName = 'CardContent';
+
+const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn('flex items-center p-6 pt-0', className)} {...props} />
+  )
+);
+CardFooter.displayName = 'CardFooter';
+
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent };
 
 
 
@@ -1660,6 +1843,7 @@ type CustomButtonProps = {
   type?: 'button' | 'submit' | 'reset';
   buttonProps?: React.ButtonHTMLAttributes<HTMLButtonElement>;
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  size?: 'default' | 'sm' | 'lg' | 'icon';
   disabled?: boolean;
   leadingIcon?: React.ReactNode;
   trailingIcon?: React.ReactNode;
@@ -1679,6 +1863,7 @@ const CustomButton = React.forwardRef<HTMLButtonElement, CustomButtonProps>(
       type = 'button',
       buttonProps = {},
       variant = 'default',
+      size, // Added size to destructuring
       disabled = false,
       className,
       leadingIcon,
@@ -1718,7 +1903,8 @@ const CustomButton = React.forwardRef<HTMLButtonElement, CustomButtonProps>(
       disabled: isLoading || disabled,
       type,
       variant,
-      className: `h-[41px] ${width || 'min-w-[150px]'} ${isLoading ? 'opacity-50' : ''} ${buttonClass || ''}`.trim(),
+      size, // Pass size to the underlying Button component
+      className: `h-auto ${size !== 'lg' && size !== 'sm' ? width : ''} ${isLoading ? 'opacity-50' : ''} ${buttonClass || ''}`.trim(),
       onClick: isLoading ? undefined : onClick,
       form,
       ...buttonProps,
@@ -2933,6 +3119,24 @@ export const globalPOSTRateLimitEffect = pipe(
 
 
 
+File: ./lib/schemas.ts
+------------------------
+import { z } from 'zod';
+
+export const contactFormSchema = z.object({
+  name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
+  email: z.string().email({ message: 'Please enter a valid email address.' }),
+  company: z.string().optional(),
+  message: z
+    .string()
+    .min(10, { message: 'Message must be at least 10 characters.' })
+    .max(2000, { message: 'Message cannot exceed 2000 characters.' }),
+});
+
+export type ContactFormData = z.infer<typeof contactFormSchema>;
+
+
+
 Concatenating root-level files...
 File: bridge.sh
 ------------------------
@@ -3353,8 +3557,7 @@ export const createClient = (config: prismicNext.CreateClientConfig = {}) => {
 
   prismicNext.enableAutoPreviews({
     client,
-    previewData: config.previewData,
-    req: config.req,
+    ...config,
   });
 
   return client;

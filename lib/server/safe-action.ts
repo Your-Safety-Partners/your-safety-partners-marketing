@@ -22,5 +22,4 @@ const customServerErrorHandler = (error: Error) => {
 
 export const actionClient = createSafeActionClient({
   handleServerError: customServerErrorHandler,
-  defineMetadataSchema: () => metadataSchema,
-});
+}).defineMetadataSchema(metadataSchema);
