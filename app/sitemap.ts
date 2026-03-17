@@ -51,8 +51,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // 4. Outrank Programmatic Pages
-  let industryRoutes: any[] = [];
-  let compareRoutes: any[] =[];
+  let industryRoutes: MetadataRoute.Sitemap = [];
+  let compareRoutes: MetadataRoute.Sitemap = [];
   try {
     const industries = await getIndustries();
     industryRoutes = industries.map((ind) => ({

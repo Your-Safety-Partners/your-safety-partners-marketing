@@ -1,4 +1,5 @@
 // app/blog/[slug]/page.tsx
+import { Metadata } from "next"; 
 import ghost from "@/lib/ghost";
 import { sanitizeHtmlForDangerouslySetInnerHTML } from "@/lib/utils";
 import { notFound } from "next/navigation";

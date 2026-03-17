@@ -1,69 +1,21 @@
 {
-  "summary": "Phase 6: Add dynamic unified sitemap, populate SEO Metadata and OpenGraph tags, apply 1-hour ISR revalidation globally, and add Google Analytics tracking.",
-  "files":[
+  "summary": "Fix all `no-explicit-any` TypeScript errors in the sitemap by providing explicit types for Prismic documents, Ghost posts, and the mapped Outrank routes.",
+  "files": [
     {
       "file_path": "app/sitemap.ts",
-      "code_diff": "<<<<<<< SEARCH\n=======\nimport { MetadataRoute } from 'next';\nimport { createClient } from '@/prismicio';\nimport ghost from '@/lib/ghost';\nimport { getIndustries, getComparisons } from '@/lib/outrank';\n\nconst baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.yoursafetypartners.com';\n\nexport default async function sitemap(): Promise<MetadataRoute.Sitemap> {\n  const client = createClient();\n\n  // 1. Static/Base routes\n  const routes =[\n    '',\n    '/contact',\n    '/industry',\n    '/compare',\n    '/blog',\n  ].map((route) => ({\n    url: `${baseUrl}${route}`,\n    lastModified: new Date(),\n    changeFrequency: 'daily' as const,\n    priority: route === '' ? 1 : 0.8,\n  }));\n\n  // 2. Prismic Pages\n  let prismicPages: any[] =[];\n  try {\n    prismicPages = await client.getAllByType('page');\n  } catch (e) {\n    console.error('Sitemap Prismic Error:', e);\n  }\n  const prismicRoutes = prismicPages.map((page) => ({\n    url: `${baseUrl}/${page.uid}`,\n    lastModified: new Date(page.last_publication_date),\n    changeFrequency: 'weekly' as const,\n    priority: 0.7,\n  }));\n\n  // 3. Ghost Blog Posts\n  let ghostPosts: any[] =[];\n  try {\n    ghostPosts = await ghost.posts.browse({ limit: 'all' });\n  } catch (e) {\n    console.error('Sitemap Ghost Error:', e);\n  }\n  const ghostRoutes = ghostPosts.map((post) => ({\n    url: `${baseUrl}/blog/${post.slug}`,\n    lastModified: new Date(post.updated_at || post.published_at || new Date()),\n    changeFrequency: 'weekly' as const,\n    priority: 0.7,\n  }));\n\n  // 4. Outrank Programmatic Pages\n  let industryRoutes: any[] = [];\n  let compareRoutes: any[] =[];\n  try {\n    const industries = await getIndustries();\n    industryRoutes = industries.map((ind) => ({\n      url: `${baseUrl}/industry/${ind.slug}`,\n      lastModified: new Date(),\n      changeFrequency: 'weekly' as const,\n      priority: 0.6,\n    }));\n\n    const comparisons = await getComparisons();\n    compareRoutes = comparisons.map((comp) => ({\n      url: `${baseUrl}/compare/${comp.slug}`,\n      lastModified: new Date(),\n      changeFrequency: 'weekly' as const,\n      priority: 0.6,\n    }));\n  } catch (e) {\n    console.error('Sitemap Outrank Error:', e);\n  }\n\n  return [...routes, ...prismicRoutes, ...ghostRoutes, ...industryRoutes, ...compareRoutes];\n}\n>>>>>>> REPLACE"
+      "code_diff": "<<<<<<< SEARCH\nimport { MetadataRoute } from 'next';\nimport { createClient } from '@/prismicio';\nimport ghost from '@/lib/ghost';\nimport { getIndustries, getComparisons } from '@/lib/outrank';\n\nconst baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.yoursafetypartners.com';\n=======\nimport { MetadataRoute } from 'next';\nimport type { PostOrPage } from '@tryghost/content-api';\nimport { createClient } from '@/prismicio';\nimport ghost from '@/lib/ghost';\nimport { getIndustries, getComparisons } from '@/lib/outrank';\nimport { PageDocument } from 'prismicio-types';\n\nconst baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.yoursafetypartners.com';\n>>>>>>> REPLACE"
     },
     {
-      "file_path": "app/layout.tsx",
-      "code_diff": "<<<<<<< SEARCH\nimport { PrismicPreview } from \"@prismicio/next\";\nimport { repositoryName } from \"@/prismicio\";\nimport \"./globals.css\";\n=======\nimport Script from \"next/script\";\nimport { PrismicPreview } from \"@prismicio/next\";\nimport { repositoryName } from \"@/prismicio\";\nimport \"./globals.css\";\n>>>>>>> REPLACE"
+      "file_path": "app/sitemap.ts",
+      "code_diff": "<<<<<<< SEARCH\n  }));\n\n  // 2. Prismic Pages\n  let prismicPages: any[] =[];\n  try {\n    prismicPages = await client.getAllByType('page');\n  } catch (e) {\n=======\n  }));\n\n  // 2. Prismic Pages\n  let prismicPages: PageDocument[] = [];\n  try {\n    prismicPages = await client.getAllByType('page');\n  } catch (e) {\n>>>>>>> REPLACE"
     },
     {
-      "file_path": "app/layout.tsx",
-      "code_diff": "<<<<<<< SEARCH\n        <Toaster />\n        <PrismicPreview repositoryName={repositoryName} />\n      </body>\n    </html>\n=======\n        <Toaster />\n        <PrismicPreview repositoryName={repositoryName} />\n\n        {/* Google Analytics Setup */}\n        <Script\n          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`}\n          strategy=\"afterInteractive\"\n        />\n        <Script id=\"google-analytics\" strategy=\"afterInteractive\">\n          {`\n            window.dataLayer = window.dataLayer ||[];\n            function gtag(){dataLayer.push(arguments);}\n            gtag('js', new Date());\n            gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}', {\n              page_path: window.location.pathname,\n            });\n          `}\n        </Script>\n      </body>\n    </html>\n>>>>>>> REPLACE"
+      "file_path": "app/sitemap.ts",
+      "code_diff": "<<<<<<< SEARCH\n    priority: 0.7,\n  }));\n\n  // 3. Ghost Blog Posts\n  let ghostPosts: any[] =[];\n  try {\n    ghostPosts = await ghost.posts.browse({ limit: 'all' });\n  } catch (e) {\n=======\n    priority: 0.7,\n  }));\n\n  // 3. Ghost Blog Posts\n  let ghostPosts: PostOrPage[] = [];\n  try {\n    ghostPosts = await ghost.posts.browse({ limit: 'all' });\n  } catch (e) {\n>>>>>>> REPLACE"
     },
     {
-      "file_path": "app/page.tsx",
-      "code_diff": "<<<<<<< SEARCH\nimport { SliceZone } from \"@prismicio/react\";\nimport { createClient } from \"@/prismicio\";\nimport { components } from \"@/slices\";\n\nexport default async function Home() {\n=======\nimport { Metadata } from \"next\";\nimport { SliceZone } from \"@prismicio/react\";\nimport { createClient } from \"@/prismicio\";\nimport { components } from \"@/slices\";\n\nexport const revalidate = 3600; // 1 hour ISR caching\n\nexport async function generateMetadata(): Promise<Metadata> {\n  const client = createClient();\n  const page = await client.getSingle(\"home\").catch(() => null);\n\n  if (!page) return { title: \"Your Safety Partners\" };\n\n  return {\n    title: page.data.meta_title || \"Your Safety Partners\",\n    description: page.data.meta_description,\n    openGraph: {\n      title: page.data.meta_title || \"Your Safety Partners\",\n      description: page.data.meta_description || undefined,\n      images: page.data.meta_image?.url ? [page.data.meta_image.url] :[],\n    },\n  };\n}\n\nexport default async function Home() {\n>>>>>>> REPLACE"
-    },
-    {
-      "file_path": "app/[slug]/page.tsx",
-      "code_diff": "<<<<<<< SEARCH\n// import { notFound } from \"next/navigation\";\nimport { SliceZone } from \"@prismicio/react\";\nimport { createClient } from \"@/prismicio\";\nimport { components } from \"@/slices\";\n\ntype Props = {\n=======\n// import { notFound } from \"next/navigation\";\nimport { Metadata } from \"next\";\nimport { SliceZone } from \"@prismicio/react\";\nimport { createClient } from \"@/prismicio\";\nimport { components } from \"@/slices\";\n\nexport const revalidate = 3600; // 1 hour ISR caching\n\ntype Props = {\n>>>>>>> REPLACE"
-    },
-    {
-      "file_path": "app/[slug]/page.tsx",
-      "code_diff": "<<<<<<< SEARCH\nexport default async function Page({ params }: Props) {\n  const { slug } = await params;\n=======\nexport async function generateMetadata({ params }: Props): Promise<Metadata> {\n  const { slug } = await params;\n  const client = createClient();\n  const page = await client.getByUID(\"page\", slug).catch(() => null);\n\n  if (!page) return {};\n\n  return {\n    title: page.data.meta_title || `${slug.replace(/-/g, ' ').replace(/\\b\\w/g, c => c.toUpperCase())} | Your Safety Partners`,\n    description: page.data.meta_description,\n    openGraph: {\n      title: page.data.meta_title || `${slug.replace(/-/g, ' ').replace(/\\b\\w/g, c => c.toUpperCase())} | Your Safety Partners`,\n      description: page.data.meta_description || undefined,\n      images: page.data.meta_image?.url ?[page.data.meta_image.url] :[],\n    },\n  };\n}\n\nexport default async function Page({ params }: Props) {\n  const { slug } = await params;\n>>>>>>> REPLACE"
-    },
-    {
-      "file_path": "app/blog/page.tsx",
-      "code_diff": "<<<<<<< SEARCH\nexport default async function BlogIndex() {\n  const posts = await getPosts();\n=======\nexport const revalidate = 3600;\n\nexport const metadata = {\n  title: \"Safety Blog | Your Safety Partners\",\n  description: \"Insights and updates on safety compliance and best practices.\",\n  openGraph: {\n    title: \"Safety Blog | Your Safety Partners\",\n    description: \"Insights and updates on safety compliance and best practices.\",\n  }\n};\n\nexport default async function BlogIndex() {\n  const posts = await getPosts();\n>>>>>>> REPLACE"
-    },
-    {
-      "file_path": "app/blog/[slug]/page.tsx",
-      "code_diff": "<<<<<<< SEARCH\nimport { sanitizeHtmlForDangerouslySetInnerHTML } from \"@/lib/utils\";\nimport { notFound } from \"next/navigation\";\nimport type { PostOrPage } from \"@tryghost/content-api\";\n\nasync function getPost(slug: string): Promise<PostOrPage | null> {\n=======\nimport { sanitizeHtmlForDangerouslySetInnerHTML } from \"@/lib/utils\";\nimport { notFound } from \"next/navigation\";\nimport { Metadata } from \"next\";\nimport type { PostOrPage } from \"@tryghost/content-api\";\n\nexport const revalidate = 3600; // 1 hour ISR caching\n\nasync function getPost(slug: string): Promise<PostOrPage | null> {\n>>>>>>> REPLACE"
-    },
-    {
-      "file_path": "app/blog/[slug]/page.tsx",
-      "code_diff": "<<<<<<< SEARCH\ntype Props = {\n  params: Promise<{ slug: string }>; // Fix: params is a Promise\n};\n\nexport default async function BlogPost({ params }: Props) {\n=======\ntype Props = {\n  params: Promise<{ slug: string }>; // Fix: params is a Promise\n};\n\nexport async function generateMetadata({ params }: Props): Promise<Metadata> {\n  const { slug } = await params;\n  const post = await getPost(slug);\n\n  if (!post) return {};\n\n  const title = `${post.title} | Your Safety Partners`;\n  const description = post.custom_excerpt || post.excerpt || `Read ${post.title} on Your Safety Partners.`;\n\n  return {\n    title,\n    description,\n    openGraph: {\n      title,\n      description,\n      type: 'article',\n      publishedTime: post.published_at || undefined,\n      authors: post.authors?.map(a => a.name).filter(Boolean) as string[],\n      images: post.feature_image ?[post.feature_image] :[],\n    },\n    twitter: {\n      card: 'summary_large_image',\n      title,\n      description,\n      images: post.feature_image ?[post.feature_image] :[],\n    }\n  };\n}\n\nexport default async function BlogPost({ params }: Props) {\n>>>>>>> REPLACE"
-    },
-    {
-      "file_path": "app/industry/page.tsx",
-      "code_diff": "<<<<<<< SEARCH\nexport const metadata = {\n  title: \"Industries We Serve | Your Safety Partners\",\n  description: \"Discover how our safety compliance software helps businesses across various industries maintain compliance and protect their workforce.\",\n};\n\nexport default async function IndustryIndex() {\n=======\nexport const metadata = {\n  title: \"Industries We Serve | Your Safety Partners\",\n  description: \"Discover how our safety compliance software helps businesses across various industries maintain compliance and protect their workforce.\",\n};\n\nexport const revalidate = 3600;\n\nexport default async function IndustryIndex() {\n>>>>>>> REPLACE"
-    },
-    {
-      "file_path": "app/industry/[slug]/page.tsx",
-      "code_diff": "<<<<<<< SEARCH\ntype Props = {\n  params: Promise<{ slug: string }>;\n};\n\nexport async function generateMetadata({ params }: Props) {\n=======\ntype Props = {\n  params: Promise<{ slug: string }>;\n};\n\nexport const revalidate = 3600;\n\nexport async function generateMetadata({ params }: Props) {\n>>>>>>> REPLACE"
-    },
-    {
-      "file_path": "app/industry/[slug]/page.tsx",
-      "code_diff": "<<<<<<< SEARCH\n  return {\n    title: page.title,\n    description: page.metaDescription,\n  };\n}\n\nexport async function generateStaticParams() {\n=======\n  return {\n    title: page.title,\n    description: page.metaDescription,\n    openGraph: {\n      title: page.title,\n      description: page.metaDescription,\n    }\n  };\n}\n\nexport async function generateStaticParams() {\n>>>>>>> REPLACE"
-    },
-    {
-      "file_path": "app/compare/page.tsx",
-      "code_diff": "<<<<<<< SEARCH\nexport const metadata = {\n  title: \"Compare Safety Software | Your Safety Partners\",\n  description: \"See how Your Safety Partners stacks up against other safety management solutions on the market.\",\n};\n\nexport default async function CompareIndex() {\n=======\nexport const metadata = {\n  title: \"Compare Safety Software | Your Safety Partners\",\n  description: \"See how Your Safety Partners stacks up against other safety management solutions on the market.\",\n};\n\nexport const revalidate = 3600;\n\nexport default async function CompareIndex() {\n>>>>>>> REPLACE"
-    },
-    {
-      "file_path": "app/compare/[competitor]/page.tsx",
-      "code_diff": "<<<<<<< SEARCH\ntype Props = {\n  params: Promise<{ competitor: string }>;\n};\n\nexport async function generateMetadata({ params }: Props) {\n=======\ntype Props = {\n  params: Promise<{ competitor: string }>;\n};\n\nexport const revalidate = 3600;\n\nexport async function generateMetadata({ params }: Props) {\n>>>>>>> REPLACE"
-    },
-    {
-      "file_path": "app/compare/[competitor]/page.tsx",
-      "code_diff": "<<<<<<< SEARCH\n  return {\n    title: page.title,\n    description: page.metaDescription,\n  };\n}\n\nexport async function generateStaticParams() {\n=======\n  return {\n    title: page.title,\n    description: page.metaDescription,\n    openGraph: {\n      title: page.title,\n      description: page.metaDescription,\n    }\n  };\n}\n\nexport async function generateStaticParams() {\n>>>>>>> REPLACE"
-    },
-    {
-      "file_path": "app/contact/page.tsx",
-      "code_diff": "<<<<<<< SEARCH\nexport const metadata = {\n  title: 'Contact Us | Your Safety Partners',\n  description: 'Get in touch with our team to book a demo or learn more about our safety compliance software.',\n};\n\nexport default function ContactPage() {\n=======\nexport const metadata = {\n  title: 'Contact Us | Your Safety Partners',\n  description: 'Get in touch with our team to book a demo or learn more about our safety compliance software.',\n};\n\nexport const revalidate = 3600;\n\nexport default function ContactPage() {\n>>>>>>> REPLACE"
+      "file_path": "app/sitemap.ts",
+      "code_diff": "<<<<<<< SEARCH\n    priority: 0.7,\n  }));\n\n  // 4. Outrank Programmatic Pages\n  let industryRoutes: any[] = [];\n  let compareRoutes: any[] =[];\n  try {\n    const industries = await getIndustries();\n    industryRoutes = industries.map((ind) => ({\n=======\n    priority: 0.7,\n  }));\n\n  // 4. Outrank Programmatic Pages\n  let industryRoutes: MetadataRoute.Sitemap = [];\n  let compareRoutes: MetadataRoute.Sitemap = [];\n  try {\n    const industries = await getIndustries();\n    industryRoutes = industries.map((ind) => ({\n>>>>>>> REPLACE"
     }
   ]
 }
