@@ -36,6 +36,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <Toaster />
         <PrismicPreview repositoryName={repositoryName} />
       </body>
     </html>
