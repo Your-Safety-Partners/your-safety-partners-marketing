@@ -13,7 +13,7 @@ export default async function IndustryPage({ params }: Props) {
       <h1 className="text-4xl font-bold tracking-tighter mb-6 capitalize">Safety Compliance for {slug.replace(/-/g, ' ')}</h1>
       <div className="prose prose-slate dark:prose-invert max-w-none">
         <p className="text-lg text-muted-foreground">
-          [Outrank Programmatic Page Placeholder] - This route ("/industry/{slug}") will pull structured data from Outrank.so to generate highly targeted SEO content for specific industries.
+          [Outrank Programmatic Page Placeholder] - This route (&quot;/industry/{slug}&quot;) will pull structured data from Outrank.so to generate highly targeted SEO content for specific industries.
         </p>
       </div>
     </div>
@@ -29,7 +29,7 @@ export default function IndustryIndex() {
     <div className="container mx-auto px-4 py-24">
       <h1 className="text-4xl font-bold tracking-tighter mb-6">Industries We Serve</h1>
       <p className="text-lg text-muted-foreground mb-12">
-        [Outrank Industry Index Placeholder] - This route ("/industry") will list the programmatic SEO landing pages driven by Outrank.so.
+        [Outrank Industry Index Placeholder] - This route (&quot;/industry&quot;) will list the programmatic SEO landing pages driven by Outrank.so.
       </p>
     </div>
   );
@@ -40,6 +40,9 @@ export default function IndustryIndex() {
 File: ./app/[slug]/page.tsx
 ------------------------
 import { notFound } from "next/navigation";
+import { SliceZone } from "@prismicio/react";
+import { createClient } from "@/prismicio";
+import { components } from "@/slices";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -47,45 +50,91 @@ type Props = {
 
 export default async function Page({ params }: Props) {
   const { slug } = await params;
+  const client = createClient();
   
-  // In the future, this will fetch the document from Prismic
-  // const page = await client.getByUID("page", slug);
-  // if (!page) return notFound();
-
-  return (
-    <div className="container mx-auto px-4 py-24">
-      <h1 className="text-4xl font-bold tracking-tighter mb-6 capitalize">{slug.replace(/-/g, ' ')}</h1>
-      <div className="prose prose-slate dark:prose-invert max-w-none">
-        <p className="text-lg text-muted-foreground">
-          [Prismic Page Placeholder] - This catch-all route ("/{slug}") will fetch the repeatable "Page" document from Prismic and render its slices.
-        </p>
+  try {
+    const page = await client.getByUID("page", slug);
+    return <SliceZone slices={page.data.slices} components={components} />;
+  } catch (e) {
+    return (
+      <div className="container mx-auto px-4 py-24">
+        <h1 className="text-4xl font-bold tracking-tighter mb-6 capitalize">{slug.replace(/-/g, ' ')}</h1>
+        <div className="prose prose-slate dark:prose-invert max-w-none">
+          <p className="text-lg text-muted-foreground">
+            [Prismic Page Placeholder] - Create a &quot;page&quot; repeatable type in Prismic with UID &quot;{slug}&quot; to replace this.
+          </p>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 
 
 File: ./app/blog/[slug]/page.tsx
 ------------------------
+// app/blog/[slug]/page.tsx
+import ghost from "@/lib/ghost";
+import { sanitizeHtmlForDangerouslySetInnerHTML } from "@/lib/utils";
+import { notFound } from "next/navigation";
+import type { PostOrPage } from "@tryghost/content-api";
+
+async function getPost(slug: string): Promise<PostOrPage | null> {
+  if (!slug) return null;
+  try {
+    return await ghost.posts.read(
+      { slug }, 
+      { include: ['authors', 'tags'] }
+    );
+  } catch (error) {
+    console.error("Ghost API Request Failed:", error);
+    return null;
+  }
+}
+
+export async function generateStaticParams() {
+  try {
+    const posts = await ghost.posts.browse({ limit: 'all', fields: 'slug' });
+    return posts.map((post) => ({ slug: post.slug }));
+  } catch {
+    return [];
+  }
+}
+
 type Props = {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string }>; // Fix: params is a Promise
 };
 
 export default async function BlogPost({ params }: Props) {
+  // Fix: Unwrap the promise
   const { slug } = await params;
+  
+  const post = await getPost(slug);
+
+  if (!post) {
+    return notFound();
+  }
+
+  const postDate = new Date(post.published_at || new Date()).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
+  const sanitizedHtml = sanitizeHtmlForDangerouslySetInnerHTML(post.html || "");
 
   return (
     <article className="container mx-auto px-4 py-24 max-w-3xl">
       <header className="mb-12 text-center">
-        <h1 className="text-4xl font-bold tracking-tighter mb-4 capitalize">{slug.replace(/-/g, ' ')}</h1>
-        <p className="text-muted-foreground">Published on Ghost • By Safety Expert</p>
-      </header>
-      <div className="prose prose-slate dark:prose-invert max-w-none">
-        <p className="text-lg text-muted-foreground">
-          [Ghost Article Placeholder] - This route ("/blog/{slug}") will fetch the specific blog post content and metadata from the Ghost Content API.
+        <h1 className="text-4xl font-bold tracking-tighter mb-4">{post.title}</h1>
+        <p className="text-muted-foreground">
+          Published on {postDate} • By {post.authors?.[0]?.name || 'Safety Expert'}
         </p>
-      </div>
+      </header>
+      <div
+        className="prose prose-slate dark:prose-invert max-w-none"
+        dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
+      />
     </article>
   );
 }
@@ -94,49 +143,190 @@ export default async function BlogPost({ params }: Props) {
 
 File: ./app/blog/page.tsx
 ------------------------
-export default function BlogIndex() {
+import ghost from "@/lib/ghost";
+import type { PostOrPage } from "@tryghost/content-api";
+import Link from "next/link";
+import Image from 'next/image';
+
+async function getPosts() {
+  try {
+    return await ghost.posts.browse({
+      limit: 'all',
+      include: ['tags', 'authors'],
+    });
+  } catch (error) {
+    console.error("Failed to fetch posts from Ghost:", error);
+    return [];
+  }
+}
+
+function BlogCard({ post }: { post: PostOrPage }) {
+  const postDate = new Date(post.published_at || new Date()).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
+  return (
+    <Link href={`/blog/${post.slug}`} className="flex flex-col rounded-lg border border-border bg-card shadow-sm transition-shadow hover:shadow-md">
+      {post.feature_image && (
+        <div className="relative h-48 w-full">
+            <Image
+                src={post.feature_image}
+                alt={post.feature_image_alt || post.title || 'Blog post image'}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="rounded-t-lg object-cover"
+            />
+        </div>
+      )}
+      <div className="p-6 flex-1 flex flex-col">
+        <h2 className="text-xl font-semibold mb-2 leading-snug">{post.title}</h2>
+        <p className="text-muted-foreground text-sm mb-4 flex-1">{post.excerpt}</p>
+        <div className="text-xs text-muted-foreground mt-auto pt-4 border-t border-border">
+            <span>{post.authors?.[0]?.name}</span> &bull; <span>{postDate}</span>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+export default async function BlogIndex() {
+  const posts = await getPosts();
+
   return (
     <div className="container mx-auto px-4 py-24">
       <h1 className="text-4xl font-bold tracking-tighter mb-6">Safety Blog</h1>
       <p className="text-lg text-muted-foreground mb-12">
-        [Ghost Blog Index Placeholder] - This route ("/blog") will fetch the latest articles, tags, and authors from the Ghost Content API.
+        Insights and updates on safety compliance and best practices.
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {/* Placeholder Cards */}
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="rounded-lg border border-border bg-card p-6 shadow-sm">
-            <div className="h-48 bg-muted rounded-md mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Sample Article {i}</h2>
-            <p className="text-muted-foreground text-sm">A brief excerpt of the safety article will appear here. Sourced from Ghost.</p>
-          </div>
-        ))}
-      </div>
+      {posts.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {posts.map((post) => (
+            <BlogCard key={post.id} post={post} />
+          ))}
+        </div>
+      ) : (
+        <p className="text-center text-muted-foreground">No articles found. Please check the Ghost integration.</p>
+      )}
     </div>
   );
+}
+
+
+
+File: ./app/slice-simulator/page.tsx
+------------------------
+import {
+  SliceSimulator,
+  SliceSimulatorParams,
+  getSlices,
+} from '@slicemachine/adapter-next/simulator';
+import { SliceZone } from '@prismicio/react';
+
+import { components } from '@/slices';
+
+export default async function SliceSimulatorPage({
+  searchParams,
+}: SliceSimulatorParams) {
+  const { state } = await searchParams;
+  const slices = getSlices(state);
+
+  return (
+    <SliceSimulator>
+      <SliceZone slices={slices} components={components} />
+    </SliceSimulator>
+  );
+}
+
+
+
+File: ./app/api/exit-preview/route.ts
+------------------------
+import { exitPreview } from '@prismicio/next';
+
+export function GET() {
+  return exitPreview();
+}
+
+
+
+File: ./app/api/revalidate/route.ts
+------------------------
+import { NextResponse } from 'next/server';
+import { revalidateTag } from 'next/cache';
+
+export async function POST() {
+  revalidateTag('prismic', 'max');
+
+  return NextResponse.json({ revalidated: true, now: Date.now() });
+}
+
+
+
+File: ./app/api/draft/route.ts
+------------------------
+import { draftMode } from 'next/headers';
+import { redirectToPreviewURL } from '@prismicio/next';
+import { createClient } from '@/prismicio';
+
+export async function GET(request: Request) {
+  const client = createClient();
+  const draft = await draftMode();
+  draft.enable();
+  
+  return await redirectToPreviewURL({ client, request });
+}
+
+
+
+File: ./app/api/preview/route.ts
+------------------------
+import { NextRequest } from 'next/server';
+import { redirectToPreviewURL } from '@prismicio/next';
+
+import { createClient } from '../../../prismicio';
+
+export async function GET(request: NextRequest) {
+  const client = createClient();
+
+  return await redirectToPreviewURL({ client, request });
 }
 
 
 
 File: ./app/page.tsx
 ------------------------
-export default function Home() {
-  return (
-    <div className="flex flex-1 flex-col items-center justify-center py-24 text-center px-4">
-      <h1 className="text-4xl md:text-6xl font-bold tracking-tighter text-foreground mb-6">
-        Welcome to <span className="text-primary">Your Safety Partners</span>
-      </h1>
-      <p className="text-lg text-muted-foreground max-w-[600px] mb-8">
-        [Prismic Home Page Placeholder] - This route ("/") will fetch the single-type "Home" document from Prismic and render the dynamic slices.
-      </p>
-    </div>
-  );
+import { SliceZone } from "@prismicio/react";
+import { createClient } from "@/prismicio";
+import { components } from "@/slices";
+
+export default async function Home() {
+  const client = createClient();
+  
+  try {
+    const page = await client.getSingle("home");
+    return <SliceZone slices={page.data.slices} components={components} />;
+  } catch (e) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center py-24 text-center px-4">
+        <h1 className="text-4xl md:text-6xl font-bold tracking-tighter text-foreground mb-6">
+          Welcome to <span className="text-primary">Your Safety Partners</span>
+        </h1>
+        <p className="text-lg text-muted-foreground max-w-[600px] mb-8">
+          [Prismic Home Page Placeholder] - Create a &quot;home&quot; singleton in Prismic with slices to replace this.
+        </p>
+      </div>
+    );
+  }
 }
 
 
 
 File: ./app/globals.css
 ------------------------
-@import "tailwindcss";
+@import 'tailwindcss';
+@plugin "@tailwindcss/typography";
 
 :root {
   --background: #ffffff;
@@ -206,6 +396,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Header } from "@/components/global/header";
 import { Footer } from "@/components/global/footer";
+import { PrismicPreview } from "@prismicio/next";
+import { repositoryName } from "@/prismicio";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -238,6 +430,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <PrismicPreview repositoryName={repositoryName} />
       </body>
     </html>
   );
@@ -1922,6 +2115,30 @@ export function clientLog(
 
 
 
+File: ./lib/ghost.ts
+------------------------
+import GhostContentAPI from '@tryghost/content-api';
+
+const url = process.env.GHOST_URL;
+const key = process.env.GHOST_CONTENT_API_KEY;
+
+if (!url || !key) {
+  throw new Error(
+    'GHOST_URL and GHOST_CONTENT_API_KEY are required environment variables. Please check your .env.local file.'
+  );
+}
+
+// Create API instance with site credentials
+const api = new GhostContentAPI({
+  url,
+  key,
+  version: 'v5.0',
+});
+
+export default api;
+
+
+
 File: ./lib/shared/logConfig.ts
 ------------------------
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'silent';
@@ -2733,6 +2950,55 @@ NEVER OMMIT ANY EXISTING CODE FOR BREVITY
 
 
 
+File: prismicio.ts
+------------------------
+import * as prismic from '@prismicio/client';
+import * as prismicNext from '@prismicio/next';
+import config from './slicemachine.config.json';
+
+/**
+ * The project's Prismic repository name.
+ */
+export const repositoryName = config.repositoryName;
+
+/**
+ * A list of Route Resolver objects that define how a document's `url` field is resolved.
+ */
+const routes: prismic.ClientConfig['routes'] = [
+  {
+    type: 'home',
+    path: '/',
+  },
+  {
+    type: 'page',
+    path: '/:uid',
+  },
+];
+
+/**
+ * Creates a Prismic client for the project's repository.
+ */
+export const createClient = (config: prismicNext.CreateClientConfig = {}) => {
+  const client = prismic.createClient(repositoryName, {
+    routes,
+    fetchOptions:
+      process.env.NODE_ENV === 'production'
+        ? { next: { tags: ['prismic'] }, cache: 'force-cache' }
+        : { next: { revalidate: 5 } },
+    ...config,
+  });
+
+  prismicNext.enableAutoPreviews({
+    client,
+    previewData: config.previewData,
+    req: config.req,
+  });
+
+  return client;
+};
+
+
+
 File: components.json
 ------------------------
 {
@@ -2771,7 +3037,8 @@ File: package.json
     "start": "next start",
     "lint:fix": "eslint . --config eslint.config.mjs --ext .js,.jsx,.ts,.tsx --fix",
     "check-types": "tsc --noEmit --pretty",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "slicemachine": "start-slicemachine"
   },
   "imports": {
     "#*": [
@@ -2785,6 +3052,9 @@ File: package.json
     "@hookform/resolvers": "^5.2.2",
     "@logtail/js": "^0.5.8",
     "@logtail/pino": "^0.5.8",
+    "@prismicio/client": "^7.21.6",
+    "@prismicio/next": "^2.2.2",
+    "@prismicio/react": "^3.4.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-popover": "^1.1.15",
@@ -2793,6 +3063,7 @@ File: package.json
     "@radix-ui/react-slot": "^1.2.4",
     "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-tooltip": "^1.2.8",
+    "@tryghost/content-api": "^1.11.23",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "^17.3.1",
@@ -2812,15 +3083,248 @@ File: package.json
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@slicemachine/adapter-next": "^0.3.95",
     "@tailwindcss/postcss": "^4",
+    "@tailwindcss/typography": "^0.5.15",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/tryghost__content-api": "^1.3.17",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.7",
+    "slice-machine-ui": "^2.21.1",
     "tailwindcss": "^4",
     "typescript": "^5"
+  }
+}
+
+
+
+File: prismicio-types.d.ts
+------------------------
+
+import type * as prismic from '@prismicio/client';
+
+type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
+
+type PickContentRelationshipFieldData<
+  TRelationship extends
+    | prismic.CustomTypeModelFetchCustomTypeLevel1
+    | prismic.CustomTypeModelFetchCustomTypeLevel2
+    | prismic.CustomTypeModelFetchGroupLevel1
+    | prismic.CustomTypeModelFetchGroupLevel2,
+  TData extends Record<
+    string,
+    | prismic.AnyRegularField
+    | prismic.GroupField
+    | prismic.NestedGroupField
+    | prismic.SliceZone
+  >,
+  TLang extends string,
+> =
+  {
+    [TSubRelationship in Extract<
+      TRelationship['fields'][number],
+      prismic.CustomTypeModelFetchContentRelationshipLevel1
+    > as TSubRelationship['id']]: ContentRelationshipFieldWithData<
+      TSubRelationship['customtypes'],
+      TLang
+    >;
+  } & // Group
+  {
+    [TGroup in Extract<
+      TRelationship['fields'][number],
+      | prismic.CustomTypeModelFetchGroupLevel1
+      | prismic.CustomTypeModelFetchGroupLevel2
+    > as TGroup['id']]: TData[TGroup['id']] extends prismic.GroupField<
+      infer TGroupData
+    >
+      ? prismic.GroupField<
+          PickContentRelationshipFieldData<TGroup, TGroupData, TLang>
+        >
+      : never;
+  } & // Other fields
+  {
+    [TFieldKey in Extract<
+      TRelationship['fields'][number],
+      string
+    >]: TFieldKey extends keyof TData ? TData[TFieldKey] : never;
+  };
+
+type ContentRelationshipFieldWithData<
+  TCustomType extends
+    | readonly (prismic.CustomTypeModelFetchCustomTypeLevel1 | string)[]
+    | readonly (prismic.CustomTypeModelFetchCustomTypeLevel2 | string)[],
+  TLang extends string = string,
+> = {
+  [ID in Exclude<
+    TCustomType[number],
+    string
+  >['id']]: prismic.ContentRelationshipField<
+    ID,
+    TLang,
+    PickContentRelationshipFieldData<
+      Extract<TCustomType[number], { id: ID }>,
+      Extract<prismic.Content.AllDocumentTypes, { type: ID }>['data'],
+      TLang
+    >
+  >;
+}[Exclude<TCustomType[number], string>['id']];
+
+type HomeDocumentDataSlicesSlice = never;
+
+/**
+ * Content for Home documents
+ */
+interface HomeDocumentData {
+  /**
+   * Slice Zone field in *Home*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: home.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<HomeDocumentDataSlicesSlice>; /**
+   * Meta Title field in *Home*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: home.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Home*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: home.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Home*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: home.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Home document from Prismic
+ *
+ * - **API ID**: `home`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type HomeDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<Simplify<HomeDocumentData>, 'home', Lang>;
+
+type PageDocumentDataSlicesSlice = never;
+
+/**
+ * Content for Page documents
+ */
+interface PageDocumentData {
+  /**
+   * Slice Zone field in *Page*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: page.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<PageDocumentDataSlicesSlice>; /**
+   * Meta Title field in *Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: page.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Page*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: page.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Page*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: page.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Page document from Prismic
+ *
+ * - **API ID**: `page`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type PageDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<Simplify<PageDocumentData>, 'page', Lang>;
+
+export type AllDocumentTypes = HomeDocument | PageDocument;
+
+declare module '@prismicio/client' {
+  interface CreateClient {
+    (
+      repositoryNameOrEndpoint: string,
+      options?: prismic.ClientConfig
+    ): prismic.Client<AllDocumentTypes>;
+  }
+
+  interface CreateWriteClient {
+    (
+      repositoryNameOrEndpoint: string,
+      options: prismic.WriteClientConfig
+    ): prismic.WriteClient<AllDocumentTypes>;
+  }
+
+  interface CreateMigration {
+    (): prismic.Migration<AllDocumentTypes>;
+  }
+
+  namespace Content {
+    export type {
+      HomeDocument,
+      HomeDocumentData,
+      HomeDocumentDataSlicesSlice,
+      PageDocument,
+      PageDocumentData,
+      PageDocumentDataSlicesSlice,
+      AllDocumentTypes,
+    };
   }
 }
 
@@ -2920,6 +3424,17 @@ File: tsconfig.json
 }
 
 
+File: slicemachine.config.json
+------------------------
+{
+  "repositoryName": "yoursafetyportal",
+  "adapter": "@slicemachine/adapter-next",
+  "libraries": ["./slices"],
+  "localSliceSimulatorURL": "http://localhost:3000/slice-simulator"
+}
+
+
+
 File: README.md
 ------------------------
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
@@ -2975,6 +3490,18 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'static.ghost.org',
+      },
+      {
+        protocol: 'https',
+        hostname: 'your-safety-portal.ghost.io', 
+      },
+    ],
+  },
 };
 
 export default nextConfig;

@@ -1,32 +1,40 @@
+// app/blog/[slug]/page.tsx
 import ghost from "@/lib/ghost";
 import { sanitizeHtmlForDangerouslySetInnerHTML } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import type { PostOrPage } from "@tryghost/content-api";
 
 async function getPost(slug: string): Promise<PostOrPage | null> {
+  if (!slug) return null;
   try {
     return await ghost.posts.read(
       { slug }, 
       { include: ['authors', 'tags'] }
     );
   } catch (error) {
-    console.error(`Failed to fetch post with slug '${slug}':`, error);
+    console.error("Ghost API Request Failed:", error);
     return null;
   }
 }
 
-// Pre-build all blog pages for performance
 export async function generateStaticParams() {
-  const posts = await ghost.posts.browse({ limit: 'all', fields: 'slug' });
-  return posts.map((post) => ({ slug: post.slug }));
+  try {
+    const posts = await ghost.posts.browse({ limit: 'all', fields: 'slug' });
+    return posts.map((post) => ({ slug: post.slug }));
+  } catch {
+    return [];
+  }
 }
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>; // Fix: params is a Promise
 };
 
 export default async function BlogPost({ params }: Props) {
-  const post = await getPost(params.slug);
+  // Fix: Unwrap the promise
+  const { slug } = await params;
+  
+  const post = await getPost(slug);
 
   if (!post) {
     return notFound();
@@ -38,7 +46,7 @@ export default async function BlogPost({ params }: Props) {
     day: 'numeric',
   });
 
-  const sanitizedHtml = sanitizeHtmlForDangerouslySetInnerHTML(post.html);
+  const sanitizedHtml = sanitizeHtmlForDangerouslySetInnerHTML(post.html || "");
 
   return (
     <article className="container mx-auto px-4 py-24 max-w-3xl">

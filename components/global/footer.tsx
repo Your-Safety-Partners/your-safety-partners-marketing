@@ -17,6 +17,7 @@ export function Footer() {
           <Link href="/features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</Link>
           <Link href="/pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
           <Link href="/industry" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Industries</Link>
+          <Link href="/compare" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Compare Alternatives</Link>
         </div>
         <div className="flex flex-col gap-2">
           <h3 className="font-semibold mb-2">Company</h3>
