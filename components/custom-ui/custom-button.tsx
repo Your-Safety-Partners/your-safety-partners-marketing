@@ -12,6 +12,7 @@ type CustomButtonProps = {
   type?: 'button' | 'submit' | 'reset';
   buttonProps?: React.ButtonHTMLAttributes<HTMLButtonElement>;
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  size?: 'default' | 'sm' | 'lg' | 'icon';
   disabled?: boolean;
   leadingIcon?: React.ReactNode;
   trailingIcon?: React.ReactNode;
@@ -31,6 +32,7 @@ const CustomButton = React.forwardRef<HTMLButtonElement, CustomButtonProps>(
       type = 'button',
       buttonProps = {},
       variant = 'default',
+      size, // Added size to destructuring
       disabled = false,
       className,
       leadingIcon,
@@ -70,8 +72,8 @@ const CustomButton = React.forwardRef<HTMLButtonElement, CustomButtonProps>(
       disabled: isLoading || disabled,
       type,
       variant,
-      size,
-      className: `h-auto ${width || 'min-w-[150px]'} ${isLoading ? 'opacity-50' : ''} ${buttonClass || ''}`.trim(),
+      size, // Pass size to the underlying Button component
+      className: `h-auto ${size !== 'lg' && size !== 'sm' ? width : ''} ${isLoading ? 'opacity-50' : ''} ${buttonClass || ''}`.trim(),
       onClick: isLoading ? undefined : onClick,
       form,
       ...buttonProps,

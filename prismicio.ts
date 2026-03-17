@@ -36,10 +36,7 @@ export const createClient = (config: prismicNext.CreateClientConfig = {}) => {
 
   prismicNext.enableAutoPreviews({
     client,
-    previewData: config.previewData,
-    // The `req` property is optional and may not be needed depending on the version.
-    // The type error suggests it's not expected here in your setup.
-    // req: config.req,
+    ...config,
   });
 
   return client;
