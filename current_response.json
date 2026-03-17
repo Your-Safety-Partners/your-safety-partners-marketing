@@ -1,33 +1,9 @@
 {
-  "summary": "Fix ESLint warnings and errors by replacing explicit 'any' with 'unknown' and removing anonymous default export",
+  "summary": "Fix remaining explicit 'any' types in custom-input.tsx event handlers",
   "files": [
-    {
-      "file_path": "components/custom-ui/custom-button.tsx",
-      "code_diff": "<<<<<<< SEARCH\n  type?: 'button' | 'submit' | 'reset';\n  buttonProps?: Record<string, any>;\n  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';\n=======\n  type?: 'button' | 'submit' | 'reset';\n  buttonProps?: React.ButtonHTMLAttributes<HTMLButtonElement>;\n  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';\n>>>>>>> REPLACE"
-    },
     {
       "file_path": "components/custom-ui/custom-input.tsx",
       "code_diff": "<<<<<<< SEARCH\n  const handleChange = (\n    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>\n  ) => {\n    if (rhfRegisteredProps.onChange) {\n      rhfRegisteredProps.onChange(event as any);\n    }\n    if (onValueChange) {\n      onValueChange(event.target.value);\n    }\n  };\n\n  const handleKeyDown = (\n    event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>\n  ) => {\n    if (event.key === 'Enter' && onEnterKeyPress) {\n      event.preventDefault();\n      onEnterKeyPress();\n    }\n    if (\n      restOfInputProps.onKeyDown &&\n      typeof restOfInputProps.onKeyDown === 'function'\n    ) {\n      restOfInputProps.onKeyDown(event as any);\n    }\n  };\n=======\n  const handleChange = (\n    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>\n  ) => {\n    if (rhfRegisteredProps.onChange) {\n      rhfRegisteredProps.onChange(event as unknown as React.ChangeEvent<Element>);\n    }\n    if (onValueChange) {\n      onValueChange(event.target.value);\n    }\n  };\n\n  const handleKeyDown = (\n    event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>\n  ) => {\n    if (event.key === 'Enter' && onEnterKeyPress) {\n      event.preventDefault();\n      onEnterKeyPress();\n    }\n    if (\n      restOfInputProps.onKeyDown &&\n      typeof restOfInputProps.onKeyDown === 'function'\n    ) {\n      restOfInputProps.onKeyDown(event as unknown as React.KeyboardEvent<HTMLInputElement>);\n    }\n  };\n>>>>>>> REPLACE"
-    },
-    {
-      "file_path": "components/custom-ui/custom-input.tsx",
-      "code_diff": "<<<<<<< SEARCH\n  const commonProps = {\n    id: restOfInputProps.id || (name as string),\n    placeholder,\n    onChange: handleChange,\n    onKeyDown: handleKeyDown,\n    name: name as string,\n    defaultValue: uncontrolledDefaultValue,\n    ...restOfInputProps,\n    ...rhfRegisteredProps,\n  };\n\n  if (onValueChange) {\n    (commonProps as any).value = controlledValue ?? '';\n  }\n=======\n  const commonProps = {\n    id: restOfInputProps.id || (name as string),\n    placeholder,\n    onChange: handleChange,\n    onKeyDown: handleKeyDown,\n    name: name as string,\n    defaultValue: uncontrolledDefaultValue,\n    ...restOfInputProps,\n    ...rhfRegisteredProps,\n  };\n\n  if (onValueChange) {\n    (commonProps as Record<string, unknown>).value = controlledValue ?? '';\n  }\n>>>>>>> REPLACE"
-    },
-    {
-      "file_path": "lib/server/safe-action.ts",
-      "code_diff": "<<<<<<< SEARCH\n  if (error && typeof error === 'object' && 'validationErrors' in error) {\n    console.error(\n      'Zod Validation Errors (from metadata):',\n      JSON.stringify((error as any).validationErrors, null, 2)\n    );\n  }\n=======\n  if (error && typeof error === 'object' && 'validationErrors' in error) {\n    console.error(\n      'Zod Validation Errors (from metadata):',\n      JSON.stringify((error as Error & { validationErrors?: unknown }).validationErrors, null, 2)\n    );\n  }\n>>>>>>> REPLACE"
-    },
-    {
-      "file_path": "types/ENUMS.ts",
-      "code_diff": "<<<<<<< SEARCH\nexport default {\n  ROLES,\n  CompanyQueryTypes,\n  EmailVariableType,\n  EmailTemplateType,\n};\n=======\nconst ENUMS = {\n  ROLES,\n  CompanyQueryTypes,\n  EmailVariableType,\n  EmailTemplateType,\n};\n\nexport default ENUMS;\n>>>>>>> REPLACE"
-    },
-    {
-      "file_path": "types/types-for-hooks.ts",
-      "code_diff": "<<<<<<< SEARCH\nexport type DataState<T = any> = {\n  data: T;\n  formData: React.FormEvent<HTMLFormElement> | null;\n=======\nexport type DataState<T = unknown> = {\n  data: T;\n  formData: React.FormEvent<HTMLFormElement> | null;\n>>>>>>> REPLACE"
-    },
-    {
-      "file_path": "types/types.ts",
-      "code_diff": "<<<<<<< SEARCH\ntype Result = {\n  success: boolean;\n  message?: string;\n  data?: any;\n};\n\ntype ResultWithError = {\n  success: boolean;\n  message?: string;\n  error?: any;\n};\n=======\ntype Result = {\n  success: boolean;\n  message?: string;\n  data?: unknown;\n};\n\ntype ResultWithError = {\n  success: boolean;\n  message?: string;\n  error?: unknown;\n};\n>>>>>>> REPLACE"
     }
   ]
 }
