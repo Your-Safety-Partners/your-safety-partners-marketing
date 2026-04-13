@@ -1,14 +1,48 @@
 {
   "format": "page",
   "id": "home",
+  "label": "Home",
+  "repeatable": false,
+  "status": true,
   "json": {
     "Main": {
       "slices": {
-        "config": {
-          "choices": {}
-        },
+        "type": "Slices",
         "fieldset": "Slice Zone",
-        "type": "Slices"
+        "config": {
+          "choices": {
+            "contact_us": {
+              "type": "SharedSlice"
+            },
+            "call_to_action": {
+              "type": "SharedSlice"
+            },
+            "how_we_can_welp": {
+              "type": "SharedSlice"
+            },
+            "why_choose_us": {
+              "type": "SharedSlice"
+            },
+            "financial_relief": {
+              "type": "SharedSlice"
+            },
+            "legislative": {
+              "type": "SharedSlice"
+            },
+            "platform_apps": {
+              "type": "SharedSlice"
+            },
+            "companies": {
+              "type": "SharedSlice"
+            },
+            "hero_section": {
+              "type": "SharedSlice"
+            },
+            "testimonial": {
+              "type": "SharedSlice"
+            }
+          }
+        }
       }
     },
     "SEO & Metadata": {
@@ -36,10 +70,18 @@
           "thumbnails": []
         },
         "type": "Image"
+      },
+      "slices1": {
+        "type": "Slices",
+        "fieldset": "Slice Zone",
+        "config": {
+          "choices": {
+            "testimonial": {
+              "type": "SharedSlice"
+            }
+          }
+        }
       }
     }
-  },
-  "label": "Home",
-  "repeatable": false,
-  "status": true
+  }
 }

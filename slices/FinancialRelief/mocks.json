@@ -1,0 +1,160 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"section_title": {
+				"__TYPE__": "FieldContent",
+				"value": "foreign",
+				"type": "Text"
+			},
+			"section_subtitle": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Ea dolore ea culpa culpa nisi."
+						}
+					}
+				]
+			},
+			"cards": {
+				"__TYPE__": "GroupContentType",
+				"value": [
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"card_icon",
+								{
+									"origin": {
+										"id": "main",
+										"url": "https://images.unsplash.com/photo-1544731612-de7f96afe55f",
+										"width": 6000,
+										"height": 4000
+									},
+									"url": "https://images.unsplash.com/photo-1544731612-de7f96afe55f",
+									"width": 6000,
+									"height": 4000,
+									"edit": {
+										"zoom": 1,
+										"crop": {
+											"x": 0,
+											"y": 0
+										},
+										"background": "transparent"
+									},
+									"alt": "suppose",
+									"credits": null,
+									"__TYPE__": "ImageContent",
+									"thumbnails": {}
+								}
+							],
+							[
+								"card_title",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "tax",
+									"type": "Text"
+								}
+							],
+							[
+								"card_subtitle",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "bank",
+									"type": "Text"
+								}
+							],
+							[
+								"card_text",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "business",
+									"type": "Text"
+								}
+							]
+						]
+					}
+				]
+			},
+			"financial_table": {
+				"__TYPE__": "GroupContentType",
+				"value": [
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"category_of_loss",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "positive",
+									"type": "Text"
+								}
+							],
+							[
+								"the_paper_way_costs",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "produce",
+									"type": "Text"
+								}
+							],
+							[
+								"your_safety_portal_result",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "realize",
+									"type": "Text"
+								}
+							]
+						]
+					}
+				]
+			},
+			"section_title_2": {
+				"__TYPE__": "FieldContent",
+				"value": "business",
+				"type": "Text"
+			},
+			"section_subtitle_2": {
+				"__TYPE__": "FieldContent",
+				"value": "height",
+				"type": "Text"
+			},
+			"zero_claim_title": {
+				"__TYPE__": "FieldContent",
+				"value": "straight",
+				"type": "Text"
+			},
+			"zero_claim_item_title": {
+				"__TYPE__": "GroupContentType",
+				"value": [
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"zero_claim_item_title",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "into",
+									"type": "Text"
+								}
+							],
+							[
+								"zero_claim_item_description",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "character",
+									"type": "Text"
+								}
+							]
+						]
+					}
+				]
+			}
+		},
+		"items": []
+	}
+]

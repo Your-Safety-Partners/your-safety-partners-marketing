@@ -7,7 +7,7 @@ export const revalidate = 3600; // 1 hour ISR caching
 
 export async function generateMetadata(): Promise<Metadata> {
   const client = createClient();
-  const page = await client.getSingle("home").catch(() => null);
+  const page = await client.getByUID("home", "home").catch(() => null);
 
   if (!page) return { title: "Your Safety Partners" };
 
@@ -25,16 +25,21 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Home() {
   const client = createClient();
   
-  const page = await client.getSingle("home").catch(() => null);
+  // Let's try getting it as a Reusable Type first
+  let page = await client.getByUID("home", "home").catch(() => null);
 
+  // If that fails, let's try getting it as a Single Type
+  if (!page) {
+    page = await client.getSingle("home").catch(() => null);
+  }
   if (!page) {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center py-24 text-center px-4">
-        <h1 className="text-4xl md:text-6xl font-bold tracking-tighter text-foreground mb-6">
-          Welcome to <span className="text-primary">Your Safety Partners</span>
+      <div className="py-24 text-center px-4">
+        <h1 className="text-4xl font-bold text-red-500 mb-6">
+          Next.js still cannot find the Prismic Document.
         </h1>
-        <p className="text-lg text-muted-foreground max-w-[600px] mb-8">
-          [Prismic Home Page Placeholder] - Create a &quot;home&quot; singleton in Prismic with slices to replace this.
+        <p className="text-lg">
+          Check your VS Code terminal for the console.log.
         </p>
       </div>
     );

@@ -1,0 +1,77 @@
+{
+  "id": "why_choose_us",
+  "type": "SharedSlice",
+  "name": "WhyChooseUs",
+  "description": "WhyChooseUs",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "section_title": {
+          "type": "Text",
+          "config": {
+            "label": "Section Title",
+            "placeholder": ""
+          }
+        },
+        "section_subtitle": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Section Subtitle",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "collage_image_back": {
+          "type": "Image",
+          "config": {
+            "label": "Collage Image (Back / Top)",
+            "constraint": {},
+            "thumbnails": []
+          }
+        },
+        "collage_image_front": {
+          "type": "Image",
+          "config": {
+            "label": "Collage Image (Front / Overlap)",
+            "constraint": {},
+            "thumbnails": []
+          }
+        },
+        "why_choose_us_items": {
+          "type": "Group",
+          "config": {
+            "label": "Why Choose Us",
+            "repeat": true,
+            "fields": {
+              "card_icon": {
+                "type": "Image",
+                "config": {
+                  "label": "Item Icon (optional)",
+                  "constraint": {},
+                  "thumbnails": []
+                }
+              },
+              "why_choose_us_item": {
+                "type": "StructuredText",
+                "config": {
+                  "label": "Why Choose Us Item",
+                  "placeholder": "",
+                  "allowTargetBlank": true,
+                  "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+                }
+              }
+            }
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

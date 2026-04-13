@@ -1,0 +1,147 @@
+{
+  "id": "financial_relief",
+  "type": "SharedSlice",
+  "name": "FinancialRelief",
+  "description": "FinancialRelief",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "section_title": {
+          "type": "Text",
+          "config": {
+            "label": "Section Title",
+            "placeholder": ""
+          }
+        },
+        "section_subtitle": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Section Subtitle",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "cards": {
+          "type": "Group",
+          "config": {
+            "label": "Cards",
+            "repeat": true,
+            "fields": {
+              "card_icon": {
+                "type": "Image",
+                "config": {
+                  "label": "Card Icon",
+                  "constraint": {},
+                  "thumbnails": []
+                }
+              },
+              "card_title": {
+                "type": "Text",
+                "config": {
+                  "label": "Card Title",
+                  "placeholder": ""
+                }
+              },
+              "card_subtitle": {
+                "type": "Text",
+                "config": {
+                  "label": "Card Subtitle",
+                  "placeholder": ""
+                }
+              },
+              "card_text": {
+                "type": "Text",
+                "config": {
+                  "label": "Card Text",
+                  "placeholder": ""
+                }
+              }
+            }
+          }
+        },
+        "section_title_2": {
+          "type": "Text",
+          "config": {
+            "label": "Section Title 2",
+            "placeholder": ""
+          }
+        },
+        "section_subtitle_2": {
+          "type": "Text",
+          "config": {
+            "label": "Section Subtitle 2",
+            "placeholder": ""
+          }
+        },
+        "financial_table": {
+          "type": "Group",
+          "config": {
+            "label": "Financial Table",
+            "repeat": true,
+            "fields": {
+              "category_of_loss": {
+                "type": "Text",
+                "config": {
+                  "label": "Category of Loss",
+                  "placeholder": ""
+                }
+              },
+              "the_paper_way_costs": {
+                "type": "Text",
+                "config": {
+                  "label": "The Paper Way Costs",
+                  "placeholder": ""
+                }
+              },
+              "your_safety_portal_result": {
+                "type": "Text",
+                "config": {
+                  "label": "Your Safety Portal Result",
+                  "placeholder": ""
+                }
+              }
+            }
+          }
+        },
+        "zero_claim_title": {
+          "type": "Text",
+          "config": {
+            "label": "Zero Claim Card Title",
+            "placeholder": ""
+          }
+        },
+        "zero_claim_item_title": {
+          "type": "Group",
+          "config": {
+            "label": "Zero Claim Item",
+            "repeat": true,
+            "fields": {
+              "zero_claim_item_title": {
+                "type": "Text",
+                "config": {
+                  "label": "Zero Claim Item Title",
+                  "placeholder": ""
+                }
+              },
+              "zero_claim_item_description": {
+                "type": "Text",
+                "config": {
+                  "label": "Zero Claim Item Description",
+                  "placeholder": ""
+                }
+              }
+            }
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

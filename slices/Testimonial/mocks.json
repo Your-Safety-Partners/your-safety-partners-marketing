@@ -1,0 +1,99 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"items": {
+				"__TYPE__": "GroupContentType",
+				"value": [
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"quote",
+								{
+									"__TYPE__": "StructuredTextContent",
+									"value": [
+										{
+											"type": "paragraph",
+											"content": {
+												"text": "Ullamco eiusmod officia consectetur dolore cillum deserunt proident officia dolore eiusmod anim do. Tempor do qui ipsum velit fugiat consequat dolor consequat consectetur amet consectetur ipsum sint adipisicing in."
+											}
+										}
+									]
+								}
+							],
+							[
+								"author",
+								{
+									"__TYPE__": "StructuredTextContent",
+									"value": [
+										{
+											"type": "paragraph",
+											"content": {
+												"text": "Culpa sunt ullamco in et duis ea qui consequat quis veniam minim do esse. Magna amet est dolore non amet esse fugiat adipisicing ea commodo exercitation nostrud. Do consectetur do sint incididunt irure pariatur ad dolore incididunt."
+											}
+										}
+									]
+								}
+							],
+							[
+								"role",
+								{
+									"__TYPE__": "StructuredTextContent",
+									"value": [
+										{
+											"type": "paragraph",
+											"content": {
+												"text": "Elit aliquip non ullamco. Amet laboris ex aute magna eiusmod esse reprehenderit nostrud. Ex aliqua anim duis ad labore pariatur dolor minim ut."
+											}
+										}
+									]
+								}
+							],
+							[
+								"stars",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "30",
+									"type": "Number"
+								}
+							],
+							[
+								"company",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "written",
+									"type": "Text"
+								}
+							]
+						]
+					}
+				]
+			},
+			"section_title": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Incididunt velit id anim dolore veniam tempor incididunt consequat amet laboris laboris laborum occaecat velit. Nostrud non fugiat deserunt culpa officia mollit adipisicing consequat dolore in cillum incididunt sint."
+						}
+					}
+				]
+			},
+			"section_subtitle": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Mollit occaecat aute pariatur ut cillum magna aute amet aliqua qui ex reprehenderit. Ex aute aute irure ullamco commodo irure."
+						}
+					}
+				]
+			}
+		},
+		"items": []
+	}
+]
