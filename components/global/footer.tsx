@@ -167,7 +167,7 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="w-full bg-[#7b32d0] py-4 text-sm text-white md:py-5">
+      <div className="w-full bg-violet-700 py-4 text-sm text-white md:py-5">
         <div className="container mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 md:flex-row md:px-6 lg:px-10">
           <p className="text-center md:text-left">
             &copy;YourSafetyPartners {currentYear}. All Rights Reserved
