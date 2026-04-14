@@ -1,0 +1,138 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"section_title": {
+				"__TYPE__": "FieldContent",
+				"value": "Built for the people running the site.",
+				"type": "Text"
+			},
+			"section_subtitle": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Your Safety Portal is built for the people who have safety as part of their job, not just for safety specialists. If you run a site, a warehouse, a fleet, or a team, it is built for you. And if you are a safety specialist, the depth is there when you need it."
+						}
+					}
+				]
+			},
+			"who_is_it_for_items": {
+				"__TYPE__": "GroupContentType",
+				"value": [
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"description",
+								{
+									"__TYPE__": "StructuredTextContent",
+									"value": [
+										{
+											"type": "paragraph",
+											"content": {
+												"text": "Run your whole site from one dashboard. Log a hazard, assign a fix, run an inspection, and check who has been trained, all before morning tea."
+											}
+										}
+									]
+								}
+							],
+							[
+								"position_title",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "silly",
+									"type": "Text"
+								}
+							]
+						]
+					},
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"description",
+								{
+									"__TYPE__": "StructuredTextContent",
+									"value": [
+										{
+											"type": "paragraph",
+											"content": {
+												"text": "Every module maps to WHS legislation. Bring your audit prep down from weeks to days, with an evidence trail you can hand to any inspector."
+											}
+										}
+									]
+								}
+							],
+							[
+								"position_title",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "blood",
+									"type": "Text"
+								}
+							]
+						]
+					},
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"description",
+								{
+									"__TYPE__": "StructuredTextContent",
+									"value": [
+										{
+											"type": "paragraph",
+											"content": {
+												"text": "See your compliance position across every site, at any time. Reduce your risk, lower your premiums, and sleep better at night."
+											}
+										}
+									]
+								}
+							],
+							[
+								"position_title",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "show",
+									"type": "Text"
+								}
+							]
+						]
+					},
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"description",
+								{
+									"__TYPE__": "StructuredTextContent",
+									"value": [
+										{
+											"type": "paragraph",
+											"content": {
+												"text": "Start with one module, add the others when you are ready. Built so you can run it yourself, with 15 years of safety consulting on call if you need help."
+											}
+										}
+									]
+								}
+							],
+							[
+								"position_title",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "shoe",
+									"type": "Text"
+								}
+							]
+						]
+					}
+				]
+			}
+		},
+		"items": []
+	}
+]

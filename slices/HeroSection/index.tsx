@@ -19,21 +19,31 @@ const defaultTitle = 'Safety & Compliance Solutions';
 const defaultDescription =
   'For the past 15 years Your Safety Partners has been helping businesses comply with safety laws and reduce their risk of causing harm to people in the work place.';
 
-const stats = [
-  { value: '2,000+', label: 'Active Users' },
-  { value: '100+', label: 'Active Companies' },
-  { value: '24/7', label: 'Support' },
+const fallbackStats = [
+  { number: '2,000+', description: 'Active Users' },
+  { number: '100+', description: 'Active Companies' },
+  { number: '24/7', description: 'Support' },
 ] as const;
 
 /** Stagger (ms) for left-column blocks after the hero is in view. */
 const LEFT_STAGGER_MS = 85;
 
 const HeroSection: FC<HeroSectionProps> = ({ slice }) => {
-  const { subtitle, hero_title, hero_description, hero_image } = slice.primary;
+  const { subtitle, hero_title, hero_description, hero_image, stats: statsGroup } = slice.primary;
 
   const badgeText = subtitle?.trim() || defaultSubtitle;
   const titleText = hero_title?.trim() || defaultTitle;
   const descriptionText = hero_description?.trim() || defaultDescription;
+
+  const statsFromCms = (statsGroup ?? [])
+    .map((row) => ({
+      number: row.number?.trim() ?? '',
+      description: row.description?.trim() ?? '',
+    }))
+    .filter((row) => row.number !== '' || row.description !== '');
+
+  const statsToShow =
+    statsFromCms.length > 0 ? statsFromCms : [...fallbackStats];
 
   const imageUrl = isFilled.image(hero_image) ? hero_image.url : FALLBACK_HERO_SRC;
   const imageAlt = isFilled.image(hero_image) ? (hero_image.alt ?? '') : 'Hero image';
@@ -85,11 +95,15 @@ const HeroSection: FC<HeroSectionProps> = ({ slice }) => {
             </SliceEntrance>
 
             <SliceEntrance from="left" delayMs={4 * LEFT_STAGGER_MS}>
-              <div className="flex flex-row gap-6 pt-10 sm:gap-8">
-                {stats.map((stat) => (
-                  <div key={stat.label}>
-                    <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                    <p className="mt-1 text-sm text-gray-500">{stat.label}</p>
+              <div className="flex flex-row flex-wrap gap-6 pt-10 sm:gap-8">
+                {statsToShow.map((stat, index) => (
+                  <div key={`${stat.description}-${stat.number}-${index}`}>
+                    {stat.number ? (
+                      <p className="text-2xl font-bold text-gray-900">{stat.number}</p>
+                    ) : null}
+                    {stat.description ? (
+                      <p className="mt-1 text-sm text-gray-500">{stat.description}</p>
+                    ) : null}
                   </div>
                 ))}
               </div>

@@ -1,0 +1,63 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"section_title": {
+				"__TYPE__": "FieldContent",
+				"value": "poetry",
+				"type": "Text"
+			},
+			"section_subtitle": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Anim ipsum deserunt pariatur enim qui irure. Ipsum ex commodo cillum duis nisi nisi quis nulla officia consectetur sunt ea cupidatat."
+						}
+					}
+				]
+			},
+			"faqs": {
+				"__TYPE__": "GroupContentType",
+				"value": [
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"question_item",
+								{
+									"__TYPE__": "StructuredTextContent",
+									"value": [
+										{
+											"type": "paragraph",
+											"content": {
+												"text": "Consectetur proident voluptate sint fugiat non et ea nisi aliqua cupidatat laboris dolor Lorem sunt dolore. Irure aute Lorem ad consectetur nostrud ut cillum deserunt esse. Eu elit laboris occaecat velit commodo nisi aliquip aliqua consectetur ea dolore consectetur excepteur consequat."
+											}
+										}
+									]
+								}
+							],
+							[
+								"answer_item",
+								{
+									"__TYPE__": "StructuredTextContent",
+									"value": [
+										{
+											"type": "paragraph",
+											"content": {
+												"text": "Proident magna ipsum esse et consequat ad veniam voluptate fugiat ea culpa labore sunt ea ad."
+											}
+										}
+									]
+								}
+							]
+						]
+					}
+				]
+			}
+		},
+		"items": []
+	}
+]

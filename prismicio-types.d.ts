@@ -70,8 +70,9 @@ type ContentRelationshipFieldWithData<
 }[Exclude<TCustomType[number], string>['id']];
 
 type HomeDocumentDataSlicesSlice =
-  | CallToActionSlice
+  | FaqSlice
   | ContactUsSlice
+  | CallToActionSlice
   | HowWeCanWelpSlice
   | WhyChooseUsSlice
   | FinancialReliefSlice
@@ -307,91 +308,6 @@ export type CallToActionSlice = prismic.SharedSlice<
 >;
 
 /**
- * Primary content in *ContactUs → Default → Primary*
- */
-export interface ContactUsSliceDefaultPrimary {
-  /**
-   * Section Title field in *ContactUs → Default → Primary*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: contact_us.default.primary.section_title
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  section_title: prismic.KeyTextField;
-
-  /**
-   * Section Description field in *ContactUs → Default → Primary*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: contact_us.default.primary.section_description
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  section_description: prismic.RichTextField;
-
-  /**
-   * Contact Number field in *ContactUs → Default → Primary*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: contact_us.default.primary.contact_number
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  contact_number: prismic.KeyTextField;
-
-  /**
-   * Contact Email field in *ContactUs → Default → Primary*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: contact_us.default.primary.contact_email
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  contact_email: prismic.KeyTextField;
-
-  /**
-   * Form Title field in *ContactUs → Default → Primary*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: contact_us.default.primary.form_title
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  form_title: prismic.KeyTextField;
-}
-
-/**
- * Default variation for ContactUs Slice
- *
- * - **API ID**: `default`
- * - **Description**: Default
- * - **Documentation**: https://prismic.io/docs/slices
- */
-export type ContactUsSliceDefault = prismic.SharedSliceVariation<
-  'default',
-  Simplify<ContactUsSliceDefaultPrimary>,
-  never
->;
-
-/**
- * Slice variation for *ContactUs*
- */
-type ContactUsSliceVariation = ContactUsSliceDefault;
-
-/**
- * ContactUs Shared Slice
- *
- * - **API ID**: `contact_us`
- * - **Description**: ContactUs
- * - **Documentation**: https://prismic.io/docs/slices
- */
-export type ContactUsSlice = prismic.SharedSlice<
-  'contact_us',
-  ContactUsSliceVariation
->;
-
-/**
  * Item in *Companies → Default → Primary → Companies*
  */
 export interface CompaniesSliceDefaultPrimaryCompaniesItem {
@@ -452,6 +368,178 @@ export type CompaniesSlice = prismic.SharedSlice<
   'companies',
   CompaniesSliceVariation
 >;
+
+/**
+ * Primary content in *ContactUs → Default → Primary*
+ */
+export interface ContactUsSliceDefaultPrimary {
+  /**
+   * Section Title field in *ContactUs → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: contact_us.default.primary.section_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_title: prismic.KeyTextField;
+
+  /**
+   * Section Description field in *ContactUs → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: contact_us.default.primary.section_description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  section_description: prismic.RichTextField;
+
+  /**
+   * Contact Number field in *ContactUs → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: contact_us.default.primary.contact_number
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  contact_number: prismic.KeyTextField;
+
+  /**
+   * Contact Email field in *ContactUs → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: contact_us.default.primary.contact_email
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  contact_email: prismic.KeyTextField;
+
+  /**
+   * Form Title field in *ContactUs → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: Send us a message
+   * - **API ID Path**: contact_us.default.primary.form_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  form_title: prismic.KeyTextField;
+}
+
+/**
+ * Default variation for ContactUs Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ContactUsSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<ContactUsSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *ContactUs*
+ */
+type ContactUsSliceVariation = ContactUsSliceDefault;
+
+/**
+ * ContactUs Shared Slice
+ *
+ * - **API ID**: `contact_us`
+ * - **Description**: ContactUs
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ContactUsSlice = prismic.SharedSlice<
+  'contact_us',
+  ContactUsSliceVariation
+>;
+
+/**
+ * Item in *Faq → Default → Primary → FAQs*
+ */
+export interface FaqSliceDefaultPrimaryFaqsItem {
+  /**
+   * Question Item field in *Faq → Default → Primary → FAQs*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: faq.default.primary.faqs[].question_item
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  question_item: prismic.RichTextField;
+
+  /**
+   * Answer Item field in *Faq → Default → Primary → FAQs*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: faq.default.primary.faqs[].answer_item
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  answer_item: prismic.RichTextField;
+}
+
+/**
+ * Primary content in *Faq → Default → Primary*
+ */
+export interface FaqSliceDefaultPrimary {
+  /**
+   * Section Title field in *Faq → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: faq.default.primary.section_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_title: prismic.KeyTextField;
+
+  /**
+   * Section Subtitle field in *Faq → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: faq.default.primary.section_subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  section_subtitle: prismic.RichTextField;
+
+  /**
+   * FAQs field in *Faq → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: faq.default.primary.faqs[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  faqs: prismic.GroupField<Simplify<FaqSliceDefaultPrimaryFaqsItem>>;
+}
+
+/**
+ * Default variation for Faq Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type FaqSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<FaqSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Faq*
+ */
+type FaqSliceVariation = FaqSliceDefault;
+
+/**
+ * Faq Shared Slice
+ *
+ * - **API ID**: `faq`
+ * - **Description**: Faq
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type FaqSlice = prismic.SharedSlice<'faq', FaqSliceVariation>;
 
 /**
  * Item in *FinancialRelief → Default → Primary → Cards*
@@ -680,6 +768,31 @@ export type FinancialReliefSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Item in *HeroSection → Default → Primary → Stats*
+ */
+export interface HeroSectionSliceDefaultPrimaryStatsItem {
+  /**
+   * Number field in *HeroSection → Default → Primary → Stats*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: hero_section.default.primary.stats[].number
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  number: prismic.KeyTextField;
+
+  /**
+   * Description field in *HeroSection → Default → Primary → Stats*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: hero_section.default.primary.stats[].description
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  description: prismic.KeyTextField;
+}
+
+/**
  * Primary content in *HeroSection → Default → Primary*
  */
 export interface HeroSectionSliceDefaultPrimary {
@@ -722,6 +835,16 @@ export interface HeroSectionSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   hero_image: prismic.ImageField<never>;
+
+  /**
+   * Stats field in *HeroSection → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: hero_section.default.primary.stats[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  stats: prismic.GroupField<Simplify<HeroSectionSliceDefaultPrimaryStatsItem>>;
 }
 
 /**
@@ -755,11 +878,46 @@ export type HeroSectionSlice = prismic.SharedSlice<
 >;
 
 /**
- * Primary content in *HowWeCanWelp → Default → Primary*
+ * Item in *Industries → Default → Primary → Industries*
+ */
+export interface HowWeCanWelpSliceDefaultPrimaryIndustriesItem {
+  /**
+   * Industry Icon field in *Industries → Default → Primary → Industries*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: how_we_can_welp.default.primary.industries[].industry_icon
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  industry_icon: prismic.ImageField<never>;
+
+  /**
+   * Industry Item field in *Industries → Default → Primary → Industries*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: how_we_can_welp.default.primary.industries[].industry_item
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  industry_item: prismic.KeyTextField;
+
+  /**
+   * Description field in *Industries → Default → Primary → Industries*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: how_we_can_welp.default.primary.industries[].description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  description: prismic.RichTextField;
+}
+
+/**
+ * Primary content in *Industries → Default → Primary*
  */
 export interface HowWeCanWelpSliceDefaultPrimary {
   /**
-   * Section Title field in *HowWeCanWelp → Default → Primary*
+   * Section Title field in *Industries → Default → Primary*
    *
    * - **Field Type**: Text
    * - **Placeholder**: *None*
@@ -769,7 +927,7 @@ export interface HowWeCanWelpSliceDefaultPrimary {
   section_title: prismic.KeyTextField;
 
   /**
-   * Section Description field in *HowWeCanWelp → Default → Primary*
+   * Section Description field in *Industries → Default → Primary*
    *
    * - **Field Type**: Rich Text
    * - **Placeholder**: *None*
@@ -779,18 +937,20 @@ export interface HowWeCanWelpSliceDefaultPrimary {
   section_description: prismic.RichTextField;
 
   /**
-   * Section Image field in *HowWeCanWelp → Default → Primary*
+   * Industries field in *Industries → Default → Primary*
    *
-   * - **Field Type**: Image
+   * - **Field Type**: Group
    * - **Placeholder**: *None*
-   * - **API ID Path**: how_we_can_welp.default.primary.section_image
-   * - **Documentation**: https://prismic.io/docs/fields/image
+   * - **API ID Path**: how_we_can_welp.default.primary.industries[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
    */
-  section_image: prismic.ImageField<never>;
+  industries: prismic.GroupField<
+    Simplify<HowWeCanWelpSliceDefaultPrimaryIndustriesItem>
+  >;
 }
 
 /**
- * Default variation for HowWeCanWelp Slice
+ * Default variation for Industries Slice
  *
  * - **API ID**: `default`
  * - **Description**: Default
@@ -803,15 +963,15 @@ export type HowWeCanWelpSliceDefault = prismic.SharedSliceVariation<
 >;
 
 /**
- * Slice variation for *HowWeCanWelp*
+ * Slice variation for *Industries*
  */
 type HowWeCanWelpSliceVariation = HowWeCanWelpSliceDefault;
 
 /**
- * HowWeCanWelp Shared Slice
+ * Industries Shared Slice
  *
  * - **API ID**: `how_we_can_welp`
- * - **Description**: HowWeCanWelp
+ * - **Description**: Industries
  * - **Documentation**: https://prismic.io/docs/slices
  */
 export type HowWeCanWelpSlice = prismic.SharedSlice<
@@ -1107,36 +1267,36 @@ export type TestimonialSlice = prismic.SharedSlice<
 >;
 
 /**
- * Item in *WhyChooseUs → Default → Primary → Why Choose Us*
+ * Item in *WhoIsItFor → Default → Primary → Who is it for items*
  */
-export interface WhyChooseUsSliceDefaultPrimaryWhyChooseUsItemsItem {
+export interface WhyChooseUsSliceDefaultPrimaryWhoIsItForItemsItem {
   /**
-   * Item Icon (optional) field in *WhyChooseUs → Default → Primary → Why Choose Us*
+   * Position Title field in *WhoIsItFor → Default → Primary → Who is it for items*
    *
-   * - **Field Type**: Image
+   * - **Field Type**: Text
    * - **Placeholder**: *None*
-   * - **API ID Path**: why_choose_us.default.primary.why_choose_us_items[].card_icon
-   * - **Documentation**: https://prismic.io/docs/fields/image
+   * - **API ID Path**: why_choose_us.default.primary.who_is_it_for_items[].position_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
    */
-  card_icon: prismic.ImageField<never>;
+  position_title: prismic.KeyTextField;
 
   /**
-   * Why Choose Us Item field in *WhyChooseUs → Default → Primary → Why Choose Us*
+   * Description field in *WhoIsItFor → Default → Primary → Who is it for items*
    *
    * - **Field Type**: Rich Text
    * - **Placeholder**: *None*
-   * - **API ID Path**: why_choose_us.default.primary.why_choose_us_items[].why_choose_us_item
+   * - **API ID Path**: why_choose_us.default.primary.who_is_it_for_items[].description
    * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
-  why_choose_us_item: prismic.RichTextField;
+  description: prismic.RichTextField;
 }
 
 /**
- * Primary content in *WhyChooseUs → Default → Primary*
+ * Primary content in *WhoIsItFor → Default → Primary*
  */
 export interface WhyChooseUsSliceDefaultPrimary {
   /**
-   * Section Title field in *WhyChooseUs → Default → Primary*
+   * Section Title field in *WhoIsItFor → Default → Primary*
    *
    * - **Field Type**: Text
    * - **Placeholder**: *None*
@@ -1146,7 +1306,7 @@ export interface WhyChooseUsSliceDefaultPrimary {
   section_title: prismic.KeyTextField;
 
   /**
-   * Section Subtitle field in *WhyChooseUs → Default → Primary*
+   * Section Subtitle field in *WhoIsItFor → Default → Primary*
    *
    * - **Field Type**: Rich Text
    * - **Placeholder**: *None*
@@ -1156,40 +1316,20 @@ export interface WhyChooseUsSliceDefaultPrimary {
   section_subtitle: prismic.RichTextField;
 
   /**
-   * Collage Image (Back / Top) field in *WhyChooseUs → Default → Primary*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: why_choose_us.default.primary.collage_image_back
-   * - **Documentation**: https://prismic.io/docs/fields/image
-   */
-  collage_image_back: prismic.ImageField<never>;
-
-  /**
-   * Collage Image (Front / Overlap) field in *WhyChooseUs → Default → Primary*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: why_choose_us.default.primary.collage_image_front
-   * - **Documentation**: https://prismic.io/docs/fields/image
-   */
-  collage_image_front: prismic.ImageField<never>;
-
-  /**
-   * Why Choose Us field in *WhyChooseUs → Default → Primary*
+   * Who is it for items field in *WhoIsItFor → Default → Primary*
    *
    * - **Field Type**: Group
    * - **Placeholder**: *None*
-   * - **API ID Path**: why_choose_us.default.primary.why_choose_us_items[]
+   * - **API ID Path**: why_choose_us.default.primary.who_is_it_for_items[]
    * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
    */
-  why_choose_us_items: prismic.GroupField<
-    Simplify<WhyChooseUsSliceDefaultPrimaryWhyChooseUsItemsItem>
+  who_is_it_for_items: prismic.GroupField<
+    Simplify<WhyChooseUsSliceDefaultPrimaryWhoIsItForItemsItem>
   >;
 }
 
 /**
- * Default variation for WhyChooseUs Slice
+ * Default variation for WhoIsItFor Slice
  *
  * - **API ID**: `default`
  * - **Description**: Default
@@ -1202,12 +1342,12 @@ export type WhyChooseUsSliceDefault = prismic.SharedSliceVariation<
 >;
 
 /**
- * Slice variation for *WhyChooseUs*
+ * Slice variation for *WhoIsItFor*
  */
 type WhyChooseUsSliceVariation = WhyChooseUsSliceDefault;
 
 /**
- * WhyChooseUs Shared Slice
+ * WhoIsItFor Shared Slice
  *
  * - **API ID**: `why_choose_us`
  * - **Description**: WhyChooseUs
@@ -1252,15 +1392,20 @@ declare module '@prismicio/client' {
       CallToActionSliceDefaultPrimary,
       CallToActionSliceVariation,
       CallToActionSliceDefault,
-      ContactUsSlice,
-      ContactUsSliceDefaultPrimary,
-      ContactUsSliceVariation,
-      ContactUsSliceDefault,
       CompaniesSlice,
       CompaniesSliceDefaultPrimaryCompaniesItem,
       CompaniesSliceDefaultPrimary,
       CompaniesSliceVariation,
       CompaniesSliceDefault,
+      ContactUsSlice,
+      ContactUsSliceDefaultPrimary,
+      ContactUsSliceVariation,
+      ContactUsSliceDefault,
+      FaqSlice,
+      FaqSliceDefaultPrimaryFaqsItem,
+      FaqSliceDefaultPrimary,
+      FaqSliceVariation,
+      FaqSliceDefault,
       FinancialReliefSlice,
       FinancialReliefSliceDefaultPrimaryCardsItem,
       FinancialReliefSliceDefaultPrimaryFinancialTableItem,
@@ -1269,10 +1414,12 @@ declare module '@prismicio/client' {
       FinancialReliefSliceVariation,
       FinancialReliefSliceDefault,
       HeroSectionSlice,
+      HeroSectionSliceDefaultPrimaryStatsItem,
       HeroSectionSliceDefaultPrimary,
       HeroSectionSliceVariation,
       HeroSectionSliceDefault,
       HowWeCanWelpSlice,
+      HowWeCanWelpSliceDefaultPrimaryIndustriesItem,
       HowWeCanWelpSliceDefaultPrimary,
       HowWeCanWelpSliceVariation,
       HowWeCanWelpSliceDefault,
@@ -1291,7 +1438,7 @@ declare module '@prismicio/client' {
       TestimonialSliceVariation,
       TestimonialSliceDefault,
       WhyChooseUsSlice,
-      WhyChooseUsSliceDefaultPrimaryWhyChooseUsItemsItem,
+      WhyChooseUsSliceDefaultPrimaryWhoIsItForItemsItem,
       WhyChooseUsSliceDefaultPrimary,
       WhyChooseUsSliceVariation,
       WhyChooseUsSliceDefault,

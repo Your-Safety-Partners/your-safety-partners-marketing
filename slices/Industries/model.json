@@ -1,8 +1,8 @@
 {
-  "id": "why_choose_us",
+  "id": "how_we_can_welp",
   "type": "SharedSlice",
-  "name": "WhyChooseUs",
-  "description": "WhyChooseUs",
+  "name": "Industries",
+  "description": "Industries",
   "variations": [
     {
       "id": "default",
@@ -19,49 +19,40 @@
             "placeholder": ""
           }
         },
-        "section_subtitle": {
+        "section_description": {
           "type": "StructuredText",
           "config": {
-            "label": "Section Subtitle",
+            "label": "Section Description",
             "placeholder": "",
             "allowTargetBlank": true,
             "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
           }
         },
-        "collage_image_back": {
-          "type": "Image",
-          "config": {
-            "label": "Collage Image (Back / Top)",
-            "constraint": {},
-            "thumbnails": []
-          }
-        },
-        "collage_image_front": {
-          "type": "Image",
-          "config": {
-            "label": "Collage Image (Front / Overlap)",
-            "constraint": {},
-            "thumbnails": []
-          }
-        },
-        "why_choose_us_items": {
+        "industries": {
           "type": "Group",
           "config": {
-            "label": "Why Choose Us",
+            "label": "Industries",
             "repeat": true,
             "fields": {
-              "card_icon": {
+              "industry_icon": {
                 "type": "Image",
                 "config": {
-                  "label": "Item Icon (optional)",
+                  "label": "Industry Icon",
                   "constraint": {},
                   "thumbnails": []
                 }
               },
-              "why_choose_us_item": {
+              "industry_item": {
+                "type": "Text",
+                "config": {
+                  "label": "Industry Item",
+                  "placeholder": ""
+                }
+              },
+              "description": {
                 "type": "StructuredText",
                 "config": {
-                  "label": "Why Choose Us Item",
+                  "label": "Description",
                   "placeholder": "",
                   "allowTargetBlank": true,
                   "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
