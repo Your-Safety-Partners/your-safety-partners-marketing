@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Content, isFilled } from '@prismicio/client';
 import { SliceComponentProps } from '@prismicio/react';
 import { ChevronRight } from 'lucide-react';
@@ -45,8 +46,12 @@ const HeroSection: FC<HeroSectionProps> = ({ slice }) => {
   const statsToShow =
     statsFromCms.length > 0 ? statsFromCms : [...fallbackStats];
 
-  const imageUrl = isFilled.image(hero_image) ? hero_image.url : FALLBACK_HERO_SRC;
+  const imageUrl = isFilled.image(hero_image)
+    ? hero_image.url.split('?')[0] ?? hero_image.url
+    : FALLBACK_HERO_SRC;
   const imageAlt = isFilled.image(hero_image) ? (hero_image.alt ?? '') : 'Hero image';
+  const imageWidth = isFilled.image(hero_image) ? (hero_image.dimensions?.width ?? 2684) : 2684;
+  const imageHeight = isFilled.image(hero_image) ? (hero_image.dimensions?.height ?? 1900) : 1900;
 
   return (
     <section
@@ -112,13 +117,20 @@ const HeroSection: FC<HeroSectionProps> = ({ slice }) => {
 
           <SliceEntrance from="right" delayMs={0}>
             <div className="relative mx-auto w-full max-w-lg lg:mx-0 lg:max-w-none">
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -right-16 top-1/2 z-0 h-[115%] w-[125%] -translate-y-1/2 rounded-[9999px] bg-[radial-gradient(ellipse_at_center,rgba(109,40,217,0.2)_0%,rgba(109,40,217,0.12)_42%,rgba(109,40,217,0)_75%)]"
+              />
               <div className="relative z-10 overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element -- Prismic CDN or local public path; avoids next/image config for arbitrary URLs */}
-                <img
+                <Image
                   src={imageUrl}
                   alt={imageAlt}
-                  width={isFilled.image(hero_image) ? hero_image.dimensions?.width : 960}
-                  height={isFilled.image(hero_image) ? hero_image.dimensions?.height : 720}
+                  width={imageWidth}
+                  height={imageHeight}
+                  quality={100}
+                  unoptimized
+                  priority
+                  sizes="(min-width: 1280px) 620px, (min-width: 1024px) 50vw, 100vw"
                   className={cn(
                     'aspect-[4/3] h-auto w-full object-cover',
                     !isFilled.image(hero_image) && 'min-h-[280px] bg-gray-100'
