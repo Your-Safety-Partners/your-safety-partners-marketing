@@ -3,7 +3,7 @@ import { SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
 
-export const revalidate = 3600; // 1 hour ISR caching
+export const revalidate = 0; // 1 hour ISR caching
 
 export async function generateMetadata(): Promise<Metadata> {
   const client = createClient();
