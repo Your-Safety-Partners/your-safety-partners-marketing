@@ -1,6 +1,8 @@
 import { FC, type ReactNode } from 'react';
 import { Content, isFilled } from '@prismicio/client';
 import { PrismicRichText, SliceComponentProps } from '@prismicio/react';
+import * as LucideIcons from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 import { SliceEntrance } from '@/components/slices/slice-entrance';
 import { inter } from '@/lib/fonts/inter';
@@ -27,6 +29,33 @@ const descriptionComponents = {
 
 /** Figma: linear TL → BR, #EDEBFF → #FFFFFF (inner content card only). */
 const CONTENT_CARD_GRADIENT = 'bg-gradient-to-br from-[#EDEBFF] to-white';
+
+const toLucideIconKey = (value: string): string => {
+  const trimmed = value.trim();
+  if (!trimmed) return '';
+
+  return trimmed
+    .split(/[\s_-]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+    .join('');
+};
+
+const resolveCardIcon = (iconName: string | null | undefined): LucideIcon | null => {
+  const normalized = iconName?.trim();
+  if (!normalized) return null;
+
+  const candidateKeys = [normalized, toLucideIconKey(normalized)];
+
+  for (const key of candidateKeys) {
+    const icon = (LucideIcons as Record<string, unknown>)[key];
+    if (icon) {
+      return icon as LucideIcon;
+    }
+  }
+
+  return null;
+};
 
 const WhoIsItFor: FC<WhoIsItForProps> = ({ slice }) => {
   const { section_title, section_subtitle, who_is_it_for_items } = slice.primary;
@@ -86,6 +115,7 @@ const WhoIsItFor: FC<WhoIsItForProps> = ({ slice }) => {
                 {listRows.map((row, index) => {
                   const position = row.position_title?.trim() ?? '';
                   const key = `who-is-it-for-${index}`;
+                  const CardIcon = resolveCardIcon(row.card_icon);
 
                   return (
                     <li
@@ -93,11 +123,14 @@ const WhoIsItFor: FC<WhoIsItForProps> = ({ slice }) => {
                       className="rounded-xl border border-gray-100 bg-white/90 p-4 text-left shadow-sm sm:p-5"
                     >
                       <div className="flex gap-3">
-                        <span
+                        {/* <span
                           className="mt-1 block min-h-[3rem] w-1 shrink-0 self-stretch rounded-full bg-violet-700"
                           aria-hidden
-                        />
+                        /> */}
                         <div className="min-w-0 flex-1 space-y-2">
+                          {CardIcon ? (
+                            <CardIcon className="h-7 w-6 text-violet-700" aria-hidden />
+                          ) : null}
                           {position ? (
                             <h3 className="text-lg font-semibold leading-snug tracking-tight text-gray-800">
                               {position}

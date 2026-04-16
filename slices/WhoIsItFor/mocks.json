@@ -46,6 +46,14 @@
 									"value": "silly",
 									"type": "Text"
 								}
+							],
+							[
+								"card_icon",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "helpful",
+									"type": "Text"
+								}
 							]
 						]
 					},
@@ -71,6 +79,14 @@
 								{
 									"__TYPE__": "FieldContent",
 									"value": "blood",
+									"type": "Text"
+								}
+							],
+							[
+								"card_icon",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "palace",
 									"type": "Text"
 								}
 							]
@@ -100,6 +116,14 @@
 									"value": "show",
 									"type": "Text"
 								}
+							],
+							[
+								"card_icon",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "thou",
+									"type": "Text"
+								}
 							]
 						]
 					},
@@ -125,6 +149,14 @@
 								{
 									"__TYPE__": "FieldContent",
 									"value": "shoe",
+									"type": "Text"
+								}
+							],
+							[
+								"card_icon",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "shallow",
 									"type": "Text"
 								}
 							]

@@ -1271,6 +1271,16 @@ export type TestimonialSlice = prismic.SharedSlice<
  */
 export interface WhyChooseUsSliceDefaultPrimaryWhoIsItForItemsItem {
   /**
+   * Card Icon field in *WhoIsItFor → Default → Primary → Who is it for items*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: why_choose_us.default.primary.who_is_it_for_items[].card_icon
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  card_icon: prismic.KeyTextField;
+
+  /**
    * Position Title field in *WhoIsItFor → Default → Primary → Who is it for items*
    *
    * - **Field Type**: Text
