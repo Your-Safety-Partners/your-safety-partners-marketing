@@ -132,7 +132,7 @@ const HeroSection: FC<HeroSectionProps> = ({ slice }) => {
                   priority
                   sizes="(min-width: 1280px) 620px, (min-width: 1024px) 50vw, 100vw"
                   className={cn(
-                    'aspect-[4/3] h-auto w-full object-cover',
+                    'h-auto w-full object-contain',
                     !isFilled.image(hero_image) && 'min-h-[280px] bg-gray-100'
                   )}
                 />
