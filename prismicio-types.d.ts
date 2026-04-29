@@ -277,8 +277,6 @@ type HomeDocumentDataSlicesSlice =
   | HeroSectionSlice
   | TestimonialSlice;
 
-type HomeDocumentDataSlices1Slice = never;
-
 /**
  * Content for Home documents
  */
@@ -324,17 +322,6 @@ interface HomeDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   meta_image: prismic.ImageField<never>;
-
-  /**
-   * Slice Zone field in *Home*
-   *
-   * - **Field Type**: Slice Zone
-   * - **Placeholder**: *None*
-   * - **API ID Path**: home.slices1[]
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/slices
-   */
-  slices1: prismic.SliceZone<HomeDocumentDataSlices1Slice>;
 }
 
 /**
@@ -349,7 +336,11 @@ interface HomeDocumentData {
 export type HomeDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithoutUID<Simplify<HomeDocumentData>, 'home', Lang>;
 
-type InspectionModuleDocumentDataSlicesSlice = ComplianceAuditSlice | FaqSlice;
+type InspectionModuleDocumentDataSlicesSlice =
+  | CallToActionSlice
+  | BulletListSlice
+  | ComplianceAuditSlice
+  | FaqSlice;
 
 /**
  * Content for Inspection Module documents
@@ -414,7 +405,19 @@ export type InspectionModuleDocument<Lang extends string = string> =
     Lang
   >;
 
-type PageDocumentDataSlicesSlice = never;
+type PageDocumentDataSlicesSlice =
+  | CallToActionSlice
+  | CompaniesSlice
+  | ComplianceAuditSlice
+  | ContactUsSlice
+  | FaqSlice
+  | FinancialReliefSlice
+  | HeroSectionSlice
+  | HowWeCanWelpSlice
+  | LegislativeSlice
+  | PlatformAppsSlice
+  | TestimonialSlice
+  | WhyChooseUsSlice;
 
 /**
  * Content for Page documents
@@ -614,6 +617,98 @@ export type AllDocumentTypes =
   | PageDocument
   | PoliciesModuleDocument
   | TrainingModuleDocument;
+
+/**
+ * Item in *BulletList → Default → Primary → Bullet List*
+ */
+export interface BulletListSliceDefaultPrimaryBulletListItem {
+  /**
+   * Item Title field in *BulletList → Default → Primary → Bullet List*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: bullet_list.default.primary.bullet_list[].item_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  item_title: prismic.KeyTextField;
+
+  /**
+   * Item Description field in *BulletList → Default → Primary → Bullet List*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: bullet_list.default.primary.bullet_list[].item_description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  item_description: prismic.RichTextField;
+}
+
+/**
+ * Primary content in *BulletList → Default → Primary*
+ */
+export interface BulletListSliceDefaultPrimary {
+  /**
+   * Section Title field in *BulletList → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: bullet_list.default.primary.section_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_title: prismic.KeyTextField;
+
+  /**
+   * Section Subtitle field in *BulletList → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: bullet_list.default.primary.section_subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  section_subtitle: prismic.RichTextField;
+
+  /**
+   * Bullet List field in *BulletList → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: bullet_list.default.primary.bullet_list[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  bullet_list: prismic.GroupField<
+    Simplify<BulletListSliceDefaultPrimaryBulletListItem>
+  >;
+}
+
+/**
+ * Default variation for BulletList Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type BulletListSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<BulletListSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *BulletList*
+ */
+type BulletListSliceVariation = BulletListSliceDefault;
+
+/**
+ * BulletList Shared Slice
+ *
+ * - **API ID**: `bullet_list`
+ * - **Description**: BulletList
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type BulletListSlice = prismic.SharedSlice<
+  'bullet_list',
+  BulletListSliceVariation
+>;
 
 /**
  * Item in *CallToAction → Default → Primary → Stats*
@@ -1938,7 +2033,6 @@ declare module '@prismicio/client' {
       HomeDocument,
       HomeDocumentData,
       HomeDocumentDataSlicesSlice,
-      HomeDocumentDataSlices1Slice,
       InspectionModuleDocument,
       InspectionModuleDocumentData,
       InspectionModuleDocumentDataSlicesSlice,
@@ -1952,6 +2046,11 @@ declare module '@prismicio/client' {
       TrainingModuleDocumentData,
       TrainingModuleDocumentDataSlicesSlice,
       AllDocumentTypes,
+      BulletListSlice,
+      BulletListSliceDefaultPrimaryBulletListItem,
+      BulletListSliceDefaultPrimary,
+      BulletListSliceVariation,
+      BulletListSliceDefault,
       CallToActionSlice,
       CallToActionSliceDefaultPrimaryStatsItem,
       CallToActionSliceDefaultPrimary,
