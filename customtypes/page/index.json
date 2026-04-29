@@ -11,7 +11,44 @@
       },
       "slices": {
         "config": {
-          "choices": {}
+          "choices": {
+            "call_to_action": {
+              "type": "SharedSlice"
+            },
+            "companies": {
+              "type": "SharedSlice"
+            },
+            "compliance_audit": {
+              "type": "SharedSlice"
+            },
+            "contact_us": {
+              "type": "SharedSlice"
+            },
+            "faq": {
+              "type": "SharedSlice"
+            },
+            "financial_relief": {
+              "type": "SharedSlice"
+            },
+            "hero_section": {
+              "type": "SharedSlice"
+            },
+            "how_we_can_welp": {
+              "type": "SharedSlice"
+            },
+            "legislative": {
+              "type": "SharedSlice"
+            },
+            "platform_apps": {
+              "type": "SharedSlice"
+            },
+            "testimonial": {
+              "type": "SharedSlice"
+            },
+            "why_choose_us": {
+              "type": "SharedSlice"
+            }
+          }
         },
         "fieldset": "Slice Zone",
         "type": "Slices"

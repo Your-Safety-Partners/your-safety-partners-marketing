@@ -277,7 +277,7 @@ type HomeDocumentDataSlicesSlice =
   | HeroSectionSlice
   | TestimonialSlice;
 
-type HomeDocumentDataSlices1Slice = TestimonialSlice;
+type HomeDocumentDataSlices1Slice = never;
 
 /**
  * Content for Home documents
