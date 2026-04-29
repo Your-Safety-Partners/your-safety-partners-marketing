@@ -1,0 +1,94 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"section_title": {
+				"__TYPE__": "FieldContent",
+				"value": "wealth",
+				"type": "Text"
+			},
+			"section_subtitle": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Amet ad esse veniam ut nulla anim officia minim veniam elit exercitation ea voluptate in."
+						}
+					}
+				]
+			},
+			"questions": {
+				"__TYPE__": "GroupContentType",
+				"value": [
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"question_item",
+								{
+									"__TYPE__": "StructuredTextContent",
+									"value": [
+										{
+											"type": "paragraph",
+											"content": {
+												"text": "Mollit ullamco est voluptate adipisicing amet sunt voluptate excepteur elit enim ea anim dolor pariatur tempor. Ipsum voluptate elit eiusmod do officia aute minim enim consectetur ipsum id tempor veniam. Aliquip tempor ullamco culpa ipsum aliquip pariatur ullamco ut proident velit consectetur occaecat sunt sint do."
+											}
+										}
+									]
+								}
+							]
+						]
+					}
+				]
+			},
+			"eyebrow_text": {
+				"__TYPE__": "FieldContent",
+				"value": "walk",
+				"type": "Text"
+			},
+			"answers_tips": {
+				"__TYPE__": "GroupContentType",
+				"value": [
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"tip_title",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "world",
+									"type": "Text"
+								}
+							],
+							[
+								"tip_description",
+								{
+									"__TYPE__": "StructuredTextContent",
+									"value": [
+										{
+											"type": "paragraph",
+											"content": {
+												"text": "Pariatur labore elit aute."
+											}
+										}
+									]
+								}
+							],
+							[
+								"level",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "9",
+									"type": "Number"
+								}
+							]
+						]
+					}
+				]
+			}
+		},
+		"items": []
+	}
+]

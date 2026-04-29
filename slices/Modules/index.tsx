@@ -38,6 +38,17 @@ function getModuleAccentColor(moduleName: string): string {
   return '#64748b';
 }
 
+function getModuleHref(moduleName: string): string {
+  const n = moduleName.toLowerCase().trim();
+  if (n.includes('polic')) return '/policies_module';
+  if (n.includes('form')) return '/forms_module';
+  if (n.includes('inspection')) return '/inspection_module';
+  if (n.includes('train')) return '/training_module';
+  if (n.includes('hazard')) return '/hazard_module';
+  if (n.includes('contractor')) return '/contractor_module';
+  return '/features';
+}
+
 const richComponents = {
   paragraph: ({ children }: { children: ReactNode }) => (
     <p className="text-base leading-relaxed text-gray-500">{children}</p>
@@ -100,6 +111,7 @@ const PlatformApps: FC<PlatformAppsProps> = ({ slice }) => {
             {rows.map((row, index) => {
               const name = row.module_name?.trim() ?? '';
               const accent = getModuleAccentColor(name);
+              const href = getModuleHref(name);
               const hasBody = isFilled.richText(row.module_description);
               const logo = row.module_logo;
 
@@ -143,7 +155,7 @@ const PlatformApps: FC<PlatformAppsProps> = ({ slice }) => {
 
                     <div className="mt-6 flex justify-end pt-1">
                       <Link
-                        href="/features"
+                        href={href}
                         className="inline-flex items-center gap-1 text-sm font-semibold transition-opacity hover:opacity-85"
                         style={{ color: accent }}
                       >

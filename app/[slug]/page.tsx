@@ -8,18 +8,48 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
+const MODULE_CUSTOM_TYPES = [
+  'inspection_module',
+  'policies_module',
+  'forms_module',
+  'training_module',
+  'hazard_module',
+  'contractor_module',
+] as const;
+
+async function getDocumentBySlug(slug: string) {
+  const client = createClient();
+  const page = await client.getByUID('page', slug).catch(() => null);
+  if (page) return page;
+
+  if (MODULE_CUSTOM_TYPES.includes(slug as (typeof MODULE_CUSTOM_TYPES)[number])) {
+    return client
+      .getSingle(slug as (typeof MODULE_CUSTOM_TYPES)[number])
+      .catch(() => null);
+  }
+
+  return null;
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const client = createClient();
-  const page = await client.getByUID("page", slug).catch(() => null);
+  const page = await getDocumentBySlug(slug);
 
   if (!page) return {};
 
   return {
-    title: page.data.meta_title || `${slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())} | Your Safety Partners`,
+    title:
+      page.data.meta_title ||
+      `${slug
+        .replace(/[-_]/g, ' ')
+        .replace(/\b\w/g, (c) => c.toUpperCase())} | Your Safety Partners`,
     description: page.data.meta_description,
     openGraph: {
-      title: page.data.meta_title || `${slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())} | Your Safety Partners`,
+      title:
+        page.data.meta_title ||
+        `${slug
+          .replace(/[-_]/g, ' ')
+          .replace(/\b\w/g, (c) => c.toUpperCase())} | Your Safety Partners`,
       description: page.data.meta_description || undefined,
       images: page.data.meta_image?.url ?[page.data.meta_image.url] :[],
     },
@@ -28,9 +58,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Page({ params }: Props) {
   const { slug } = await params;
-  const client = createClient();
-  
-  const page = await client.getByUID("page", slug).catch(() => null);
+  const page = await getDocumentBySlug(slug);
 
   if (!page) {
     return (

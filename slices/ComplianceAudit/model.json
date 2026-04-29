@@ -1,0 +1,92 @@
+{
+  "id": "compliance_audit",
+  "type": "SharedSlice",
+  "name": "ComplianceAudit",
+  "description": "ComplianceAudit",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "eyebrow_text": {
+          "type": "Text",
+          "config": {
+            "label": "Eyebrow Text",
+            "placeholder": ""
+          }
+        },
+        "section_title": {
+          "type": "Text",
+          "config": {
+            "label": "Section Title",
+            "placeholder": ""
+          }
+        },
+        "section_subtitle": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Section Subtitle",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "questions": {
+          "type": "Group",
+          "config": {
+            "label": "Questions",
+            "repeat": true,
+            "fields": {
+              "question_item": {
+                "type": "StructuredText",
+                "config": {
+                  "label": "Question Item",
+                  "placeholder": "",
+                  "allowTargetBlank": true,
+                  "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+                }
+              }
+            }
+          }
+        },
+        "answers_tips": {
+          "type": "Group",
+          "config": {
+            "label": "Answers Tips",
+            "repeat": true,
+            "fields": {
+              "tip_title": {
+                "type": "Text",
+                "config": {
+                  "label": "Tip Title",
+                  "placeholder": ""
+                }
+              },
+              "tip_description": {
+                "type": "StructuredText",
+                "config": {
+                  "label": "Tip Description",
+                  "placeholder": "",
+                  "allowTargetBlank": true,
+                  "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+                }
+              },
+              "level": {
+                "type": "Number",
+                "config": {
+                  "label": "Level",
+                  "placeholder": ""
+                }
+              }
+            }
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

@@ -69,6 +69,201 @@ type ContentRelationshipFieldWithData<
   >;
 }[Exclude<TCustomType[number], string>['id']];
 
+type ContractorModuleDocumentDataSlicesSlice = FaqSlice;
+
+/**
+ * Content for Contractor Module documents
+ */
+interface ContractorModuleDocumentData {
+  /**
+   * Slice Zone field in *Contractor Module*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: contractor_module.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<ContractorModuleDocumentDataSlicesSlice>; /**
+   * Meta Title field in *Contractor Module*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: contractor_module.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Contractor Module*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: contractor_module.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Contractor Module*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: contractor_module.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Contractor Module document from Prismic
+ *
+ * - **API ID**: `contractor_module`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type ContractorModuleDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<ContractorModuleDocumentData>,
+    'contractor_module',
+    Lang
+  >;
+
+type FormsModuleDocumentDataSlicesSlice = FaqSlice;
+
+/**
+ * Content for Forms Module documents
+ */
+interface FormsModuleDocumentData {
+  /**
+   * Slice Zone field in *Forms Module*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: forms_module.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<FormsModuleDocumentDataSlicesSlice>; /**
+   * Meta Title field in *Forms Module*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: forms_module.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Forms Module*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: forms_module.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Forms Module*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: forms_module.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Forms Module document from Prismic
+ *
+ * - **API ID**: `forms_module`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type FormsModuleDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<FormsModuleDocumentData>,
+    'forms_module',
+    Lang
+  >;
+
+type HazardModuleDocumentDataSlicesSlice = FaqSlice;
+
+/**
+ * Content for Hazard Module documents
+ */
+interface HazardModuleDocumentData {
+  /**
+   * Slice Zone field in *Hazard Module*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: hazard_module.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<HazardModuleDocumentDataSlicesSlice>; /**
+   * Meta Title field in *Hazard Module*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: hazard_module.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Hazard Module*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: hazard_module.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Hazard Module*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: hazard_module.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Hazard Module document from Prismic
+ *
+ * - **API ID**: `hazard_module`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type HazardModuleDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<HazardModuleDocumentData>,
+    'hazard_module',
+    Lang
+  >;
+
 type HomeDocumentDataSlicesSlice =
   | FaqSlice
   | ContactUsSlice
@@ -154,6 +349,71 @@ interface HomeDocumentData {
 export type HomeDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithoutUID<Simplify<HomeDocumentData>, 'home', Lang>;
 
+type InspectionModuleDocumentDataSlicesSlice = ComplianceAuditSlice | FaqSlice;
+
+/**
+ * Content for Inspection Module documents
+ */
+interface InspectionModuleDocumentData {
+  /**
+   * Slice Zone field in *Inspection Module*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: inspection_module.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<InspectionModuleDocumentDataSlicesSlice>; /**
+   * Meta Title field in *Inspection Module*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: inspection_module.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Inspection Module*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: inspection_module.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Inspection Module*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: inspection_module.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Inspection Module document from Prismic
+ *
+ * - **API ID**: `inspection_module`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type InspectionModuleDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<InspectionModuleDocumentData>,
+    'inspection_module',
+    Lang
+  >;
+
 type PageDocumentDataSlicesSlice = never;
 
 /**
@@ -215,7 +475,145 @@ interface PageDocumentData {
 export type PageDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithUID<Simplify<PageDocumentData>, 'page', Lang>;
 
-export type AllDocumentTypes = HomeDocument | PageDocument;
+type PoliciesModuleDocumentDataSlicesSlice = FaqSlice;
+
+/**
+ * Content for Policies Module documents
+ */
+interface PoliciesModuleDocumentData {
+  /**
+   * Slice Zone field in *Policies Module*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: policies_module.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<PoliciesModuleDocumentDataSlicesSlice>; /**
+   * Meta Title field in *Policies Module*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: policies_module.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Policies Module*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: policies_module.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Policies Module*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: policies_module.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Policies Module document from Prismic
+ *
+ * - **API ID**: `policies_module`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type PoliciesModuleDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<PoliciesModuleDocumentData>,
+    'policies_module',
+    Lang
+  >;
+
+type TrainingModuleDocumentDataSlicesSlice = FaqSlice;
+
+/**
+ * Content for Training Module documents
+ */
+interface TrainingModuleDocumentData {
+  /**
+   * Slice Zone field in *Training Module*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: training_module.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<TrainingModuleDocumentDataSlicesSlice>; /**
+   * Meta Title field in *Training Module*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: training_module.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Training Module*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: training_module.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Training Module*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: training_module.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Training Module document from Prismic
+ *
+ * - **API ID**: `training_module`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type TrainingModuleDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<TrainingModuleDocumentData>,
+    'training_module',
+    Lang
+  >;
+
+export type AllDocumentTypes =
+  | ContractorModuleDocument
+  | FormsModuleDocument
+  | HazardModuleDocument
+  | HomeDocument
+  | InspectionModuleDocument
+  | PageDocument
+  | PoliciesModuleDocument
+  | TrainingModuleDocument;
 
 /**
  * Item in *CallToAction → Default → Primary → Stats*
@@ -367,6 +765,145 @@ type CompaniesSliceVariation = CompaniesSliceDefault;
 export type CompaniesSlice = prismic.SharedSlice<
   'companies',
   CompaniesSliceVariation
+>;
+
+/**
+ * Item in *ComplianceAudit → Default → Primary → Questions*
+ */
+export interface ComplianceAuditSliceDefaultPrimaryQuestionsItem {
+  /**
+   * Question Item field in *ComplianceAudit → Default → Primary → Questions*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compliance_audit.default.primary.questions[].question_item
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  question_item: prismic.RichTextField;
+}
+
+/**
+ * Item in *ComplianceAudit → Default → Primary → Answers Tips*
+ */
+export interface ComplianceAuditSliceDefaultPrimaryAnswersTipsItem {
+  /**
+   * Tip Title field in *ComplianceAudit → Default → Primary → Answers Tips*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compliance_audit.default.primary.answers_tips[].tip_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  tip_title: prismic.KeyTextField;
+
+  /**
+   * Tip Description field in *ComplianceAudit → Default → Primary → Answers Tips*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compliance_audit.default.primary.answers_tips[].tip_description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  tip_description: prismic.RichTextField;
+
+  /**
+   * Level field in *ComplianceAudit → Default → Primary → Answers Tips*
+   *
+   * - **Field Type**: Number
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compliance_audit.default.primary.answers_tips[].level
+   * - **Documentation**: https://prismic.io/docs/fields/number
+   */
+  level: prismic.NumberField;
+}
+
+/**
+ * Primary content in *ComplianceAudit → Default → Primary*
+ */
+export interface ComplianceAuditSliceDefaultPrimary {
+  /**
+   * Eyebrow Text field in *ComplianceAudit → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compliance_audit.default.primary.eyebrow_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  eyebrow_text: prismic.KeyTextField;
+
+  /**
+   * Section Title field in *ComplianceAudit → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compliance_audit.default.primary.section_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_title: prismic.KeyTextField;
+
+  /**
+   * Section Subtitle field in *ComplianceAudit → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compliance_audit.default.primary.section_subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  section_subtitle: prismic.RichTextField;
+
+  /**
+   * Questions field in *ComplianceAudit → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compliance_audit.default.primary.questions[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  questions: prismic.GroupField<
+    Simplify<ComplianceAuditSliceDefaultPrimaryQuestionsItem>
+  >;
+
+  /**
+   * Answers Tips field in *ComplianceAudit → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compliance_audit.default.primary.answers_tips[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  answers_tips: prismic.GroupField<
+    Simplify<ComplianceAuditSliceDefaultPrimaryAnswersTipsItem>
+  >;
+}
+
+/**
+ * Default variation for ComplianceAudit Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ComplianceAuditSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<ComplianceAuditSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *ComplianceAudit*
+ */
+type ComplianceAuditSliceVariation = ComplianceAuditSliceDefault;
+
+/**
+ * ComplianceAudit Shared Slice
+ *
+ * - **API ID**: `compliance_audit`
+ * - **Description**: ComplianceAudit
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ComplianceAuditSlice = prismic.SharedSlice<
+  'compliance_audit',
+  ComplianceAuditSliceVariation
 >;
 
 /**
@@ -1389,13 +1926,31 @@ declare module '@prismicio/client' {
 
   namespace Content {
     export type {
+      ContractorModuleDocument,
+      ContractorModuleDocumentData,
+      ContractorModuleDocumentDataSlicesSlice,
+      FormsModuleDocument,
+      FormsModuleDocumentData,
+      FormsModuleDocumentDataSlicesSlice,
+      HazardModuleDocument,
+      HazardModuleDocumentData,
+      HazardModuleDocumentDataSlicesSlice,
       HomeDocument,
       HomeDocumentData,
       HomeDocumentDataSlicesSlice,
       HomeDocumentDataSlices1Slice,
+      InspectionModuleDocument,
+      InspectionModuleDocumentData,
+      InspectionModuleDocumentDataSlicesSlice,
       PageDocument,
       PageDocumentData,
       PageDocumentDataSlicesSlice,
+      PoliciesModuleDocument,
+      PoliciesModuleDocumentData,
+      PoliciesModuleDocumentDataSlicesSlice,
+      TrainingModuleDocument,
+      TrainingModuleDocumentData,
+      TrainingModuleDocumentDataSlicesSlice,
       AllDocumentTypes,
       CallToActionSlice,
       CallToActionSliceDefaultPrimaryStatsItem,
@@ -1407,6 +1962,12 @@ declare module '@prismicio/client' {
       CompaniesSliceDefaultPrimary,
       CompaniesSliceVariation,
       CompaniesSliceDefault,
+      ComplianceAuditSlice,
+      ComplianceAuditSliceDefaultPrimaryQuestionsItem,
+      ComplianceAuditSliceDefaultPrimaryAnswersTipsItem,
+      ComplianceAuditSliceDefaultPrimary,
+      ComplianceAuditSliceVariation,
+      ComplianceAuditSliceDefault,
       ContactUsSlice,
       ContactUsSliceDefaultPrimary,
       ContactUsSliceVariation,

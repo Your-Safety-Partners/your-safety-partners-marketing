@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 export const components = {
   call_to_action: dynamic(() => import('./CallToAction')),
   companies: dynamic(() => import('./Companies')),
+  compliance_audit: dynamic(() => import('./ComplianceAudit')),
   contact_us: dynamic(() => import('./ContactUs')),
   faq: dynamic(() => import('./Faq')),
   financial_relief: dynamic(() => import('./FinancialRelief')),
