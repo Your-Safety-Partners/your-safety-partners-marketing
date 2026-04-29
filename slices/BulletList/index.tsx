@@ -3,7 +3,6 @@ import { CircleCheckBig } from 'lucide-react';
 import { Content, isFilled } from '@prismicio/client';
 import { PrismicRichText, SliceComponentProps } from '@prismicio/react';
 
-import { SliceEntrance } from '@/components/slices/slice-entrance';
 import { inter } from '@/lib/fonts/inter';
 import { cn } from '@/lib/utils';
 
@@ -44,13 +43,12 @@ const BulletList: FC<BulletListProps> = ({ slice }) => {
       className={cn(inter.className, 'bg-gray-50 py-16 md:py-20')}
       aria-labelledby="inspection-checklist-heading"
     >
-      <SliceEntrance>
-        <div className="container mx-auto max-w-7xl px-4 md:px-6 lg:px-10">
+      <div className="container mx-auto max-w-7xl px-4 md:px-6 lg:px-10">
           <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:p-8 lg:p-10">
             <header className="mx-auto max-w-3xl text-center">
               <h2
                 id="inspection-checklist-heading"
-                className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl"
+                className="text-3xl font-bold tracking-tight text-[#337cf3] md:text-4xl"
               >
                 {heading}
               </h2>
@@ -113,7 +111,6 @@ const BulletList: FC<BulletListProps> = ({ slice }) => {
             )}
           </div>
         </div>
-      </SliceEntrance>
     </section>
   );
 };
