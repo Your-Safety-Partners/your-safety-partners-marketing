@@ -1,7 +1,7 @@
 // app/blog/[slug]/page.tsx
 import { Metadata } from "next"; 
 import ghost from "@/lib/ghost";
-import { sanitizeHtmlForDangerouslySetInnerHTML } from "@/lib/utils";
+import { sanitizeHtmlForDangerouslySetInnerHTML } from "@/lib/sanitize-html";
 import { notFound } from "next/navigation";
 import type { PostOrPage } from "@tryghost/content-api";
 

@@ -1,35 +1,9 @@
 import type { ClassValue } from 'clsx';
 import { clsx } from 'clsx';
-import DOMPurify from 'isomorphic-dompurify';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
-}
-
-/**
- * Sanitizes HTML for safe use with React's dangerouslySetInnerHTML.
- * Use this for any string that will be passed to __html (e.g. form question HTML,
- * interpolated dialog messages, email body content).
- *
- * - Strips script, iframe, object, embed, form, event handlers, javascript: URLs, etc.
- * - Allows safe prose/content tags and attributes per DOMPurify's html profile
- *   (e.g. p, div, span, strong, b, em, i, ul, ol, li, br, a, img, table, thead, tbody, tr, th, td, h1–h6).
- *
- * Safe to use in both client (.tsx) and server (e.g. email template) code.
- *
- * @example
- * // In a .tsx file:
- * <div dangerouslySetInnerHTML={{ __html: sanitizeHtmlForDangerouslySetInnerHTML(html) }} />
- *
- * @param html - Raw HTML string (may be untrusted).
- * @returns Sanitized HTML string safe for dangerouslySetInnerHTML.
- */
-export function sanitizeHtmlForDangerouslySetInnerHTML(html: string | null | undefined): string {
-  if (html == null || typeof html !== 'string') {
-    return '';
-  }
-  return DOMPurify.sanitize(html, { USE_PROFILES: { html: true } });
 }
 
 /**
