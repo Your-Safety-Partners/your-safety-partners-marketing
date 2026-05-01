@@ -141,12 +141,20 @@ export async function GET(request: NextRequest) {
 File: ./app/api/revalidate/route.ts
 ------------------------
 import { NextResponse } from 'next/server';
-import { revalidateTag } from 'next/cache';
-
+import { revalidateTag, revalidatePath } from 'next/cache';
 export async function POST() {
+  // Log this so you can check Vercel logs to confirm Prismic is hitting this endpoint
+  console.log('🚀 Prismic Webhook received: Revalidating cache...');
+  // 1. Clear the data-level cache (fetch tags)
   revalidateTag('prismic', 'max');
-
-  return NextResponse.json({ revalidated: true, now: Date.now() });
+  // 2. Clear the page-level cache (HTML)
+  // This ensures the layout and all its children are refreshed
+  revalidatePath('/', 'layout');
+  return NextResponse.json({ 
+    revalidated: true, 
+    tag: 'prismic', 
+    now: Date.now() 
+  });
 }
 
 
@@ -241,7 +249,7 @@ File: ./app/blog/[slug]/page.tsx
 // app/blog/[slug]/page.tsx
 import { Metadata } from "next"; 
 import ghost from "@/lib/ghost";
-import { sanitizeHtmlForDangerouslySetInnerHTML } from "@/lib/utils";
+import { sanitizeHtmlForDangerouslySetInnerHTML } from "@/lib/sanitize-html";
 import { notFound } from "next/navigation";
 import type { PostOrPage } from "@tryghost/content-api";
 
@@ -715,12 +723,42 @@ File: ./app/globals.css
   --radius: var(--radius);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slice-entrance] {
+    transition: none !important;
+    transition-delay: 0ms !important;
+    opacity: 1 !important;
+    transform: none !important;
+    will-change: auto !important;
+  }
 }
 
 
@@ -946,12 +984,11 @@ import { SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
 
-export const revalidate = 3600; // 1 hour ISR caching
+// export const revalidate = 3600; // 1 hour ISR caching
 
 export async function generateMetadata(): Promise<Metadata> {
   const client = createClient();
-  const page = await client.getSingle("homepage").catch(() => null);
-  
+  const page = await client.getByUID("home", "home").catch(() => null);
 
   if (!page) return { title: "Your Safety Partners" };
 
@@ -969,16 +1006,21 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Home() {
   const client = createClient();
   
-  const page = await client.getSingle("homepage").catch(() => null);
+  // Let's try getting it as a Reusable Type first
+  let page = await client.getByUID("home", "home").catch(() => null);
 
+  // If that fails, let's try getting it as a Single Type
+  if (!page) {
+    page = await client.getSingle("home").catch(() => null);
+  }
   if (!page) {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center py-24 text-center px-4">
-        <h1 className="text-4xl md:text-6xl font-bold tracking-tighter text-foreground mb-6">
-          Welcome to <span className="text-primary">Your Safety Partners</span>
+      <div className="py-24 text-center px-4">
+        <h1 className="text-4xl font-bold text-red-500 mb-6">
+          Next.js still cannot find the Prismic Document.
         </h1>
-        <p className="text-lg text-muted-foreground max-w-[600px] mb-8">
-          [Prismic Home Page Placeholder] - Create a &quot;home&quot; singleton in Prismic with slices to replace this.
+        <p className="text-lg">
+          Check your VS Code terminal for the console.log.
         </p>
       </div>
     );
@@ -1077,25 +1119,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
 File: ./app/slice-simulator/page.tsx
 ------------------------
-import {
-  SliceSimulator,
-  SliceSimulatorParams,
-  getSlices,
-} from '@slicemachine/adapter-next/simulator';
+'use client';
+
+/**
+ * Slice Machine preview must use the client <SliceSimulator sliceZone={...} /> API.
+ * The Server Component pattern (<SliceSimulator>{children}</SliceSimulator> + getSlices)
+ * hydrates incorrectly because the adapter reads `window` to set `hasSlices`, so the
+ * server renders an empty wrapper while the client renders `#root` + SliceZone.
+ *
+ * @see https://github.com/prismicio/slice-machine (adapter-next SliceSimulator)
+ */
+import { SliceSimulator } from '@slicemachine/adapter-next/simulator';
 import { SliceZone } from '@prismicio/react';
 
 import { components } from '@/slices';
 
-export default async function SliceSimulatorPage({
-  searchParams,
-}: SliceSimulatorParams) {
-  const { state } = await searchParams;
-  const slices = getSlices(state);
-
+export default function SliceSimulatorPage() {
   return (
-    <SliceSimulator>
-      <SliceZone slices={slices} components={components} />
-    </SliceSimulator>
+    <SliceSimulator
+      sliceZone={({ slices }) => (
+        <SliceZone slices={slices} components={components} />
+      )}
+    />
   );
 }
 
@@ -1113,18 +1158,48 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
+const MODULE_CUSTOM_TYPES = [
+  'inspection_module',
+  'policies_module',
+  'forms_module',
+  'training_module',
+  'hazard_module',
+  'contractor_module',
+] as const;
+
+async function getDocumentBySlug(slug: string) {
+  const client = createClient();
+  const page = await client.getByUID('page', slug).catch(() => null);
+  if (page) return page;
+
+  if (MODULE_CUSTOM_TYPES.includes(slug as (typeof MODULE_CUSTOM_TYPES)[number])) {
+    return client
+      .getSingle(slug as (typeof MODULE_CUSTOM_TYPES)[number])
+      .catch(() => null);
+  }
+
+  return null;
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const client = createClient();
-  const page = await client.getByUID("page", slug).catch(() => null);
+  const page = await getDocumentBySlug(slug);
 
   if (!page) return {};
 
   return {
-    title: page.data.meta_title || `${slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())} | Your Safety Partners`,
+    title:
+      page.data.meta_title ||
+      `${slug
+        .replace(/[-_]/g, ' ')
+        .replace(/\b\w/g, (c) => c.toUpperCase())} | Your Safety Partners`,
     description: page.data.meta_description,
     openGraph: {
-      title: page.data.meta_title || `${slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())} | Your Safety Partners`,
+      title:
+        page.data.meta_title ||
+        `${slug
+          .replace(/[-_]/g, ' ')
+          .replace(/\b\w/g, (c) => c.toUpperCase())} | Your Safety Partners`,
       description: page.data.meta_description || undefined,
       images: page.data.meta_image?.url ?[page.data.meta_image.url] :[],
     },
@@ -1133,9 +1208,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Page({ params }: Props) {
   const { slug } = await params;
-  const client = createClient();
-  
-  const page = await client.getByUID("page", slug).catch(() => null);
+  const page = await getDocumentBySlug(slug);
 
   if (!page) {
     return (
@@ -1828,45 +1901,358 @@ export function ContactForm() {
 
 
 
+File: ./components/forms/contact-us-slice-form.tsx
+------------------------
+'use client';
+
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ArrowUpRight } from 'lucide-react';
+import { toast } from 'sonner';
+
+import { submitContactUsSliceForm } from '@/actions/contact';
+import { contactUsSliceFormSchema, type ContactUsSliceFormData } from '@/lib/schemas';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { TextArea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
+
+const fieldClass =
+  'h-11 rounded-xl border-gray-200 bg-white text-gray-900 shadow-none placeholder:text-gray-400 focus-visible:border-violet-500 focus-visible:ring-violet-500/30';
+
+const textAreaClass =
+  'min-h-[168px] resize-y rounded-xl border-gray-200 bg-white py-3 text-gray-900 shadow-none placeholder:text-gray-400 focus-visible:border-violet-500 focus-visible:ring-violet-500/30';
+
+type ContactUsSliceFormProps = {
+  formTitle: string;
+  className?: string;
+};
+
+export function ContactUsSliceForm({ formTitle, className }: ContactUsSliceFormProps) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<ContactUsSliceFormData>({
+    resolver: zodResolver(contactUsSliceFormSchema),
+  });
+
+  const onSubmit = async (data: ContactUsSliceFormData) => {
+    const result = await submitContactUsSliceForm(data);
+
+    if (result?.serverError) {
+      toast.error(result.serverError);
+    } else if (result?.data) {
+      toast.success(result.data);
+      reset();
+    }
+  };
+
+  return (
+    <div
+      className={cn(
+        'rounded-2xl border border-gray-100 bg-white p-6 shadow-[0_8px_30px_rgba(15,23,42,0.08)] md:p-8',
+        className
+      )}
+    >
+      <h3 className="text-lg font-bold tracking-tight text-gray-900 md:text-xl">{formTitle}</h3>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="contact-slice-name" className="sr-only">
+            Your Name (required)
+          </Label>
+          <Input
+            id="contact-slice-name"
+            autoComplete="name"
+            placeholder="Your Name *"
+            disabled={isSubmitting}
+            aria-invalid={Boolean(errors.name)}
+            className={fieldClass}
+            {...register('name')}
+          />
+          {errors.name?.message ? (
+            <p className="text-sm text-destructive" role="alert">
+              {errors.name.message}
+            </p>
+          ) : null}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="contact-slice-email" className="sr-only">
+            Email Address (required)
+          </Label>
+          <Input
+            id="contact-slice-email"
+            type="email"
+            autoComplete="email"
+            placeholder="Email Address *"
+            disabled={isSubmitting}
+            aria-invalid={Boolean(errors.email)}
+            className={fieldClass}
+            {...register('email')}
+          />
+          {errors.email?.message ? (
+            <p className="text-sm text-destructive" role="alert">
+              {errors.email.message}
+            </p>
+          ) : null}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="contact-slice-phone" className="sr-only">
+            Your Phone Number (required)
+          </Label>
+          <Input
+            id="contact-slice-phone"
+            type="tel"
+            autoComplete="tel"
+            placeholder="Your Phone Number *"
+            disabled={isSubmitting}
+            aria-invalid={Boolean(errors.phone)}
+            className={fieldClass}
+            {...register('phone')}
+          />
+          {errors.phone?.message ? (
+            <p className="text-sm text-destructive" role="alert">
+              {errors.phone.message}
+            </p>
+          ) : null}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="contact-slice-message" className="sr-only">
+            Your Message (required)
+          </Label>
+          <TextArea
+            id="contact-slice-message"
+            rows={6}
+            placeholder="Your Message *"
+            disabled={isSubmitting}
+            aria-invalid={Boolean(errors.message)}
+            className={textAreaClass}
+            {...register('message')}
+          />
+          {errors.message?.message ? (
+            <p className="text-sm text-destructive" role="alert">
+              {errors.message.message}
+            </p>
+          ) : null}
+        </div>
+
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="mt-2 h-auto w-full rounded-xl border-0 bg-violet-700 py-2.5 text-base font-medium text-white hover:bg-violet-500 focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2"
+        >
+          <span className="inline-flex items-center text-sm justify-center gap-2">
+            Send Message
+            <ArrowUpRight className="size-4 shrink-0 stroke-[2]" aria-hidden />
+          </span>
+        </Button>
+      </form>
+    </div>
+  );
+}
+
+
+
 File: ./components/global/footer.tsx
 ------------------------
+import type { ComponentType } from "react";
 import Link from "next/link";
+import { Mail, MapPin, Phone } from "lucide-react";
+
+import { inter } from "@/lib/fonts/inter";
+import { cn } from "@/lib/utils";
+
+/** Match header; swap file in `public/` as needed. */
+const LOGO_SRC = "/logo.png";
+
+type SocialIconProps = {
+  className?: string;
+};
+
+function IconFacebook({ className }: SocialIconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M24 12.073C24 5.446 18.627 0 12 0S0 5.446 0 12.073c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+    </svg>
+  );
+}
+
+function IconLinkedIn({ className }: SocialIconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+    </svg>
+  );
+}
+
+function IconX({ className }: SocialIconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
+
+function IconInstagram({ className }: SocialIconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+    </svg>
+  );
+}
+
+function IconYoutube({ className }: SocialIconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+    </svg>
+  );
+}
+
+const socialLinks: Array<{
+  label: string;
+  href: string;
+  Icon: ComponentType<SocialIconProps>;
+}> = [
+  { label: "Facebook", href: "https://www.facebook.com/", Icon: IconFacebook },
+  { label: "LinkedIn", href: "https://www.linkedin.com/", Icon: IconLinkedIn },
+  { label: "X", href: "https://x.com/", Icon: IconX },
+  { label: "Instagram", href: "https://www.instagram.com/", Icon: IconInstagram },
+  { label: "YouTube", href: "https://www.youtube.com/", Icon: IconYoutube },
+];
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+  const iconClass = "size-5 shrink-0 text-[#7b32d0]";
+  const linkClass =
+    "text-sm text-slate-600 transition-colors hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7b32d0] focus-visible:ring-offset-2 rounded-sm";
 
   return (
-    <footer className="w-full border-t border-border bg-background py-8 md:py-12">
-      <div className="container mx-auto px-4 md:px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
-        <div className="flex flex-col gap-2">
-          <span className="font-bold text-lg text-primary">Your Safety Partners</span>
-          <p className="text-sm text-muted-foreground mt-2">
-            Professional safety compliance and management solutions.
-          </p>
-        </div>
-        <div className="flex flex-col gap-2">
-          <h3 className="font-semibold mb-2">Platform</h3>
-          <Link href="/features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</Link>
-          <Link href="/pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
-          <Link href="/industry" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Industries</Link>
-          <Link href="/compare" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Compare Alternatives</Link>
-        </div>
-        <div className="flex flex-col gap-2">
-          <h3 className="font-semibold mb-2">Company</h3>
-          <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">About Us</Link>
-          <Link href="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Blog</Link>
-          <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
-        </div>
-        <div className="flex flex-col gap-2">
-          <h3 className="font-semibold mb-2">Legal</h3>
-          <Link href="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Privacy Policy</Link>
-          <Link href="/terms" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Terms of Service</Link>
+    <footer className={cn(inter.className, "w-full bg-white")}>
+      <div className="container mx-auto max-w-7xl px-4 py-10 md:px-6 md:py-14 lg:px-10">
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 sm:gap-x-10 lg:grid-cols-[2.5fr_1fr_1fr_1fr] lg:gap-12">
+          <div className="flex flex-col gap-6 sm:col-span-2 lg:col-span-1">
+            <Link href="/" className="inline-flex w-fit shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element -- matches header logo pattern */}
+              <img
+                src={LOGO_SRC}
+                alt="Your Safety Partners"
+                width={200}
+                height={64}
+                className="h-14 w-auto"
+              />
+            </Link>
+            <ul className="flex flex-col gap-4 text-sm text-slate-600">
+              <li className="flex gap-3">
+                <MapPin className={iconClass} strokeWidth={1.75} aria-hidden />
+                <span>
+                  <span className="font-medium text-slate-800">Melbourne Office</span>
+                  {" — "}
+                  Level 27, 101 Collins Street Melbourne, VIC 3000
+                </span>
+              </li>
+              <li className="flex gap-3">
+                <MapPin className={iconClass} strokeWidth={1.75} aria-hidden />
+                <span>
+                  <span className="font-medium text-slate-800">Sydney Office</span>
+                  {" — "}
+                  Suite 1046, Ground Level, 100 George St Parramatta, NSW 2150
+                </span>
+              </li>
+              <li className="flex gap-3 items-center">
+                <Phone className={iconClass} strokeWidth={1.75} aria-hidden />
+                <a href="tel:1300033466" className={cn(linkClass, "underline-offset-2 hover:underline")}>
+                  1300 033 466
+                </a>
+              </li>
+              <li className="flex gap-3 items-center">
+                <Mail className={iconClass} strokeWidth={1.75} aria-hidden />
+                <a
+                  href="mailto:john@yoursafetypartners.com.au"
+                  className={cn(linkClass, "underline-offset-2 hover:underline break-all")}
+                >
+                  john@yoursafetypartners.com.au
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <h3 className="text-base font-bold text-[#7b32d0]">Product</h3>
+            <nav className="flex flex-col gap-2" aria-label="Product">
+              <Link href="/pricing" className={linkClass}>
+                Pricing
+              </Link>
+              <Link href="/contact" className={linkClass}>
+                Book a demo
+              </Link>
+            </nav>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <h3 className="text-base font-bold text-[#7b32d0]">Support</h3>
+            <nav className="flex flex-col gap-2" aria-label="Support">
+              <Link href="/faqs" className={linkClass}>
+                FAQs
+              </Link>
+              <Link href="/help-center" className={linkClass}>
+                Help Center
+              </Link>
+              <Link href="/contact" className={linkClass}>
+                Contact Us
+              </Link>
+            </nav>
+          </div>
+
+          <div className="flex flex-col gap-4 sm:col-span-2 lg:col-span-1">
+            <h3 className="text-base font-bold text-slate-800">Follow Us</h3>
+            <div className="flex flex-wrap items-center gap-4">
+              {socialLinks.map(({ label, href, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="text-[#7b32d0] transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7b32d0] focus-visible:ring-offset-2 rounded-sm"
+                >
+                  <Icon className="size-6" />
+                </a>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
-      <div className="container mx-auto px-4 md:px-6 mt-8 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
-        <p className="text-xs text-muted-foreground">
-          &copy; {currentYear} Your Safety Partners. All rights reserved.
-        </p>
+
+      <div className="w-full bg-violet-700 py-4 text-sm text-white md:py-5">
+        <div className="container mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 md:flex-row md:px-6 lg:px-10">
+          <p className="text-center md:text-left">
+            &copy;YourSafetyPartners {currentYear}. All Rights Reserved
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center md:justify-end">
+            <Link
+              href="/terms"
+              className="text-white underline-offset-2 transition-opacity hover:underline hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#7b32d0] rounded-sm"
+            >
+              Terms and Conditions
+            </Link>
+            <span className="text-white/80" aria-hidden>
+              |
+            </span>
+            <Link
+              href="/privacy"
+              className="text-white underline-offset-2 transition-opacity hover:underline hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#7b32d0] rounded-sm"
+            >
+              Privacy Policy
+            </Link>
+          </div>
+        </div>
       </div>
     </footer>
   );
@@ -1874,44 +2260,399 @@ export function Footer() {
 
 
 
+File: ./components/global/header-desktop-nav.tsx
+------------------------
+'use client';
+
+import Link from 'next/link';
+import { ChevronDown } from 'lucide-react';
+
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
+
+const navItemBase =
+  'text-base font-medium text-gray-700 rounded-md p-2 transition-colors hover:bg-violet-50 hover:text-violet-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2';
+
+const navLinkClass = `${navItemBase} inline-flex items-center`;
+
+const navTriggerClass = cn(
+  navItemBase,
+  'inline-flex cursor-pointer items-center gap-1 border-0 bg-transparent',
+  'data-[state=open]:bg-violet-50 data-[state=open]:text-violet-700'
+);
+
+type MegaMenuItem = {
+  href: string;
+  title: string;
+  description: string;
+};
+
+type NavDropdownProps = {
+  label: string;
+  items: MegaMenuItem[];
+};
+
+function NavDropdown({ label, items }: NavDropdownProps) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button type="button" className={navTriggerClass}>
+          {label}
+          <ChevronDown className="size-4 shrink-0" aria-hidden />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent
+        align="start"
+        sideOffset={8}
+        className="w-[min(100vw-2rem,22rem)] max-w-none rounded-lg border border-gray-200 bg-white p-2 shadow-lg"
+      >
+        <ul className="flex flex-col gap-2">
+          {items.map((item) => (
+            <li key={item.title}>
+              <Link
+                href={item.href}
+                className="group block rounded-md p-2 outline-none transition-colors hover:bg-violet-50 focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2"
+              >
+                <span className="block font-semibold text-gray-800 group-hover:text-violet-700">
+                  {item.title}
+                </span>
+                <span className="mt-1 block text-sm leading-relaxed text-gray-500 group-hover:text-violet-600">
+                  {item.description}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+const ourServicesItems: MegaMenuItem[] = [
+  {
+    href: '/industry',
+    title: 'Safety Audits & Inspections',
+    description:
+      'Detailed workplace assessments to identify hazards and ensure compliance with local regulations.',
+  },
+  {
+    href: '/about',
+    title: 'WHS/OHS Consulting',
+    description:
+      'Expert advice on developing safety management systems (SMS) and legal compliance frameworks.',
+  },
+  {
+    href: '/features',
+    title: 'Risk Assessments',
+    description:
+      'Formal identification of workplace risks (e.g., SWMS, JSEA) and the development of control measures.',
+  },
+  {
+    href: '/contact',
+    title: 'Training & Induction',
+    description:
+      'On-site or classroom-based safety training, including First Aid, Fire Safety, or Manual Handling.',
+  },
+  {
+    href: '/features',
+    title: 'Incident Investigation',
+    description:
+      'Professional analysis of workplace accidents to determine root causes and prevent recurrence.',
+  },
+];
+
+const softwareItems: MegaMenuItem[] = [
+  {
+    href: '/features',
+    title: 'Digital Safety Forms',
+    description:
+      'Mobile-friendly checklists for site inspections, pre-starts, and hazard reporting.',
+  },
+  {
+    href: '/features',
+    title: 'Asset & Equipment Tracking',
+    description:
+      'Tools for managing maintenance schedules, service history, and equipment registers.',
+  },
+  {
+    href: '/compare',
+    title: 'Incident Reporting & Analytics',
+    description:
+      'A dashboard for logging incidents in real-time and generating trend reports.',
+  },
+  {
+    href: '/features',
+    title: 'Online Inductions',
+    description:
+      'A system for workers to complete safety training and site orientations before they arrive.',
+  },
+];
+
+export function HeaderDesktopNav() {
+  return (
+    <nav className="hidden md:flex items-center gap-6" aria-label="Main">
+      <Link href="/about" className={navLinkClass}>
+        About Us
+      </Link>
+      <NavDropdown label="Our Services" items={ourServicesItems} />
+      <NavDropdown label="Software" items={softwareItems} />
+      <Link href="/blog" className={navLinkClass}>
+        News
+      </Link>
+    </nav>
+  );
+}
+
+
+
 File: ./components/global/header.tsx
 ------------------------
-import Link from "next/link";
-import CustomButton from "@/components/custom-ui/custom-button";
+import Link from 'next/link';
+
+import { HeaderDesktopNav } from '@/components/global/header-desktop-nav';
+import { inter } from '@/lib/fonts/inter';
+import { cn } from '@/lib/utils';
+
+/** Place your logo file in `public/` and set this path (e.g. `/logo.png`). */
+const LOGO_SRC = '/logo.png';
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between mx-auto px-4 md:px-6">
+    <header
+      className={cn(
+        inter.className,
+        'sticky top-0 z-50 w-full bg-white shadow-[0_4px_14px_-4px_rgba(15,23,42,0.12),0_2px_6px_-4px_rgba(15,23,42,0.08)]'
+      )}
+    >
+      <div className="container mx-auto flex items-center justify-between max-w-7xl px-4 md:px-6 lg:px-10 py-3">
         <div className="flex items-center gap-6">
-          <Link href="/" className="flex items-center space-x-2">
-            <span className="font-bold text-xl text-primary tracking-tight">Your Safety Partners</span>
+          <Link href="/" className="flex shrink-0 items-center">
+            {/* Plain img so the logo path is easy to swap; prefer next/image if you want optimization. */}
+            {/* eslint-disable-next-line @next/next/no-img-element -- explicit requirement: static logo path */}
+            <img
+              src={LOGO_SRC}
+              alt="Your Safety Partners"
+              width={200}
+              height={64}
+              className="h-16 w-auto"
+            />
           </Link>
-          <nav className="hidden md:flex gap-6">
-            <Link href="/features" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              Features
-            </Link>
-            <Link href="/industry" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              Industries
-            </Link>
-            <Link href="/blog" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              Blog
-            </Link>
-            <Link href="/about" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              About
-            </Link>
-          </nav>
+          <HeaderDesktopNav />
         </div>
-        <div className="flex items-center gap-4">
-          <Link href="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors hidden sm:block">
-            Log in
-          </Link>
-          <CustomButton title="Get Started" url="/contact" variant="default" />
-        </div>
+        <Link
+          href="/contact"
+          className="inline-flex items-center justify-center rounded-md bg-violet-700 px-[20px] py-[12px] text-base font-medium text-white transition-colors hover:bg-violet-700/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2"
+        >
+          Contact Us
+        </Link>
       </div>
     </header>
   );
 }
+
+
+
+File: ./components/slices/slice-entrance.tsx
+------------------------
+'use client';
+
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from 'react';
+
+import { cn } from '@/lib/utils';
+
+type SliceEntranceGroupContextValue = { active: boolean };
+
+const SliceEntranceGroupContext =
+  createContext<SliceEntranceGroupContextValue | null>(null);
+
+const IO_OPTIONS: IntersectionObserverInit = {
+  rootMargin: '0px 0px -10% 0px',
+  threshold: 0.06,
+};
+
+type SliceEntranceGroupProps = {
+  children: ReactNode;
+  className?: string;
+};
+
+/**
+ * One intersection target for the whole block. Child `SliceEntrance` components
+ * use the shared `active` flag so stagger delays stay in sync (e.g. hero columns).
+ */
+export function SliceEntranceGroup({ children, className }: SliceEntranceGroupProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setActive(true);
+        observer.disconnect();
+      }
+    }, IO_OPTIONS);
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <SliceEntranceGroupContext.Provider value={{ active }}>
+      <div ref={ref} className={cn(className)}>
+        {children}
+      </div>
+    </SliceEntranceGroupContext.Provider>
+  );
+}
+
+type SliceEntranceProps = {
+  children: ReactNode;
+  className?: string;
+  /** Horizontal entrance direction (default: from the left). */
+  from?: 'left' | 'right';
+  /** Wait (ms) after the slice is in view before this block’s transition runs (stagger). */
+  delayMs?: number;
+};
+
+const OFFSET = '2.5rem'; /* ~Tailwind translate-x-10 */
+
+/**
+ * Slides content in from the side (with opacity) when the slice enters the viewport (once).
+ * Inside `SliceEntranceGroup`, follows the group’s single trigger instead.
+ * Uses inline `transform` so motion is not dropped by Tailwind class scanning.
+ * Reduced motion: see `globals.css` `[data-slice-entrance]`.
+ */
+export function SliceEntrance({
+  children,
+  className,
+  from = 'left',
+  delayMs = 0,
+}: SliceEntranceProps) {
+  const group = useContext(SliceEntranceGroupContext);
+  const ref = useRef<HTMLDivElement>(null);
+  const [selfVisible, setSelfVisible] = useState(false);
+
+  useEffect(() => {
+    if (group !== null) return;
+
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setSelfVisible(true);
+        observer.disconnect();
+      }
+    }, IO_OPTIONS);
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [group]);
+
+  const visible = group !== null ? group.active : selfVisible;
+
+  const offset = from === 'right' ? OFFSET : `-${OFFSET}`;
+
+  const style: CSSProperties = {
+    opacity: visible ? 1 : 0,
+    transform: visible ? 'translate3d(0,0,0)' : `translate3d(${offset},0,0)`,
+    transition: 'opacity 700ms ease-out, transform 700ms ease-out',
+    transitionDelay: visible ? `${delayMs}ms` : '0ms',
+    willChange: visible ? 'auto' : 'transform, opacity',
+  };
+
+  return (
+    <div
+      ref={ref}
+      data-slice-entrance
+      className={cn(className)}
+      style={style}
+    >
+      {children}
+    </div>
+  );
+}
+
+
+
+File: ./components/ui/accordion.tsx
+------------------------
+"use client"
+
+import * as React from "react"
+import { ChevronDownIcon } from "lucide-react"
+import { Accordion as AccordionPrimitive } from "radix-ui"
+
+import { cn } from "@/lib/utils"
+
+function Accordion({
+  ...props
+}: React.ComponentProps<typeof AccordionPrimitive.Root>) {
+  return <AccordionPrimitive.Root data-slot="accordion" {...props} />
+}
+
+function AccordionItem({
+  className,
+  ...props
+}: React.ComponentProps<typeof AccordionPrimitive.Item>) {
+  return (
+    <AccordionPrimitive.Item
+      data-slot="accordion-item"
+      className={cn(className)}
+      {...props}
+    />
+  )
+}
+
+function AccordionTrigger({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<typeof AccordionPrimitive.Trigger>) {
+  return (
+    <AccordionPrimitive.Header className="flex">
+      <AccordionPrimitive.Trigger
+        data-slot="accordion-trigger"
+        className={cn(
+          "flex flex-1 items-start justify-between gap-4 rounded-md px-4 py-4 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 [&[data-state=open]>svg]:rotate-180",
+          className
+        )}
+        {...props}
+      >
+        {children}
+        <ChevronDownIcon className="pointer-events-none size-4 shrink-0 translate-y-0.5 text-muted-foreground transition-transform duration-200" />
+      </AccordionPrimitive.Trigger>
+    </AccordionPrimitive.Header>
+  )
+}
+
+function AccordionContent({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<typeof AccordionPrimitive.Content>) {
+  return (
+    <AccordionPrimitive.Content
+      data-slot="accordion-content"
+      className="overflow-hidden text-sm px-4 data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
+      {...props}
+    >
+      <div className={cn("pt-0 pb-4", className)}>{children}</div>
+    </AccordionPrimitive.Content>
+  )
+}
+
+export { Accordion, AccordionItem, AccordionTrigger, AccordionContent }
 
 
 
@@ -2760,6 +3501,18 @@ export function clientLog(
 
 
 
+File: ./lib/fonts/inter.ts
+------------------------
+import { Inter } from 'next/font/google';
+
+/** Shared Inter instance — import from here so the font is only registered once. */
+export const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+});
+
+
+
 File: ./lib/ghost.ts
 ------------------------
 import GhostContentAPI from '@tryghost/content-api';
@@ -2889,6 +3642,24 @@ export async function getComparisonBySlug(slug: string): Promise<ProgrammaticSEO
 
 
 
+File: ./lib/sanitize-html.ts
+------------------------
+import DOMPurify from 'isomorphic-dompurify';
+
+/**
+ * Sanitizes HTML for safe use with React's dangerouslySetInnerHTML.
+ * Use this for any string that will be passed to __html.
+ */
+export function sanitizeHtmlForDangerouslySetInnerHTML(html: string | null | undefined): string {
+  if (html == null || typeof html !== 'string') {
+    return '';
+  }
+
+  return DOMPurify.sanitize(html, { USE_PROFILES: { html: true } });
+}
+
+
+
 File: ./lib/schemas.ts
 ------------------------
 import { z } from 'zod';
@@ -2904,6 +3675,22 @@ export const contactFormSchema = z.object({
 });
 
 export type ContactFormData = z.infer<typeof contactFormSchema>;
+
+/** Contact form embedded in the Contact Us Prismic slice (includes phone). */
+export const contactUsSliceFormSchema = z.object({
+  name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
+  email: z.string().email({ message: 'Please enter a valid email address.' }),
+  phone: z
+    .string()
+    .min(8, { message: 'Please enter a valid phone number.' })
+    .max(32, { message: 'Phone number is too long.' }),
+  message: z
+    .string()
+    .min(10, { message: 'Message must be at least 10 characters.' })
+    .max(2000, { message: 'Message cannot exceed 2000 characters.' }),
+});
+
+export type ContactUsSliceFormData = z.infer<typeof contactUsSliceFormSchema>;
 
 
 
@@ -3336,36 +4123,10 @@ File: ./lib/utils.ts
 ------------------------
 import type { ClassValue } from 'clsx';
 import { clsx } from 'clsx';
-import DOMPurify from 'isomorphic-dompurify';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
-}
-
-/**
- * Sanitizes HTML for safe use with React's dangerouslySetInnerHTML.
- * Use this for any string that will be passed to __html (e.g. form question HTML,
- * interpolated dialog messages, email body content).
- *
- * - Strips script, iframe, object, embed, form, event handlers, javascript: URLs, etc.
- * - Allows safe prose/content tags and attributes per DOMPurify's html profile
- *   (e.g. p, div, span, strong, b, em, i, ul, ol, li, br, a, img, table, thead, tbody, tr, th, td, h1–h6).
- *
- * Safe to use in both client (.tsx) and server (e.g. email template) code.
- *
- * @example
- * // In a .tsx file:
- * <div dangerouslySetInnerHTML={{ __html: sanitizeHtmlForDangerouslySetInnerHTML(html) }} />
- *
- * @param html - Raw HTML string (may be untrusted).
- * @returns Sanitized HTML string safe for dangerouslySetInnerHTML.
- */
-export function sanitizeHtmlForDangerouslySetInnerHTML(html: string | null | undefined): string {
-  if (html == null || typeof html !== 'string') {
-    return '';
-  }
-  return DOMPurify.sanitize(html, { USE_PROFILES: { html: true } });
 }
 
 /**
@@ -4018,19 +4779,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'images.prismic.io',
-      },
-      {
-        protocol: 'https',
         hostname: 'static.ghost.org',
       },
       {
         protocol: 'https',
-        hostname: 'your-safety-portal.ghost.io',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
+        hostname: 'your-safety-portal.ghost.io', 
       },
     ],
   },
@@ -4090,6 +4843,7 @@ File: package.json
     "next-themes": "^0.4.6",
     "pino": "^10.3.1",
     "pino-pretty": "^13.1.3",
+    "radix-ui": "^1.4.3",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-hook-form": "^7.71.2",
@@ -4108,7 +4862,7 @@ File: package.json
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.7",
-    "slice-machine-ui": "^2.21.1",
+    "slice-machine-ui": "^2.21.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
@@ -4211,7 +4965,213 @@ type ContentRelationshipFieldWithData<
   >;
 }[Exclude<TCustomType[number], string>['id']];
 
-type HomeDocumentDataSlicesSlice = TestimonialSlice;
+type ContractorModuleDocumentDataSlicesSlice = FaqSlice;
+
+/**
+ * Content for Contractor Module documents
+ */
+interface ContractorModuleDocumentData {
+  /**
+   * Slice Zone field in *Contractor Module*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: contractor_module.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<ContractorModuleDocumentDataSlicesSlice>; /**
+   * Meta Title field in *Contractor Module*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: contractor_module.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Contractor Module*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: contractor_module.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Contractor Module*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: contractor_module.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Contractor Module document from Prismic
+ *
+ * - **API ID**: `contractor_module`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type ContractorModuleDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<ContractorModuleDocumentData>,
+    'contractor_module',
+    Lang
+  >;
+
+type FormsModuleDocumentDataSlicesSlice = FaqSlice;
+
+/**
+ * Content for Forms Module documents
+ */
+interface FormsModuleDocumentData {
+  /**
+   * Slice Zone field in *Forms Module*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: forms_module.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<FormsModuleDocumentDataSlicesSlice>; /**
+   * Meta Title field in *Forms Module*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: forms_module.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Forms Module*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: forms_module.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Forms Module*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: forms_module.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Forms Module document from Prismic
+ *
+ * - **API ID**: `forms_module`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type FormsModuleDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<FormsModuleDocumentData>,
+    'forms_module',
+    Lang
+  >;
+
+type HazardModuleDocumentDataSlicesSlice = FaqSlice;
+
+/**
+ * Content for Hazard Module documents
+ */
+interface HazardModuleDocumentData {
+  /**
+   * Slice Zone field in *Hazard Module*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: hazard_module.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<HazardModuleDocumentDataSlicesSlice>; /**
+   * Meta Title field in *Hazard Module*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: hazard_module.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Hazard Module*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: hazard_module.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Hazard Module*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: hazard_module.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Hazard Module document from Prismic
+ *
+ * - **API ID**: `hazard_module`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type HazardModuleDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<HazardModuleDocumentData>,
+    'hazard_module',
+    Lang
+  >;
+
+type HomeDocumentDataSlicesSlice =
+  | FaqSlice
+  | ContactUsSlice
+  | CallToActionSlice
+  | HowWeCanWelpSlice
+  | WhyChooseUsSlice
+  | FinancialReliefSlice
+  | LegislativeSlice
+  | PlatformAppsSlice
+  | CompaniesSlice
+  | HeroSectionSlice
+  | TestimonialSlice;
 
 /**
  * Content for Home documents
@@ -4272,74 +5232,88 @@ interface HomeDocumentData {
 export type HomeDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithoutUID<Simplify<HomeDocumentData>, 'home', Lang>;
 
-type HomepageDocumentDataSlicesSlice = TestimonialSlice;
+type InspectionModuleDocumentDataSlicesSlice =
+  | CallToActionSlice
+  | BulletListSlice
+  | ComplianceAuditSlice
+  | FaqSlice;
 
 /**
- * Content for Homepage documents
+ * Content for Inspection Module documents
  */
-interface HomepageDocumentData {
+interface InspectionModuleDocumentData {
   /**
-   * Title field in *Homepage*
+   * Slice Zone field in *Inspection Module*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: inspection_module.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<InspectionModuleDocumentDataSlicesSlice>; /**
+   * Meta Title field in *Inspection Module*
    *
    * - **Field Type**: Text
-   * - **Placeholder**: Your Safety Partners
-   * - **API ID Path**: homepage.meta_title
-   * - **Tab**: Main
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: inspection_module.meta_title
+   * - **Tab**: SEO & Metadata
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   meta_title: prismic.KeyTextField;
 
   /**
-   * Description field in *Homepage*
+   * Meta Description field in *Inspection Module*
    *
    * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: homepage.meta_description
-   * - **Tab**: Main
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: inspection_module.meta_description
+   * - **Tab**: SEO & Metadata
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   meta_description: prismic.KeyTextField;
 
   /**
-   * Image field in *Homepage*
+   * Meta Image field in *Inspection Module*
    *
    * - **Field Type**: Image
    * - **Placeholder**: *None*
-   * - **API ID Path**: homepage.meta_image
-   * - **Tab**: Main
+   * - **API ID Path**: inspection_module.meta_image
+   * - **Tab**: SEO & Metadata
    * - **Documentation**: https://prismic.io/docs/fields/image
    */
   meta_image: prismic.ImageField<never>;
-
-  /**
-   * Slice Zone field in *Homepage*
-   *
-   * - **Field Type**: Slice Zone
-   * - **Placeholder**: *None*
-   * - **API ID Path**: homepage.slices[]
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/slices
-   */
-  slices: prismic.SliceZone<HomepageDocumentDataSlicesSlice>;
 }
 
 /**
- * Homepage document from Prismic
+ * Inspection Module document from Prismic
  *
- * - **API ID**: `homepage`
+ * - **API ID**: `inspection_module`
  * - **Repeatable**: `false`
  * - **Documentation**: https://prismic.io/docs/content-modeling
  *
  * @typeParam Lang - Language API ID of the document.
  */
-export type HomepageDocument<Lang extends string = string> =
+export type InspectionModuleDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithoutUID<
-    Simplify<HomepageDocumentData>,
-    'homepage',
+    Simplify<InspectionModuleDocumentData>,
+    'inspection_module',
     Lang
   >;
 
-type PageDocumentDataSlicesSlice = never;
+type PageDocumentDataSlicesSlice =
+  | CallToActionSlice
+  | CompaniesSlice
+  | ComplianceAuditSlice
+  | ContactUsSlice
+  | FaqSlice
+  | FinancialReliefSlice
+  | HeroSectionSlice
+  | HowWeCanWelpSlice
+  | LegislativeSlice
+  | PlatformAppsSlice
+  | TestimonialSlice
+  | WhyChooseUsSlice;
 
 /**
  * Content for Page documents
@@ -4400,12 +5374,1320 @@ interface PageDocumentData {
 export type PageDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithUID<Simplify<PageDocumentData>, 'page', Lang>;
 
-export type AllDocumentTypes = HomeDocument | HomepageDocument | PageDocument;
+type PoliciesModuleDocumentDataSlicesSlice = FaqSlice;
+
+/**
+ * Content for Policies Module documents
+ */
+interface PoliciesModuleDocumentData {
+  /**
+   * Slice Zone field in *Policies Module*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: policies_module.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<PoliciesModuleDocumentDataSlicesSlice>; /**
+   * Meta Title field in *Policies Module*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: policies_module.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Policies Module*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: policies_module.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Policies Module*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: policies_module.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Policies Module document from Prismic
+ *
+ * - **API ID**: `policies_module`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type PoliciesModuleDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<PoliciesModuleDocumentData>,
+    'policies_module',
+    Lang
+  >;
+
+type TrainingModuleDocumentDataSlicesSlice = FaqSlice;
+
+/**
+ * Content for Training Module documents
+ */
+interface TrainingModuleDocumentData {
+  /**
+   * Slice Zone field in *Training Module*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: training_module.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<TrainingModuleDocumentDataSlicesSlice>; /**
+   * Meta Title field in *Training Module*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: training_module.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Training Module*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: training_module.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Training Module*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: training_module.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Training Module document from Prismic
+ *
+ * - **API ID**: `training_module`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type TrainingModuleDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<TrainingModuleDocumentData>,
+    'training_module',
+    Lang
+  >;
+
+export type AllDocumentTypes =
+  | ContractorModuleDocument
+  | FormsModuleDocument
+  | HazardModuleDocument
+  | HomeDocument
+  | InspectionModuleDocument
+  | PageDocument
+  | PoliciesModuleDocument
+  | TrainingModuleDocument;
+
+/**
+ * Item in *BulletList → Default → Primary → Bullet List*
+ */
+export interface BulletListSliceDefaultPrimaryBulletListItem {
+  /**
+   * Item Title field in *BulletList → Default → Primary → Bullet List*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: bullet_list.default.primary.bullet_list[].item_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  item_title: prismic.KeyTextField;
+
+  /**
+   * Item Description field in *BulletList → Default → Primary → Bullet List*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: bullet_list.default.primary.bullet_list[].item_description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  item_description: prismic.RichTextField;
+}
+
+/**
+ * Primary content in *BulletList → Default → Primary*
+ */
+export interface BulletListSliceDefaultPrimary {
+  /**
+   * Section Title field in *BulletList → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: bullet_list.default.primary.section_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_title: prismic.KeyTextField;
+
+  /**
+   * Section Subtitle field in *BulletList → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: bullet_list.default.primary.section_subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  section_subtitle: prismic.RichTextField;
+
+  /**
+   * Bullet List field in *BulletList → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: bullet_list.default.primary.bullet_list[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  bullet_list: prismic.GroupField<
+    Simplify<BulletListSliceDefaultPrimaryBulletListItem>
+  >;
+}
+
+/**
+ * Default variation for BulletList Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type BulletListSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<BulletListSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *BulletList*
+ */
+type BulletListSliceVariation = BulletListSliceDefault;
+
+/**
+ * BulletList Shared Slice
+ *
+ * - **API ID**: `bullet_list`
+ * - **Description**: BulletList
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type BulletListSlice = prismic.SharedSlice<
+  'bullet_list',
+  BulletListSliceVariation
+>;
+
+/**
+ * Item in *CallToAction → Default → Primary → Stats*
+ */
+export interface CallToActionSliceDefaultPrimaryStatsItem {
+  /**
+   * Number field in *CallToAction → Default → Primary → Stats*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: call_to_action.default.primary.stats[].number
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  number: prismic.KeyTextField;
+
+  /**
+   * Description field in *CallToAction → Default → Primary → Stats*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: call_to_action.default.primary.stats[].description
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  description: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *CallToAction → Default → Primary*
+ */
+export interface CallToActionSliceDefaultPrimary {
+  /**
+   * Section Title field in *CallToAction → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: call_to_action.default.primary.section_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_title: prismic.KeyTextField;
+
+  /**
+   * Section Subtitle field in *CallToAction → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: call_to_action.default.primary.section_subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_subtitle: prismic.KeyTextField;
+
+  /**
+   * Stats field in *CallToAction → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: call_to_action.default.primary.stats[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  stats: prismic.GroupField<Simplify<CallToActionSliceDefaultPrimaryStatsItem>>;
+}
+
+/**
+ * Default variation for CallToAction Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type CallToActionSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<CallToActionSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *CallToAction*
+ */
+type CallToActionSliceVariation = CallToActionSliceDefault;
+
+/**
+ * CallToAction Shared Slice
+ *
+ * - **API ID**: `call_to_action`
+ * - **Description**: CallToAction
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type CallToActionSlice = prismic.SharedSlice<
+  'call_to_action',
+  CallToActionSliceVariation
+>;
+
+/**
+ * Item in *Companies → Default → Primary → Companies*
+ */
+export interface CompaniesSliceDefaultPrimaryCompaniesItem {
+  /**
+   * Company Logo field in *Companies → Default → Primary → Companies*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: companies.default.primary.companies[].company_logo
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  company_logo: prismic.ImageField<never>;
+}
+
+/**
+ * Primary content in *Companies → Default → Primary*
+ */
+export interface CompaniesSliceDefaultPrimary {
+  /**
+   * Companies field in *Companies → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: companies.default.primary.companies[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  companies: prismic.GroupField<
+    Simplify<CompaniesSliceDefaultPrimaryCompaniesItem>
+  >;
+}
+
+/**
+ * Default variation for Companies Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type CompaniesSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<CompaniesSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Companies*
+ */
+type CompaniesSliceVariation = CompaniesSliceDefault;
+
+/**
+ * Companies Shared Slice
+ *
+ * - **API ID**: `companies`
+ * - **Description**: Companies
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type CompaniesSlice = prismic.SharedSlice<
+  'companies',
+  CompaniesSliceVariation
+>;
+
+/**
+ * Item in *ComplianceAudit → Default → Primary → Questions*
+ */
+export interface ComplianceAuditSliceDefaultPrimaryQuestionsItem {
+  /**
+   * Question Item field in *ComplianceAudit → Default → Primary → Questions*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compliance_audit.default.primary.questions[].question_item
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  question_item: prismic.RichTextField;
+}
+
+/**
+ * Item in *ComplianceAudit → Default → Primary → Answers Tips*
+ */
+export interface ComplianceAuditSliceDefaultPrimaryAnswersTipsItem {
+  /**
+   * Tip Title field in *ComplianceAudit → Default → Primary → Answers Tips*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compliance_audit.default.primary.answers_tips[].tip_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  tip_title: prismic.KeyTextField;
+
+  /**
+   * Tip Description field in *ComplianceAudit → Default → Primary → Answers Tips*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compliance_audit.default.primary.answers_tips[].tip_description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  tip_description: prismic.RichTextField;
+
+  /**
+   * Level field in *ComplianceAudit → Default → Primary → Answers Tips*
+   *
+   * - **Field Type**: Number
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compliance_audit.default.primary.answers_tips[].level
+   * - **Documentation**: https://prismic.io/docs/fields/number
+   */
+  level: prismic.NumberField;
+}
+
+/**
+ * Primary content in *ComplianceAudit → Default → Primary*
+ */
+export interface ComplianceAuditSliceDefaultPrimary {
+  /**
+   * Eyebrow Text field in *ComplianceAudit → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compliance_audit.default.primary.eyebrow_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  eyebrow_text: prismic.KeyTextField;
+
+  /**
+   * Section Title field in *ComplianceAudit → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compliance_audit.default.primary.section_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_title: prismic.KeyTextField;
+
+  /**
+   * Section Subtitle field in *ComplianceAudit → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compliance_audit.default.primary.section_subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  section_subtitle: prismic.RichTextField;
+
+  /**
+   * Questions field in *ComplianceAudit → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compliance_audit.default.primary.questions[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  questions: prismic.GroupField<
+    Simplify<ComplianceAuditSliceDefaultPrimaryQuestionsItem>
+  >;
+
+  /**
+   * Answers Tips field in *ComplianceAudit → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: compliance_audit.default.primary.answers_tips[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  answers_tips: prismic.GroupField<
+    Simplify<ComplianceAuditSliceDefaultPrimaryAnswersTipsItem>
+  >;
+}
+
+/**
+ * Default variation for ComplianceAudit Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ComplianceAuditSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<ComplianceAuditSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *ComplianceAudit*
+ */
+type ComplianceAuditSliceVariation = ComplianceAuditSliceDefault;
+
+/**
+ * ComplianceAudit Shared Slice
+ *
+ * - **API ID**: `compliance_audit`
+ * - **Description**: ComplianceAudit
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ComplianceAuditSlice = prismic.SharedSlice<
+  'compliance_audit',
+  ComplianceAuditSliceVariation
+>;
+
+/**
+ * Primary content in *ContactUs → Default → Primary*
+ */
+export interface ContactUsSliceDefaultPrimary {
+  /**
+   * Section Title field in *ContactUs → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: contact_us.default.primary.section_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_title: prismic.KeyTextField;
+
+  /**
+   * Section Description field in *ContactUs → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: contact_us.default.primary.section_description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  section_description: prismic.RichTextField;
+
+  /**
+   * Contact Number field in *ContactUs → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: contact_us.default.primary.contact_number
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  contact_number: prismic.KeyTextField;
+
+  /**
+   * Contact Email field in *ContactUs → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: contact_us.default.primary.contact_email
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  contact_email: prismic.KeyTextField;
+
+  /**
+   * Form Title field in *ContactUs → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: Send us a message
+   * - **API ID Path**: contact_us.default.primary.form_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  form_title: prismic.KeyTextField;
+}
+
+/**
+ * Default variation for ContactUs Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ContactUsSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<ContactUsSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *ContactUs*
+ */
+type ContactUsSliceVariation = ContactUsSliceDefault;
+
+/**
+ * ContactUs Shared Slice
+ *
+ * - **API ID**: `contact_us`
+ * - **Description**: ContactUs
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ContactUsSlice = prismic.SharedSlice<
+  'contact_us',
+  ContactUsSliceVariation
+>;
+
+/**
+ * Item in *Faq → Default → Primary → FAQs*
+ */
+export interface FaqSliceDefaultPrimaryFaqsItem {
+  /**
+   * Question Item field in *Faq → Default → Primary → FAQs*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: faq.default.primary.faqs[].question_item
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  question_item: prismic.RichTextField;
+
+  /**
+   * Answer Item field in *Faq → Default → Primary → FAQs*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: faq.default.primary.faqs[].answer_item
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  answer_item: prismic.RichTextField;
+}
+
+/**
+ * Primary content in *Faq → Default → Primary*
+ */
+export interface FaqSliceDefaultPrimary {
+  /**
+   * Section Title field in *Faq → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: faq.default.primary.section_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_title: prismic.KeyTextField;
+
+  /**
+   * Section Subtitle field in *Faq → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: faq.default.primary.section_subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  section_subtitle: prismic.RichTextField;
+
+  /**
+   * FAQs field in *Faq → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: faq.default.primary.faqs[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  faqs: prismic.GroupField<Simplify<FaqSliceDefaultPrimaryFaqsItem>>;
+}
+
+/**
+ * Default variation for Faq Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type FaqSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<FaqSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Faq*
+ */
+type FaqSliceVariation = FaqSliceDefault;
+
+/**
+ * Faq Shared Slice
+ *
+ * - **API ID**: `faq`
+ * - **Description**: Faq
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type FaqSlice = prismic.SharedSlice<'faq', FaqSliceVariation>;
+
+/**
+ * Item in *FinancialRelief → Default → Primary → Cards*
+ */
+export interface FinancialReliefSliceDefaultPrimaryCardsItem {
+  /**
+   * Card Icon field in *FinancialRelief → Default → Primary → Cards*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: financial_relief.default.primary.cards[].card_icon
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  card_icon: prismic.ImageField<never>;
+
+  /**
+   * Card Title field in *FinancialRelief → Default → Primary → Cards*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: financial_relief.default.primary.cards[].card_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  card_title: prismic.KeyTextField;
+
+  /**
+   * Card Subtitle field in *FinancialRelief → Default → Primary → Cards*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: financial_relief.default.primary.cards[].card_subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  card_subtitle: prismic.KeyTextField;
+
+  /**
+   * Card Text field in *FinancialRelief → Default → Primary → Cards*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: financial_relief.default.primary.cards[].card_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  card_text: prismic.KeyTextField;
+}
+
+/**
+ * Item in *FinancialRelief → Default → Primary → Financial Table*
+ */
+export interface FinancialReliefSliceDefaultPrimaryFinancialTableItem {
+  /**
+   * Category of Loss field in *FinancialRelief → Default → Primary → Financial Table*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: financial_relief.default.primary.financial_table[].category_of_loss
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  category_of_loss: prismic.KeyTextField;
+
+  /**
+   * The Paper Way Costs field in *FinancialRelief → Default → Primary → Financial Table*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: financial_relief.default.primary.financial_table[].the_paper_way_costs
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  the_paper_way_costs: prismic.KeyTextField;
+
+  /**
+   * Your Safety Portal Result field in *FinancialRelief → Default → Primary → Financial Table*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: financial_relief.default.primary.financial_table[].your_safety_portal_result
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  your_safety_portal_result: prismic.KeyTextField;
+}
+
+/**
+ * Item in *FinancialRelief → Default → Primary → Zero Claim Item*
+ */
+export interface FinancialReliefSliceDefaultPrimaryZeroClaimItemTitleItem {
+  /**
+   * Zero Claim Item Title field in *FinancialRelief → Default → Primary → Zero Claim Item*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: financial_relief.default.primary.zero_claim_item_title[].zero_claim_item_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  zero_claim_item_title: prismic.KeyTextField;
+
+  /**
+   * Zero Claim Item Description field in *FinancialRelief → Default → Primary → Zero Claim Item*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: financial_relief.default.primary.zero_claim_item_title[].zero_claim_item_description
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  zero_claim_item_description: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *FinancialRelief → Default → Primary*
+ */
+export interface FinancialReliefSliceDefaultPrimary {
+  /**
+   * Section Title field in *FinancialRelief → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: financial_relief.default.primary.section_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_title: prismic.KeyTextField;
+
+  /**
+   * Section Subtitle field in *FinancialRelief → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: financial_relief.default.primary.section_subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  section_subtitle: prismic.RichTextField;
+
+  /**
+   * Cards field in *FinancialRelief → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: financial_relief.default.primary.cards[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  cards: prismic.GroupField<
+    Simplify<FinancialReliefSliceDefaultPrimaryCardsItem>
+  >;
+
+  /**
+   * Section Title 2 field in *FinancialRelief → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: financial_relief.default.primary.section_title_2
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_title_2: prismic.KeyTextField;
+
+  /**
+   * Section Subtitle 2 field in *FinancialRelief → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: financial_relief.default.primary.section_subtitle_2
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_subtitle_2: prismic.KeyTextField;
+
+  /**
+   * Financial Table field in *FinancialRelief → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: financial_relief.default.primary.financial_table[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  financial_table: prismic.GroupField<
+    Simplify<FinancialReliefSliceDefaultPrimaryFinancialTableItem>
+  >;
+
+  /**
+   * Zero Claim Card Title field in *FinancialRelief → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: financial_relief.default.primary.zero_claim_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  zero_claim_title: prismic.KeyTextField;
+
+  /**
+   * Zero Claim Item field in *FinancialRelief → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: financial_relief.default.primary.zero_claim_item_title[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  zero_claim_item_title: prismic.GroupField<
+    Simplify<FinancialReliefSliceDefaultPrimaryZeroClaimItemTitleItem>
+  >;
+}
+
+/**
+ * Default variation for FinancialRelief Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type FinancialReliefSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<FinancialReliefSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *FinancialRelief*
+ */
+type FinancialReliefSliceVariation = FinancialReliefSliceDefault;
+
+/**
+ * FinancialRelief Shared Slice
+ *
+ * - **API ID**: `financial_relief`
+ * - **Description**: FinancialRelief
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type FinancialReliefSlice = prismic.SharedSlice<
+  'financial_relief',
+  FinancialReliefSliceVariation
+>;
+
+/**
+ * Item in *HeroSection → Default → Primary → Stats*
+ */
+export interface HeroSectionSliceDefaultPrimaryStatsItem {
+  /**
+   * Number field in *HeroSection → Default → Primary → Stats*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: hero_section.default.primary.stats[].number
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  number: prismic.KeyTextField;
+
+  /**
+   * Description field in *HeroSection → Default → Primary → Stats*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: hero_section.default.primary.stats[].description
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  description: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *HeroSection → Default → Primary*
+ */
+export interface HeroSectionSliceDefaultPrimary {
+  /**
+   * Subtitle field in *HeroSection → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: hero_section.default.primary.subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  subtitle: prismic.KeyTextField;
+
+  /**
+   * Hero Title field in *HeroSection → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: hero_section.default.primary.hero_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  hero_title: prismic.KeyTextField;
+
+  /**
+   * Hero Description field in *HeroSection → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: hero_section.default.primary.hero_description
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  hero_description: prismic.KeyTextField;
+
+  /**
+   * Hero Image field in *HeroSection → Default → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: hero_section.default.primary.hero_image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  hero_image: prismic.ImageField<never>;
+
+  /**
+   * Stats field in *HeroSection → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: hero_section.default.primary.stats[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  stats: prismic.GroupField<Simplify<HeroSectionSliceDefaultPrimaryStatsItem>>;
+}
+
+/**
+ * Default variation for HeroSection Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type HeroSectionSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<HeroSectionSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *HeroSection*
+ */
+type HeroSectionSliceVariation = HeroSectionSliceDefault;
+
+/**
+ * HeroSection Shared Slice
+ *
+ * - **API ID**: `hero_section`
+ * - **Description**: HeroSection
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type HeroSectionSlice = prismic.SharedSlice<
+  'hero_section',
+  HeroSectionSliceVariation
+>;
+
+/**
+ * Item in *Industries → Default → Primary → Industries*
+ */
+export interface HowWeCanWelpSliceDefaultPrimaryIndustriesItem {
+  /**
+   * Industry Icon field in *Industries → Default → Primary → Industries*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: how_we_can_welp.default.primary.industries[].industry_icon
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  industry_icon: prismic.ImageField<never>;
+
+  /**
+   * Industry Item field in *Industries → Default → Primary → Industries*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: how_we_can_welp.default.primary.industries[].industry_item
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  industry_item: prismic.KeyTextField;
+
+  /**
+   * Description field in *Industries → Default → Primary → Industries*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: how_we_can_welp.default.primary.industries[].description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  description: prismic.RichTextField;
+}
+
+/**
+ * Primary content in *Industries → Default → Primary*
+ */
+export interface HowWeCanWelpSliceDefaultPrimary {
+  /**
+   * Section Title field in *Industries → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: how_we_can_welp.default.primary.section_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_title: prismic.KeyTextField;
+
+  /**
+   * Section Description field in *Industries → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: how_we_can_welp.default.primary.section_description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  section_description: prismic.RichTextField;
+
+  /**
+   * Industries field in *Industries → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: how_we_can_welp.default.primary.industries[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  industries: prismic.GroupField<
+    Simplify<HowWeCanWelpSliceDefaultPrimaryIndustriesItem>
+  >;
+}
+
+/**
+ * Default variation for Industries Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type HowWeCanWelpSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<HowWeCanWelpSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Industries*
+ */
+type HowWeCanWelpSliceVariation = HowWeCanWelpSliceDefault;
+
+/**
+ * Industries Shared Slice
+ *
+ * - **API ID**: `how_we_can_welp`
+ * - **Description**: Industries
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type HowWeCanWelpSlice = prismic.SharedSlice<
+  'how_we_can_welp',
+  HowWeCanWelpSliceVariation
+>;
+
+/**
+ * Primary content in *Legislative → Default → Primary*
+ */
+export interface LegislativeSliceDefaultPrimary {
+  /**
+   * Section Title field in *Legislative → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: legislative.default.primary.section_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_title: prismic.KeyTextField;
+
+  /**
+   * Section Subtitle field in *Legislative → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: legislative.default.primary.section_subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  section_subtitle: prismic.RichTextField;
+
+  /**
+   * WHS Image field in *Legislative → Default → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: legislative.default.primary.whs_image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  whs_image: prismic.ImageField<never>;
+}
+
+/**
+ * Default variation for Legislative Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type LegislativeSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<LegislativeSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Legislative*
+ */
+type LegislativeSliceVariation = LegislativeSliceDefault;
+
+/**
+ * Legislative Shared Slice
+ *
+ * - **API ID**: `legislative`
+ * - **Description**: Legislative
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type LegislativeSlice = prismic.SharedSlice<
+  'legislative',
+  LegislativeSliceVariation
+>;
+
+/**
+ * Item in *Modules → Default → Primary → Modules*
+ */
+export interface PlatformAppsSliceDefaultPrimaryModulesItem {
+  /**
+   * Module Logo field in *Modules → Default → Primary → Modules*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: platform_apps.default.primary.modules[].module_logo
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  module_logo: prismic.ImageField<never>;
+
+  /**
+   * Module Name field in *Modules → Default → Primary → Modules*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: platform_apps.default.primary.modules[].module_name
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  module_name: prismic.KeyTextField;
+
+  /**
+   * Module Description field in *Modules → Default → Primary → Modules*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: platform_apps.default.primary.modules[].module_description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  module_description: prismic.RichTextField;
+}
+
+/**
+ * Primary content in *Modules → Default → Primary*
+ */
+export interface PlatformAppsSliceDefaultPrimary {
+  /**
+   * Section Title field in *Modules → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: platform_apps.default.primary.section_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_title: prismic.KeyTextField;
+
+  /**
+   * Section Subtitle field in *Modules → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: platform_apps.default.primary.section_subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  section_subtitle: prismic.RichTextField;
+
+  /**
+   * Modules field in *Modules → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: platform_apps.default.primary.modules[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  modules: prismic.GroupField<
+    Simplify<PlatformAppsSliceDefaultPrimaryModulesItem>
+  >;
+}
+
+/**
+ * Default variation for Modules Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type PlatformAppsSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<PlatformAppsSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Modules*
+ */
+type PlatformAppsSliceVariation = PlatformAppsSliceDefault;
+
+/**
+ * Modules Shared Slice
+ *
+ * - **API ID**: `platform_apps`
+ * - **Description**: PlatformApps
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type PlatformAppsSlice = prismic.SharedSlice<
+  'platform_apps',
+  PlatformAppsSliceVariation
+>;
 
 /**
  * Item in *Testimonial → Default → Primary → Items*
  */
 export interface TestimonialSliceDefaultPrimaryItemsItem {
+  /**
+   * Stars field in *Testimonial → Default → Primary → Items*
+   *
+   * - **Field Type**: Number
+   * - **Placeholder**: *None*
+   * - **API ID Path**: testimonial.default.primary.items[].stars
+   * - **Documentation**: https://prismic.io/docs/fields/number
+   */
+  stars: prismic.NumberField;
+
   /**
    * Quote field in *Testimonial → Default → Primary → Items*
    *
@@ -4437,14 +6719,14 @@ export interface TestimonialSliceDefaultPrimaryItemsItem {
   role: prismic.RichTextField;
 
   /**
-   * Avatar field in *Testimonial → Default → Primary → Items*
+   * Company field in *Testimonial → Default → Primary → Items*
    *
-   * - **Field Type**: Image
+   * - **Field Type**: Text
    * - **Placeholder**: *None*
-   * - **API ID Path**: testimonial.default.primary.items[].avatar
-   * - **Documentation**: https://prismic.io/docs/fields/image
+   * - **API ID Path**: testimonial.default.primary.items[].company
+   * - **Documentation**: https://prismic.io/docs/fields/text
    */
-  avatar: prismic.ImageField<never>;
+  company: prismic.KeyTextField;
 }
 
 /**
@@ -4452,24 +6734,24 @@ export interface TestimonialSliceDefaultPrimaryItemsItem {
  */
 export interface TestimonialSliceDefaultPrimary {
   /**
-   * Heading field in *Testimonial → Default → Primary*
+   * Section Title field in *Testimonial → Default → Primary*
    *
    * - **Field Type**: Rich Text
    * - **Placeholder**: *None*
-   * - **API ID Path**: testimonial.default.primary.heading
+   * - **API ID Path**: testimonial.default.primary.section_title
    * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
-  heading: prismic.RichTextField;
+  section_title: prismic.RichTextField;
 
   /**
-   * Description field in *Testimonial → Default → Primary*
+   * Section Subtitle field in *Testimonial → Default → Primary*
    *
    * - **Field Type**: Rich Text
    * - **Placeholder**: *None*
-   * - **API ID Path**: testimonial.default.primary.description
+   * - **API ID Path**: testimonial.default.primary.section_subtitle
    * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
-  description: prismic.RichTextField;
+  section_subtitle: prismic.RichTextField;
 
   /**
    * Items field in *Testimonial → Default → Primary*
@@ -4512,6 +6794,108 @@ export type TestimonialSlice = prismic.SharedSlice<
   TestimonialSliceVariation
 >;
 
+/**
+ * Item in *WhoIsItFor → Default → Primary → Who is it for items*
+ */
+export interface WhyChooseUsSliceDefaultPrimaryWhoIsItForItemsItem {
+  /**
+   * Card Icon field in *WhoIsItFor → Default → Primary → Who is it for items*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: why_choose_us.default.primary.who_is_it_for_items[].card_icon
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  card_icon: prismic.KeyTextField;
+
+  /**
+   * Position Title field in *WhoIsItFor → Default → Primary → Who is it for items*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: why_choose_us.default.primary.who_is_it_for_items[].position_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  position_title: prismic.KeyTextField;
+
+  /**
+   * Description field in *WhoIsItFor → Default → Primary → Who is it for items*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: why_choose_us.default.primary.who_is_it_for_items[].description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  description: prismic.RichTextField;
+}
+
+/**
+ * Primary content in *WhoIsItFor → Default → Primary*
+ */
+export interface WhyChooseUsSliceDefaultPrimary {
+  /**
+   * Section Title field in *WhoIsItFor → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: why_choose_us.default.primary.section_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_title: prismic.KeyTextField;
+
+  /**
+   * Section Subtitle field in *WhoIsItFor → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: why_choose_us.default.primary.section_subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  section_subtitle: prismic.RichTextField;
+
+  /**
+   * Who is it for items field in *WhoIsItFor → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: why_choose_us.default.primary.who_is_it_for_items[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  who_is_it_for_items: prismic.GroupField<
+    Simplify<WhyChooseUsSliceDefaultPrimaryWhoIsItForItemsItem>
+  >;
+}
+
+/**
+ * Default variation for WhoIsItFor Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type WhyChooseUsSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<WhyChooseUsSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *WhoIsItFor*
+ */
+type WhyChooseUsSliceVariation = WhyChooseUsSliceDefault;
+
+/**
+ * WhoIsItFor Shared Slice
+ *
+ * - **API ID**: `why_choose_us`
+ * - **Description**: WhyChooseUs
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type WhyChooseUsSlice = prismic.SharedSlice<
+  'why_choose_us',
+  WhyChooseUsSliceVariation
+>;
+
 declare module '@prismicio/client' {
   interface CreateClient {
     (
@@ -4533,21 +6917,97 @@ declare module '@prismicio/client' {
 
   namespace Content {
     export type {
+      ContractorModuleDocument,
+      ContractorModuleDocumentData,
+      ContractorModuleDocumentDataSlicesSlice,
+      FormsModuleDocument,
+      FormsModuleDocumentData,
+      FormsModuleDocumentDataSlicesSlice,
+      HazardModuleDocument,
+      HazardModuleDocumentData,
+      HazardModuleDocumentDataSlicesSlice,
       HomeDocument,
       HomeDocumentData,
       HomeDocumentDataSlicesSlice,
-      HomepageDocument,
-      HomepageDocumentData,
-      HomepageDocumentDataSlicesSlice,
+      InspectionModuleDocument,
+      InspectionModuleDocumentData,
+      InspectionModuleDocumentDataSlicesSlice,
       PageDocument,
       PageDocumentData,
       PageDocumentDataSlicesSlice,
+      PoliciesModuleDocument,
+      PoliciesModuleDocumentData,
+      PoliciesModuleDocumentDataSlicesSlice,
+      TrainingModuleDocument,
+      TrainingModuleDocumentData,
+      TrainingModuleDocumentDataSlicesSlice,
       AllDocumentTypes,
+      BulletListSlice,
+      BulletListSliceDefaultPrimaryBulletListItem,
+      BulletListSliceDefaultPrimary,
+      BulletListSliceVariation,
+      BulletListSliceDefault,
+      CallToActionSlice,
+      CallToActionSliceDefaultPrimaryStatsItem,
+      CallToActionSliceDefaultPrimary,
+      CallToActionSliceVariation,
+      CallToActionSliceDefault,
+      CompaniesSlice,
+      CompaniesSliceDefaultPrimaryCompaniesItem,
+      CompaniesSliceDefaultPrimary,
+      CompaniesSliceVariation,
+      CompaniesSliceDefault,
+      ComplianceAuditSlice,
+      ComplianceAuditSliceDefaultPrimaryQuestionsItem,
+      ComplianceAuditSliceDefaultPrimaryAnswersTipsItem,
+      ComplianceAuditSliceDefaultPrimary,
+      ComplianceAuditSliceVariation,
+      ComplianceAuditSliceDefault,
+      ContactUsSlice,
+      ContactUsSliceDefaultPrimary,
+      ContactUsSliceVariation,
+      ContactUsSliceDefault,
+      FaqSlice,
+      FaqSliceDefaultPrimaryFaqsItem,
+      FaqSliceDefaultPrimary,
+      FaqSliceVariation,
+      FaqSliceDefault,
+      FinancialReliefSlice,
+      FinancialReliefSliceDefaultPrimaryCardsItem,
+      FinancialReliefSliceDefaultPrimaryFinancialTableItem,
+      FinancialReliefSliceDefaultPrimaryZeroClaimItemTitleItem,
+      FinancialReliefSliceDefaultPrimary,
+      FinancialReliefSliceVariation,
+      FinancialReliefSliceDefault,
+      HeroSectionSlice,
+      HeroSectionSliceDefaultPrimaryStatsItem,
+      HeroSectionSliceDefaultPrimary,
+      HeroSectionSliceVariation,
+      HeroSectionSliceDefault,
+      HowWeCanWelpSlice,
+      HowWeCanWelpSliceDefaultPrimaryIndustriesItem,
+      HowWeCanWelpSliceDefaultPrimary,
+      HowWeCanWelpSliceVariation,
+      HowWeCanWelpSliceDefault,
+      LegislativeSlice,
+      LegislativeSliceDefaultPrimary,
+      LegislativeSliceVariation,
+      LegislativeSliceDefault,
+      PlatformAppsSlice,
+      PlatformAppsSliceDefaultPrimaryModulesItem,
+      PlatformAppsSliceDefaultPrimary,
+      PlatformAppsSliceVariation,
+      PlatformAppsSliceDefault,
       TestimonialSlice,
       TestimonialSliceDefaultPrimaryItemsItem,
       TestimonialSliceDefaultPrimary,
       TestimonialSliceVariation,
       TestimonialSliceDefault,
+      WhyChooseUsSlice,
+      WhyChooseUsSliceDefaultPrimaryWhoIsItForItemsItem,
+      WhyChooseUsSliceDefaultPrimary,
+      WhyChooseUsSliceVariation,
+      WhyChooseUsSliceDefault,
     };
   }
 }
