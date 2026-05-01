@@ -119,7 +119,7 @@ const HeroSection: FC<HeroSectionProps> = ({ slice }) => {
             <div className="relative mx-auto w-full max-w-lg lg:mx-0 lg:max-w-none">
               <div
                 aria-hidden
-                className="pointer-events-none absolute -right-16 top-1/2 z-0 h-[115%] w-[125%] -translate-y-1/2 rounded-[9999px] bg-[radial-gradient(ellipse_at_center,rgba(109,40,217,0.17)_0%,rgba(109,40,217,0.07)_42%,rgba(109,40,217,0)_75%)]"
+                className="pointer-events-none absolute -right-16 top-1/2 z-0 h-[115%] w-[125%] -translate-y-1/2 rounded-[9999px] bg-[radial-gradient(ellipse_at_center,rgba(109,40,217,0.15)_0%,rgba(109,40,217,0.07)_42%,rgba(109,40,217,0)_75%)]"
               />
               <div className="relative z-10 overflow-hidden">
                 <Image
