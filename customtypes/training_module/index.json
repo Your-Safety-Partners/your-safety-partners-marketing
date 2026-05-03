@@ -11,6 +11,15 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "subpage_hero_section": {
+              "type": "SharedSlice"
+            },
+            "bullet_list": {
+              "type": "SharedSlice"
+            },
+            "compliance_audit": {
+              "type": "SharedSlice"
+            },
             "faq": {
               "type": "SharedSlice"
             }

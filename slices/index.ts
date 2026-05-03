@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 
 export const components = {
-  bullet_list: dynamic(() => import('./BulletList')),
+  bullet_list: dynamic(() => import('./CheckList')),
   call_to_action: dynamic(() => import('./CallToAction')),
   companies: dynamic(() => import('./Companies')),
   compliance_audit: dynamic(() => import('./ComplianceAudit')),
@@ -14,6 +14,7 @@ export const components = {
   how_we_can_welp: dynamic(() => import('./Industries')),
   legislative: dynamic(() => import('./Legislative')),
   platform_apps: dynamic(() => import('./Modules')),
+  subpage_hero_section: dynamic(() => import('./SubpageHeroSection')),
   testimonial: dynamic(() => import('./Testimonial')),
   why_choose_us: dynamic(() => import('./WhoIsItFor')),
 };

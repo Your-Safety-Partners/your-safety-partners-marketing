@@ -1,7 +1,7 @@
 {
   "id": "bullet_list",
   "type": "SharedSlice",
-  "name": "BulletList",
+  "name": "CheckList",
   "description": "BulletList",
   "variations": [
     {
@@ -28,10 +28,18 @@
             "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
           }
         },
-        "bullet_list": {
+        "section_image": {
+          "type": "Image",
+          "config": {
+            "label": "Section Image",
+            "constraint": {},
+            "thumbnails": []
+          }
+        },
+        "check_list": {
           "type": "Group",
           "config": {
-            "label": "Bullet List",
+            "label": "Check List",
             "repeat": true,
             "fields": {
               "item_title": {

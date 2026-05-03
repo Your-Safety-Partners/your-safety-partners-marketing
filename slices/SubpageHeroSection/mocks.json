@@ -1,0 +1,71 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"eyebrow_text": {
+				"__TYPE__": "FieldContent",
+				"value": "torn",
+				"type": "Text"
+			},
+			"hero_title": {
+				"__TYPE__": "FieldContent",
+				"value": "fast",
+				"type": "Text"
+			},
+			"hero_description": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Laborum labore enim et dolor adipisicing proident ad sunt."
+						}
+					}
+				]
+			},
+			"hero_image": {
+				"origin": {
+					"id": "main",
+					"url": "https://images.unsplash.com/photo-1591012911207-0dbac31f37da",
+					"width": 4000,
+					"height": 4000
+				},
+				"url": "https://images.unsplash.com/photo-1591012911207-0dbac31f37da",
+				"width": 4000,
+				"height": 4000,
+				"edit": {
+					"zoom": 1,
+					"crop": {
+						"x": 0,
+						"y": 0
+					},
+					"background": "transparent"
+				},
+				"alt": "health",
+				"credits": null,
+				"__TYPE__": "ImageContent",
+				"thumbnails": {}
+			},
+			"primary_cta": {
+				"key": "26b6213a-88f2-4b11-8123-c68b61067172",
+				"__TYPE__": "LinkContent",
+				"value": {
+					"__TYPE__": "ExternalLink",
+					"url": "https://prismic.io",
+					"text": "movie"
+				}
+			},
+			"secondary_cta": {
+				"__TYPE__": "LinkContent",
+				"key": "46f1ecac-000a-4cfb-b88b-5d0302d3895e",
+				"value": {
+					"__TYPE__": "ExternalLink",
+					"url": "http://twitter.com",
+					"text": "early"
+				}
+			}
+		},
+		"items": []
+	}
+]

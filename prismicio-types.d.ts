@@ -69,7 +69,11 @@ type ContentRelationshipFieldWithData<
   >;
 }[Exclude<TCustomType[number], string>['id']];
 
-type ContractorModuleDocumentDataSlicesSlice = FaqSlice;
+type ContractorModuleDocumentDataSlicesSlice =
+  | SubpageHeroSectionSlice
+  | ComplianceAuditSlice
+  | BulletListSlice
+  | FaqSlice;
 
 /**
  * Content for Contractor Module documents
@@ -134,7 +138,11 @@ export type ContractorModuleDocument<Lang extends string = string> =
     Lang
   >;
 
-type FormsModuleDocumentDataSlicesSlice = FaqSlice;
+type FormsModuleDocumentDataSlicesSlice =
+  | ComplianceAuditSlice
+  | BulletListSlice
+  | SubpageHeroSectionSlice
+  | FaqSlice;
 
 /**
  * Content for Forms Module documents
@@ -199,7 +207,11 @@ export type FormsModuleDocument<Lang extends string = string> =
     Lang
   >;
 
-type HazardModuleDocumentDataSlicesSlice = FaqSlice;
+type HazardModuleDocumentDataSlicesSlice =
+  | SubpageHeroSectionSlice
+  | ComplianceAuditSlice
+  | BulletListSlice
+  | FaqSlice;
 
 /**
  * Content for Hazard Module documents
@@ -478,7 +490,11 @@ interface PageDocumentData {
 export type PageDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithUID<Simplify<PageDocumentData>, 'page', Lang>;
 
-type PoliciesModuleDocumentDataSlicesSlice = FaqSlice;
+type PoliciesModuleDocumentDataSlicesSlice =
+  | SubpageHeroSectionSlice
+  | ComplianceAuditSlice
+  | BulletListSlice
+  | FaqSlice;
 
 /**
  * Content for Policies Module documents
@@ -543,7 +559,11 @@ export type PoliciesModuleDocument<Lang extends string = string> =
     Lang
   >;
 
-type TrainingModuleDocumentDataSlicesSlice = FaqSlice;
+type TrainingModuleDocumentDataSlicesSlice =
+  | SubpageHeroSectionSlice
+  | BulletListSlice
+  | ComplianceAuditSlice
+  | FaqSlice;
 
 /**
  * Content for Training Module documents
@@ -619,36 +639,36 @@ export type AllDocumentTypes =
   | TrainingModuleDocument;
 
 /**
- * Item in *BulletList → Default → Primary → Bullet List*
+ * Item in *CheckList → Default → Primary → Check List*
  */
-export interface BulletListSliceDefaultPrimaryBulletListItem {
+export interface BulletListSliceDefaultPrimaryCheckListItem {
   /**
-   * Item Title field in *BulletList → Default → Primary → Bullet List*
+   * Item Title field in *CheckList → Default → Primary → Check List*
    *
    * - **Field Type**: Text
    * - **Placeholder**: *None*
-   * - **API ID Path**: bullet_list.default.primary.bullet_list[].item_title
+   * - **API ID Path**: bullet_list.default.primary.check_list[].item_title
    * - **Documentation**: https://prismic.io/docs/fields/text
    */
   item_title: prismic.KeyTextField;
 
   /**
-   * Item Description field in *BulletList → Default → Primary → Bullet List*
+   * Item Description field in *CheckList → Default → Primary → Check List*
    *
    * - **Field Type**: Rich Text
    * - **Placeholder**: *None*
-   * - **API ID Path**: bullet_list.default.primary.bullet_list[].item_description
+   * - **API ID Path**: bullet_list.default.primary.check_list[].item_description
    * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
   item_description: prismic.RichTextField;
 }
 
 /**
- * Primary content in *BulletList → Default → Primary*
+ * Primary content in *CheckList → Default → Primary*
  */
 export interface BulletListSliceDefaultPrimary {
   /**
-   * Section Title field in *BulletList → Default → Primary*
+   * Section Title field in *CheckList → Default → Primary*
    *
    * - **Field Type**: Text
    * - **Placeholder**: *None*
@@ -658,7 +678,7 @@ export interface BulletListSliceDefaultPrimary {
   section_title: prismic.KeyTextField;
 
   /**
-   * Section Subtitle field in *BulletList → Default → Primary*
+   * Section Subtitle field in *CheckList → Default → Primary*
    *
    * - **Field Type**: Rich Text
    * - **Placeholder**: *None*
@@ -668,20 +688,30 @@ export interface BulletListSliceDefaultPrimary {
   section_subtitle: prismic.RichTextField;
 
   /**
-   * Bullet List field in *BulletList → Default → Primary*
+   * Section Image field in *CheckList → Default → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: bullet_list.default.primary.section_image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  section_image: prismic.ImageField<never>;
+
+  /**
+   * Check List field in *CheckList → Default → Primary*
    *
    * - **Field Type**: Group
    * - **Placeholder**: *None*
-   * - **API ID Path**: bullet_list.default.primary.bullet_list[]
+   * - **API ID Path**: bullet_list.default.primary.check_list[]
    * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
    */
-  bullet_list: prismic.GroupField<
-    Simplify<BulletListSliceDefaultPrimaryBulletListItem>
+  check_list: prismic.GroupField<
+    Simplify<BulletListSliceDefaultPrimaryCheckListItem>
   >;
 }
 
 /**
- * Default variation for BulletList Slice
+ * Default variation for CheckList Slice
  *
  * - **API ID**: `default`
  * - **Description**: Default
@@ -694,12 +724,12 @@ export type BulletListSliceDefault = prismic.SharedSliceVariation<
 >;
 
 /**
- * Slice variation for *BulletList*
+ * Slice variation for *CheckList*
  */
 type BulletListSliceVariation = BulletListSliceDefault;
 
 /**
- * BulletList Shared Slice
+ * CheckList Shared Slice
  *
  * - **API ID**: `bullet_list`
  * - **Description**: BulletList
@@ -1779,6 +1809,113 @@ export type PlatformAppsSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Primary content in *SubpageHeroSection → Default → Primary*
+ */
+export interface SubpageHeroSectionSliceDefaultPrimary {
+  /**
+   * Eyebrow Text field in *SubpageHeroSection → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: subpage_hero_section.default.primary.eyebrow_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  eyebrow_text: prismic.KeyTextField;
+
+  /**
+   * Hero Title field in *SubpageHeroSection → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: subpage_hero_section.default.primary.hero_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  hero_title: prismic.KeyTextField;
+
+  /**
+   * Hero Description field in *SubpageHeroSection → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: subpage_hero_section.default.primary.hero_description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  hero_description: prismic.RichTextField;
+
+  /**
+   * Hero Image field in *SubpageHeroSection → Default → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: subpage_hero_section.default.primary.hero_image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  hero_image: prismic.ImageField<never>;
+
+  /**
+   * Primary CTA field in *SubpageHeroSection → Default → Primary*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: subpage_hero_section.default.primary.primary_cta
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  primary_cta: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+
+  /**
+   * Secondary CTA field in *SubpageHeroSection → Default → Primary*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: subpage_hero_section.default.primary.secondary_cta
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  secondary_cta: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+}
+
+/**
+ * Default variation for SubpageHeroSection Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type SubpageHeroSectionSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<SubpageHeroSectionSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *SubpageHeroSection*
+ */
+type SubpageHeroSectionSliceVariation = SubpageHeroSectionSliceDefault;
+
+/**
+ * SubpageHeroSection Shared Slice
+ *
+ * - **API ID**: `subpage_hero_section`
+ * - **Description**: SubpageHeroSection
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type SubpageHeroSectionSlice = prismic.SharedSlice<
+  'subpage_hero_section',
+  SubpageHeroSectionSliceVariation
+>;
+
+/**
  * Item in *Testimonial → Default → Primary → Items*
  */
 export interface TestimonialSliceDefaultPrimaryItemsItem {
@@ -2047,7 +2184,7 @@ declare module '@prismicio/client' {
       TrainingModuleDocumentDataSlicesSlice,
       AllDocumentTypes,
       BulletListSlice,
-      BulletListSliceDefaultPrimaryBulletListItem,
+      BulletListSliceDefaultPrimaryCheckListItem,
       BulletListSliceDefaultPrimary,
       BulletListSliceVariation,
       BulletListSliceDefault,
@@ -2102,6 +2239,10 @@ declare module '@prismicio/client' {
       PlatformAppsSliceDefaultPrimary,
       PlatformAppsSliceVariation,
       PlatformAppsSliceDefault,
+      SubpageHeroSectionSlice,
+      SubpageHeroSectionSliceDefaultPrimary,
+      SubpageHeroSectionSliceVariation,
+      SubpageHeroSectionSliceDefault,
       TestimonialSlice,
       TestimonialSliceDefaultPrimaryItemsItem,
       TestimonialSliceDefaultPrimary,
