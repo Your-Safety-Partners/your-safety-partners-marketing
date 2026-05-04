@@ -349,6 +349,7 @@ export type HomeDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithoutUID<Simplify<HomeDocumentData>, 'home', Lang>;
 
 type InspectionModuleDocumentDataSlicesSlice =
+  | SubpageHeroSectionSlice
   | CallToActionSlice
   | BulletListSlice
   | ComplianceAuditSlice
