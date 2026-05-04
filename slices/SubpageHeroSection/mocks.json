@@ -57,13 +57,24 @@
 				}
 			},
 			"secondary_cta": {
-				"__TYPE__": "LinkContent",
 				"key": "46f1ecac-000a-4cfb-b88b-5d0302d3895e",
+				"__TYPE__": "LinkContent",
 				"value": {
 					"__TYPE__": "ExternalLink",
 					"url": "http://twitter.com",
 					"text": "early"
 				}
+			},
+			"hero_image_placeholder": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Deserunt voluptate laboris magna deserunt Lorem velit id aliqua ipsum minim duis non proident ut. Sunt deserunt excepteur do sunt consequat aliquip ad. Irure consequat id ut nostrud non duis do cillum non exercitation id ut occaecat velit ullamco."
+						}
+					}
+				]
 			}
 		},
 		"items": []

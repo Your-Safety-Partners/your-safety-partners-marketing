@@ -73,6 +73,17 @@
 				"credits": null,
 				"__TYPE__": "ImageContent",
 				"thumbnails": {}
+			},
+			"section_image_placeholder": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Non duis in pariatur ex proident irure excepteur sint nulla commodo fugiat occaecat. Consequat elit irure elit. Mollit tempor nostrud nostrud in sint non cupidatat fugiat sint cupidatat laborum mollit dolore fugiat sint."
+						}
+					}
+				]
 			}
 		},
 		"items": []

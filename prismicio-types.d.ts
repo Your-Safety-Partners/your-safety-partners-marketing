@@ -709,6 +709,16 @@ export interface BulletListSliceDefaultPrimary {
   check_list: prismic.GroupField<
     Simplify<BulletListSliceDefaultPrimaryCheckListItem>
   >;
+
+  /**
+   * Section Image Placeholder field in *CheckList → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: bullet_list.default.primary.section_image_placeholder
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  section_image_placeholder: prismic.RichTextField;
 }
 
 /**
@@ -1884,6 +1894,16 @@ export interface SubpageHeroSectionSliceDefaultPrimary {
     prismic.FieldState,
     never
   >;
+
+  /**
+   * Hero Image Placeholder field in *SubpageHeroSection → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: subpage_hero_section.default.primary.hero_image_placeholder
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  hero_image_placeholder: prismic.RichTextField;
 }
 
 /**

@@ -31,6 +31,12 @@ const descriptionComponents = {
   ),
 };
 
+const imagePlaceholderComponents = {
+  paragraph: ({ children }: { children: ReactNode }) => (
+    <p className="px-6 text-center text-sm text-slate-500">{children}</p>
+  ),
+};
+
 function countPreviousBulletLists(
   slices: readonly { slice_type: string }[] | undefined,
   currentIndex: number
@@ -44,7 +50,8 @@ function countPreviousBulletLists(
 }
 
 const BulletList: FC<BulletListProps> = ({ slice, index = 0, slices }) => {
-  const { section_title, section_subtitle, section_image, check_list } = slice.primary;
+  const { section_title, section_subtitle, section_image, section_image_placeholder, check_list } =
+    slice.primary;
   const items = Array.isArray(check_list) ? check_list : [];
 
   const heading =
@@ -84,7 +91,18 @@ const BulletList: FC<BulletListProps> = ({ slice, index = 0, slices }) => {
           />
         </div>
       ) : (
-        <p className="px-6 text-center text-sm text-slate-500">Add a section image in Prismic to show it here.</p>
+        <>
+          {isFilled.richText(section_image_placeholder) ? (
+            <PrismicRichText
+              field={section_image_placeholder}
+              components={imagePlaceholderComponents}
+            />
+          ) : (
+            <p className="px-6 text-center text-sm text-slate-500">
+              Add a section image in Prismic to show it here.
+            </p>
+          )}
+        </>
       )}
     </div>
   );

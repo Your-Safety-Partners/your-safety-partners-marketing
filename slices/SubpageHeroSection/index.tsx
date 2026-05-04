@@ -43,12 +43,19 @@ const descriptionComponents = {
   ),
 };
 
+const imagePlaceholderComponents = {
+  paragraph: ({ children }: { children: ReactNode }) => (
+    <p className="px-6 text-center text-sm text-slate-500">{children}</p>
+  ),
+};
+
 const SubpageHeroSection: FC<SubpageHeroSectionProps> = ({ slice }) => {
   const {
     eyebrow_text,
     hero_title,
     hero_description,
     hero_image,
+    hero_image_placeholder,
     primary_cta,
     secondary_cta,
   } = slice.primary;
@@ -180,7 +187,16 @@ const SubpageHeroSection: FC<SubpageHeroSectionProps> = ({ slice }) => {
               </div>
             ) : (
               <div className="flex min-h-[220px] items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-gray-50 lg:min-h-[280px]">
-                <p className="px-6 text-center text-sm text-slate-500">Add a hero image in Prismic.</p>
+                {isFilled.richText(hero_image_placeholder) ? (
+                  <PrismicRichText
+                    field={hero_image_placeholder}
+                    components={imagePlaceholderComponents}
+                  />
+                ) : (
+                  <p className="px-6 text-center text-sm text-slate-500">
+                    Add a hero image in Prismic.
+                  </p>
+                )}
               </div>
             )}
           </div>
