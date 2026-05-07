@@ -1,0 +1,41 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"section_title": {
+				"__TYPE__": "FieldContent",
+				"value": "signal",
+				"type": "Text"
+			},
+			"section_subtitle": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Exercitation magna veniam eiusmod cupidatat do. Aliqua amet pariatur reprehenderit occaecat qui anim proident ex. Nulla velit mollit anim."
+						}
+					}
+				]
+			},
+			"eyebrow_text": {
+				"__TYPE__": "FieldContent",
+				"value": "river",
+				"type": "Text"
+			},
+			"description": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Magna officia elit aliquip duis Lorem anim. Sint laboris elit ad sint elit aliqua sint id quis excepteur nulla. Sit dolor est duis do Lorem."
+						}
+					}
+				]
+			}
+		},
+		"items": []
+	}
+]

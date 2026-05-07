@@ -1,0 +1,71 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"section_title": {
+				"__TYPE__": "FieldContent",
+				"value": "darkness",
+				"type": "Text"
+			},
+			"section_subtitle": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Sit exercitation consequat id sit ullamco cillum irure enim dolore ea."
+						}
+					}
+				]
+			},
+			"timeline": {
+				"__TYPE__": "GroupContentType",
+				"value": [
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"year",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "obtain",
+									"type": "Text"
+								}
+							],
+							[
+								"title",
+								{
+									"__TYPE__": "StructuredTextContent",
+									"value": [
+										{
+											"type": "paragraph",
+											"content": {
+												"text": "Occaecat tempor esse veniam aliquip do id aliqua sunt deserunt exercitation nulla duis laboris. Aute sunt nisi cillum sit sunt labore et aliquip ad nulla aliqua ex dolor eiusmod ullamco. Et velit commodo enim sit incididunt voluptate labore."
+											}
+										}
+									]
+								}
+							],
+							[
+								"description",
+								{
+									"__TYPE__": "StructuredTextContent",
+									"value": [
+										{
+											"type": "paragraph",
+											"content": {
+												"text": "Velit consequat adipisicing consectetur culpa culpa dolor excepteur. Deserunt est duis labore incididunt ad mollit duis ullamco irure officia exercitation aliqua exercitation. Reprehenderit sunt nulla ipsum eu id culpa fugiat officia ut consequat nisi aute tempor fugiat."
+											}
+										}
+									]
+								}
+							]
+						]
+					}
+				]
+			}
+		},
+		"items": []
+	}
+]

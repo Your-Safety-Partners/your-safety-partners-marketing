@@ -72,7 +72,7 @@ const ourServicesItems: MegaMenuItem[] = [
       'Detailed workplace assessments to identify hazards and ensure compliance with local regulations.',
   },
   {
-    href: '/about',
+    href: '/about-us',
     title: 'WHS/OHS Consulting',
     description:
       'Expert advice on developing safety management systems (SMS) and legal compliance frameworks.',
@@ -127,7 +127,7 @@ const softwareItems: MegaMenuItem[] = [
 export function HeaderDesktopNav() {
   return (
     <nav className="hidden md:flex items-center gap-6" aria-label="Main">
-      <Link href="/about" className={navLinkClass}>
+      <Link href="/about-us" className={navLinkClass}>
         About Us
       </Link>
       <NavDropdown label="Our Services" items={ourServicesItems} />

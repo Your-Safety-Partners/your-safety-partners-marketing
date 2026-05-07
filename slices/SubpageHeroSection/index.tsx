@@ -89,7 +89,7 @@ const SubpageHeroSection: FC<SubpageHeroSectionProps> = ({ slice }) => {
         <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-14 xl:gap-16">
           <div className="order-2 flex min-w-0 flex-col lg:order-1">
             {eyebrow ? (
-              <p className="text-xs font-semibold uppercase tracking-wide text-violet-700 md:text-sm">
+              <p className="w-fit bg-violet-100 rounded-full px-3 py-1.5 text-xs font-semibold uppercase text-violet-700 md:text-sm">
                 {eyebrow}
               </p>
             ) : null}
@@ -97,7 +97,7 @@ const SubpageHeroSection: FC<SubpageHeroSectionProps> = ({ slice }) => {
             <h1
               id={headingId}
               className={cn(
-                'text-2xl font-bold tracking-tight text-gray-700 md:text-3xl lg:text-[2rem] lg:leading-tight',
+                'text-2xl font-bold text-gray-800 md:text-4xl lg:leading-tight',
                 eyebrow ? 'mt-2' : ''
               )}
             >

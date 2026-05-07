@@ -69,6 +69,76 @@ type ContentRelationshipFieldWithData<
   >;
 }[Exclude<TCustomType[number], string>['id']];
 
+type AboutUsDocumentDataSlicesSlice =
+  | WhatWeDoSlice
+  | TimelineSectionSlice
+  | CallToActionSlice
+  | OurMissionSlice
+  | SubpageHeroSectionSlice;
+
+/**
+ * Content for About Us documents
+ */
+interface AboutUsDocumentData {
+  /**
+   * Slice Zone field in *About Us*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: about_us.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<AboutUsDocumentDataSlicesSlice>; /**
+   * Meta Title field in *About Us*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: about_us.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *About Us*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: about_us.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *About Us*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: about_us.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * About Us document from Prismic
+ *
+ * - **API ID**: `about_us`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type AboutUsDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<AboutUsDocumentData>,
+    'about_us',
+    Lang
+  >;
+
 type ContractorModuleDocumentDataSlicesSlice =
   | SubpageHeroSectionSlice
   | ComplianceAuditSlice
@@ -630,6 +700,7 @@ export type TrainingModuleDocument<Lang extends string = string> =
   >;
 
 export type AllDocumentTypes =
+  | AboutUsDocument
   | ContractorModuleDocument
   | FormsModuleDocument
   | HazardModuleDocument
@@ -1718,6 +1789,81 @@ export type LegislativeSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Primary content in *OurMissionVision → Default → Primary*
+ */
+export interface OurMissionSliceDefaultPrimary {
+  /**
+   * Eyebrow Text field in *OurMissionVision → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: our_mission.default.primary.eyebrow_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  eyebrow_text: prismic.KeyTextField;
+
+  /**
+   * Section Title field in *OurMissionVision → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: our_mission.default.primary.section_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_title: prismic.KeyTextField;
+
+  /**
+   * Section Subtitle field in *OurMissionVision → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: our_mission.default.primary.section_subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  section_subtitle: prismic.RichTextField;
+
+  /**
+   * Description field in *OurMissionVision → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: our_mission.default.primary.description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  description: prismic.RichTextField;
+}
+
+/**
+ * Default variation for OurMissionVision Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type OurMissionSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<OurMissionSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *OurMissionVision*
+ */
+type OurMissionSliceVariation = OurMissionSliceDefault;
+
+/**
+ * OurMissionVision Shared Slice
+ *
+ * - **API ID**: `our_mission`
+ * - **Description**: OurMission
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type OurMissionSlice = prismic.SharedSlice<
+  'our_mission',
+  OurMissionSliceVariation
+>;
+
+/**
  * Item in *Modules → Default → Primary → Modules*
  */
 export interface PlatformAppsSliceDefaultPrimaryModulesItem {
@@ -2057,6 +2203,210 @@ export type TestimonialSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Item in *Timeline → Default → Primary → Timeline*
+ */
+export interface TimelineSectionSliceDefaultPrimaryTimelineItem {
+  /**
+   * Year field in *Timeline → Default → Primary → Timeline*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: timeline_section.default.primary.timeline[].year
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  year: prismic.KeyTextField;
+
+  /**
+   * Title field in *Timeline → Default → Primary → Timeline*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: timeline_section.default.primary.timeline[].title
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  title: prismic.RichTextField;
+
+  /**
+   * Description field in *Timeline → Default → Primary → Timeline*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: timeline_section.default.primary.timeline[].description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  description: prismic.RichTextField;
+}
+
+/**
+ * Primary content in *Timeline → Default → Primary*
+ */
+export interface TimelineSectionSliceDefaultPrimary {
+  /**
+   * Section Title field in *Timeline → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: timeline_section.default.primary.section_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_title: prismic.KeyTextField;
+
+  /**
+   * Section Subtitle field in *Timeline → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: timeline_section.default.primary.section_subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  section_subtitle: prismic.RichTextField;
+
+  /**
+   * Timeline field in *Timeline → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: timeline_section.default.primary.timeline[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  timeline: prismic.GroupField<
+    Simplify<TimelineSectionSliceDefaultPrimaryTimelineItem>
+  >;
+}
+
+/**
+ * Default variation for Timeline Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type TimelineSectionSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<TimelineSectionSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Timeline*
+ */
+type TimelineSectionSliceVariation = TimelineSectionSliceDefault;
+
+/**
+ * Timeline Shared Slice
+ *
+ * - **API ID**: `timeline_section`
+ * - **Description**: TimelineSection
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type TimelineSectionSlice = prismic.SharedSlice<
+  'timeline_section',
+  TimelineSectionSliceVariation
+>;
+
+/**
+ * Item in *WhatWeDo → Default → Primary → Bento Box Cards*
+ */
+export interface WhatWeDoSliceDefaultPrimaryBentoBoxCardsItem {
+  /**
+   * Card Title field in *WhatWeDo → Default → Primary → Bento Box Cards*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: what_we_do.default.primary.bento_box_cards[].card_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  card_title: prismic.KeyTextField;
+
+  /**
+   * Card Description field in *WhatWeDo → Default → Primary → Bento Box Cards*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: what_we_do.default.primary.bento_box_cards[].card_description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  card_description: prismic.RichTextField;
+
+  /**
+   * Card Icon field in *WhatWeDo → Default → Primary → Bento Box Cards*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: what_we_do.default.primary.bento_box_cards[].card_icon
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  card_icon: prismic.ImageField<never>;
+}
+
+/**
+ * Primary content in *WhatWeDo → Default → Primary*
+ */
+export interface WhatWeDoSliceDefaultPrimary {
+  /**
+   * Section Title field in *WhatWeDo → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: what_we_do.default.primary.section_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_title: prismic.KeyTextField;
+
+  /**
+   * Section Subtitle field in *WhatWeDo → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: what_we_do.default.primary.section_subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  section_subtitle: prismic.RichTextField;
+
+  /**
+   * Bento Box Cards field in *WhatWeDo → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: what_we_do.default.primary.bento_box_cards[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  bento_box_cards: prismic.GroupField<
+    Simplify<WhatWeDoSliceDefaultPrimaryBentoBoxCardsItem>
+  >;
+}
+
+/**
+ * Default variation for WhatWeDo Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type WhatWeDoSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<WhatWeDoSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *WhatWeDo*
+ */
+type WhatWeDoSliceVariation = WhatWeDoSliceDefault;
+
+/**
+ * WhatWeDo Shared Slice
+ *
+ * - **API ID**: `what_we_do`
+ * - **Description**: WhatWeDo
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type WhatWeDoSlice = prismic.SharedSlice<
+  'what_we_do',
+  WhatWeDoSliceVariation
+>;
+
+/**
  * Item in *WhoIsItFor → Default → Primary → Who is it for items*
  */
 export interface WhyChooseUsSliceDefaultPrimaryWhoIsItForItemsItem {
@@ -2179,6 +2529,9 @@ declare module '@prismicio/client' {
 
   namespace Content {
     export type {
+      AboutUsDocument,
+      AboutUsDocumentData,
+      AboutUsDocumentDataSlicesSlice,
       ContractorModuleDocument,
       ContractorModuleDocumentData,
       ContractorModuleDocumentDataSlicesSlice,
@@ -2255,6 +2608,10 @@ declare module '@prismicio/client' {
       LegislativeSliceDefaultPrimary,
       LegislativeSliceVariation,
       LegislativeSliceDefault,
+      OurMissionSlice,
+      OurMissionSliceDefaultPrimary,
+      OurMissionSliceVariation,
+      OurMissionSliceDefault,
       PlatformAppsSlice,
       PlatformAppsSliceDefaultPrimaryModulesItem,
       PlatformAppsSliceDefaultPrimary,
@@ -2269,6 +2626,16 @@ declare module '@prismicio/client' {
       TestimonialSliceDefaultPrimary,
       TestimonialSliceVariation,
       TestimonialSliceDefault,
+      TimelineSectionSlice,
+      TimelineSectionSliceDefaultPrimaryTimelineItem,
+      TimelineSectionSliceDefaultPrimary,
+      TimelineSectionSliceVariation,
+      TimelineSectionSliceDefault,
+      WhatWeDoSlice,
+      WhatWeDoSliceDefaultPrimaryBentoBoxCardsItem,
+      WhatWeDoSliceDefaultPrimary,
+      WhatWeDoSliceVariation,
+      WhatWeDoSliceDefault,
       WhyChooseUsSlice,
       WhyChooseUsSliceDefaultPrimaryWhoIsItForItemsItem,
       WhyChooseUsSliceDefaultPrimary,
