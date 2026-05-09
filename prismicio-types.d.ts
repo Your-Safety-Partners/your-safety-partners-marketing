@@ -70,6 +70,7 @@ type ContentRelationshipFieldWithData<
 }[Exclude<TCustomType[number], string>['id']];
 
 type AboutUsDocumentDataSlicesSlice =
+  | AboutJohnSlice
   | WhatWeDoSlice
   | TimelineSectionSlice
   | CallToActionSlice
@@ -709,6 +710,91 @@ export type AllDocumentTypes =
   | PageDocument
   | PoliciesModuleDocument
   | TrainingModuleDocument;
+
+/**
+ * Primary content in *AboutJohn → Default → Primary*
+ */
+export interface AboutJohnSliceDefaultPrimary {
+  /**
+   * Eyebrow Text field in *AboutJohn → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: about_john.default.primary.eyebrow_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  eyebrow_text: prismic.KeyTextField;
+
+  /**
+   * Section Title field in *AboutJohn → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: about_john.default.primary.section_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_title: prismic.KeyTextField;
+
+  /**
+   * Section Subtitle field in *AboutJohn → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: about_john.default.primary.section_subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  section_subtitle: prismic.RichTextField;
+
+  /**
+   * Section Description field in *AboutJohn → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: about_john.default.primary.section_description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  section_description: prismic.RichTextField;
+
+  /**
+   * John Image field in *AboutJohn → Default → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: about_john.default.primary.john_image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  john_image: prismic.ImageField<never>;
+}
+
+/**
+ * Default variation for AboutJohn Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type AboutJohnSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<AboutJohnSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *AboutJohn*
+ */
+type AboutJohnSliceVariation = AboutJohnSliceDefault;
+
+/**
+ * AboutJohn Shared Slice
+ *
+ * - **API ID**: `about_john`
+ * - **Description**: AboutJohn
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type AboutJohnSlice = prismic.SharedSlice<
+  'about_john',
+  AboutJohnSliceVariation
+>;
 
 /**
  * Item in *CheckList → Default → Primary → Check List*
@@ -1789,48 +1875,63 @@ export type LegislativeSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Item in *OurMissionVision → Default → Primary → Cards*
+ */
+export interface OurMissionSliceDefaultPrimaryCardItem {
+  /**
+   * Card Eyebrow Text field in *OurMissionVision → Default → Primary → Cards*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: our_mission.default.primary.card[].card_eyebrow_text
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  card_eyebrow_text: prismic.KeyTextField;
+
+  /**
+   * Card Title field in *OurMissionVision → Default → Primary → Cards*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: our_mission.default.primary.card[].card_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  card_title: prismic.KeyTextField;
+
+  /**
+   * Card Subtitle field in *OurMissionVision → Default → Primary → Cards*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: our_mission.default.primary.card[].card_subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  card_subtitle: prismic.RichTextField;
+
+  /**
+   * Card Description field in *OurMissionVision → Default → Primary → Cards*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: our_mission.default.primary.card[].card_description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  card_description: prismic.RichTextField;
+}
+
+/**
  * Primary content in *OurMissionVision → Default → Primary*
  */
 export interface OurMissionSliceDefaultPrimary {
   /**
-   * Eyebrow Text field in *OurMissionVision → Default → Primary*
+   * Cards field in *OurMissionVision → Default → Primary*
    *
-   * - **Field Type**: Text
+   * - **Field Type**: Group
    * - **Placeholder**: *None*
-   * - **API ID Path**: our_mission.default.primary.eyebrow_text
-   * - **Documentation**: https://prismic.io/docs/fields/text
+   * - **API ID Path**: our_mission.default.primary.card[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
    */
-  eyebrow_text: prismic.KeyTextField;
-
-  /**
-   * Section Title field in *OurMissionVision → Default → Primary*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: our_mission.default.primary.section_title
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  section_title: prismic.KeyTextField;
-
-  /**
-   * Section Subtitle field in *OurMissionVision → Default → Primary*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: our_mission.default.primary.section_subtitle
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  section_subtitle: prismic.RichTextField;
-
-  /**
-   * Description field in *OurMissionVision → Default → Primary*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: our_mission.default.primary.description
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  description: prismic.RichTextField;
+  card: prismic.GroupField<Simplify<OurMissionSliceDefaultPrimaryCardItem>>;
 }
 
 /**
@@ -2557,6 +2658,10 @@ declare module '@prismicio/client' {
       TrainingModuleDocumentData,
       TrainingModuleDocumentDataSlicesSlice,
       AllDocumentTypes,
+      AboutJohnSlice,
+      AboutJohnSliceDefaultPrimary,
+      AboutJohnSliceVariation,
+      AboutJohnSliceDefault,
       BulletListSlice,
       BulletListSliceDefaultPrimaryCheckListItem,
       BulletListSliceDefaultPrimary,
@@ -2609,6 +2714,7 @@ declare module '@prismicio/client' {
       LegislativeSliceVariation,
       LegislativeSliceDefault,
       OurMissionSlice,
+      OurMissionSliceDefaultPrimaryCardItem,
       OurMissionSliceDefaultPrimary,
       OurMissionSliceVariation,
       OurMissionSliceDefault,

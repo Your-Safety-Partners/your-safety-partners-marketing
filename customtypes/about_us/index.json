@@ -11,6 +11,9 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "about_john": {
+              "type": "SharedSlice"
+            },
             "what_we_do": {
               "type": "SharedSlice"
             },

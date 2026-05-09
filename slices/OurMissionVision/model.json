@@ -12,36 +12,45 @@
       "description": "Default",
       "imageUrl": "",
       "primary": {
-        "eyebrow_text": {
-          "type": "Text",
+        "card": {
+          "type": "Group",
           "config": {
-            "label": "Eyebrow Text",
-            "placeholder": ""
-          }
-        },
-        "section_title": {
-          "type": "Text",
-          "config": {
-            "label": "Section Title",
-            "placeholder": ""
-          }
-        },
-        "section_subtitle": {
-          "type": "StructuredText",
-          "config": {
-            "label": "Section Subtitle",
-            "placeholder": "",
-            "allowTargetBlank": true,
-            "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
-          }
-        },
-        "description": {
-          "type": "StructuredText",
-          "config": {
-            "label": "Description",
-            "placeholder": "",
-            "allowTargetBlank": true,
-            "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+            "label": "Cards",
+            "repeat": true,
+            "fields": {
+              "card_eyebrow_text": {
+                "type": "Text",
+                "config": {
+                  "label": "Card Eyebrow Text",
+                  "placeholder": ""
+                }
+              },
+              "card_title": {
+                "type": "Text",
+                "config": {
+                  "label": "Card Title",
+                  "placeholder": ""
+                }
+              },
+              "card_subtitle": {
+                "type": "StructuredText",
+                "config": {
+                  "label": "Card Subtitle",
+                  "placeholder": "",
+                  "allowTargetBlank": true,
+                  "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+                }
+              },
+              "card_description": {
+                "type": "StructuredText",
+                "config": {
+                  "label": "Card Description",
+                  "placeholder": "",
+                  "allowTargetBlank": true,
+                  "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+                }
+              }
+            }
           }
         }
       },

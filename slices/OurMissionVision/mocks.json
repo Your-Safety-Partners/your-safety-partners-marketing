@@ -3,35 +3,57 @@
 		"__TYPE__": "SharedSliceContent",
 		"variation": "default",
 		"primary": {
-			"section_title": {
-				"__TYPE__": "FieldContent",
-				"value": "signal",
-				"type": "Text"
-			},
-			"section_subtitle": {
-				"__TYPE__": "StructuredTextContent",
+			"card": {
+				"__TYPE__": "GroupContentType",
 				"value": [
 					{
-						"type": "paragraph",
-						"content": {
-							"text": "Exercitation magna veniam eiusmod cupidatat do. Aliqua amet pariatur reprehenderit occaecat qui anim proident ex. Nulla velit mollit anim."
-						}
-					}
-				]
-			},
-			"eyebrow_text": {
-				"__TYPE__": "FieldContent",
-				"value": "river",
-				"type": "Text"
-			},
-			"description": {
-				"__TYPE__": "StructuredTextContent",
-				"value": [
-					{
-						"type": "paragraph",
-						"content": {
-							"text": "Magna officia elit aliquip duis Lorem anim. Sint laboris elit ad sint elit aliqua sint id quis excepteur nulla. Sit dolor est duis do Lorem."
-						}
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"card_eyebrow_text",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "somewhere",
+									"type": "Text"
+								}
+							],
+							[
+								"card_title",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "dug",
+									"type": "Text"
+								}
+							],
+							[
+								"card_subtitle",
+								{
+									"__TYPE__": "StructuredTextContent",
+									"value": [
+										{
+											"type": "paragraph",
+											"content": {
+												"text": "Sint quis quis Lorem non fugiat et. Non esse fugiat do consequat consequat aliqua officia deserunt nostrud quis nisi eiusmod. Commodo ad incididunt aute non labore mollit."
+											}
+										}
+									]
+								}
+							],
+							[
+								"card_description",
+								{
+									"__TYPE__": "StructuredTextContent",
+									"value": [
+										{
+											"type": "paragraph",
+											"content": {
+												"text": "Minim tempor veniam ad ex cillum voluptate anim nisi Lorem reprehenderit commodo Lorem nostrud consequat. Tempor tempor dolore non ipsum sit."
+											}
+										}
+									]
+								}
+							]
+						]
 					}
 				]
 			}

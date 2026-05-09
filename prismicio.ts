@@ -17,7 +17,7 @@ const routes: prismic.ClientConfig['routes'] = [
   },
   {
     type: 'about_us',
-    path: '/about_us',
+    path: '/about-us',
   },
   {
     type: 'page',
