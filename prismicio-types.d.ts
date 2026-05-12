@@ -2111,6 +2111,16 @@ export interface SubpageHeroSectionSliceDefaultPrimary {
   hero_image: prismic.ImageField<never>;
 
   /**
+   * Hero Gradient Color field in *SubpageHeroSection → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: subpage_hero_section.default.primary.hero_gradient_color
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  hero_gradient_color: prismic.KeyTextField;
+
+  /**
    * Primary CTA field in *SubpageHeroSection → Default → Primary*
    *
    * - **Field Type**: Link

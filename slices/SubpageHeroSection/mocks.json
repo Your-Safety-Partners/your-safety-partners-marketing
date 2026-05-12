@@ -75,6 +75,11 @@
 						}
 					}
 				]
+			},
+			"hero_gradient_color": {
+				"__TYPE__": "FieldContent",
+				"value": "#6da017",
+				"type": "Text"
 			}
 		},
 		"items": []

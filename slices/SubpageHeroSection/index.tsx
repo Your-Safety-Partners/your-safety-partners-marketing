@@ -37,6 +37,35 @@ function isProtocolHref(href: string): boolean {
   return /^[a-z][a-z0-9+.-]*:/i.test(href);
 }
 
+/** Matches `#RGB` or `#RRGGBB` only (avoids injecting arbitrary CSS). */
+const HEX_COLOR_RE = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
+
+const DEFAULT_GRADIENT_RGB = { r: 109, g: 160, b: 23 } as const;
+
+function parseHexToRgb(hex: string): { r: number; g: number; b: number } | null {
+  const trimmed = hex.trim();
+  if (!HEX_COLOR_RE.test(trimmed)) return null;
+  const h = trimmed.slice(1);
+  if (h.length === 3) {
+    return {
+      r: parseInt(h[0] + h[0], 16),
+      g: parseInt(h[1] + h[1], 16),
+      b: parseInt(h[2] + h[2], 16),
+    };
+  }
+  return {
+    r: parseInt(h.slice(0, 2), 16),
+    g: parseInt(h.slice(2, 4), 16),
+    b: parseInt(h.slice(4, 6), 16),
+  };
+}
+
+function heroGradientBackground(hexOrEmpty: string | null | undefined): string {
+  const rgb = parseHexToRgb(hexOrEmpty ?? '') ?? DEFAULT_GRADIENT_RGB;
+  const { r, g, b } = rgb;
+  return `radial-gradient(ellipse at center, rgba(${r},${g},${b},0.17) 0%, rgba(${r},${g},${b},0.07) 42%, rgba(${r},${g},${b},0) 75%)`;
+}
+
 const descriptionComponents = {
   paragraph: ({ children }: { children: ReactNode }) => (
     <p className="text-sm leading-relaxed text-slate-600 md:text-base">{children}</p>
@@ -55,6 +84,7 @@ const SubpageHeroSection: FC<SubpageHeroSectionProps> = ({ slice }) => {
     hero_title,
     hero_description,
     hero_image,
+    hero_gradient_color,
     hero_image_placeholder,
     primary_cta,
     secondary_cta,
@@ -77,6 +107,7 @@ const SubpageHeroSection: FC<SubpageHeroSectionProps> = ({ slice }) => {
   const secondaryLabel = labelFromLinkField(secondary_cta, SECONDARY_DEFAULT_LABEL);
 
   const headingId = `subpage-hero-heading-${slice.id ?? 'subpage-hero'}`;
+  const gradientBackground = heroGradientBackground(hero_gradient_color);
 
   return (
     <section
@@ -170,7 +201,8 @@ const SubpageHeroSection: FC<SubpageHeroSectionProps> = ({ slice }) => {
               <div className="relative mx-auto w-full max-w-xl lg:mx-0 lg:max-w-none">
                 <div
                   aria-hidden
-                  className="pointer-events-none absolute -right-16 top-1/2 z-0 h-[115%] w-[125%] -translate-y-1/2 rounded-[9999px] bg-[radial-gradient(ellipse_at_center,rgba(109,160,23,0.17)_0%,rgba(109,160,23,0.07)_42%,rgba(109,160,23,0)_75%)]"
+                  className="pointer-events-none absolute -right-16 top-1/2 z-0 h-[115%] w-[125%] -translate-y-1/2 rounded-[9999px]"
+                  style={{ background: gradientBackground }}
                 />
                 <div className="relative z-10">
                   <Image

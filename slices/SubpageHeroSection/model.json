@@ -43,6 +43,13 @@
             "thumbnails": []
           }
         },
+        "hero_gradient_color": {
+          "type": "Text",
+          "config": {
+            "label": "Hero Gradient Color",
+            "placeholder": ""
+          }
+        },
         "primary_cta": {
           "type": "Link",
           "config": {
