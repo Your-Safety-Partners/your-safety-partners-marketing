@@ -170,18 +170,19 @@ const SubpageHeroSection: FC<SubpageHeroSectionProps> = ({ slice }) => {
               <div className="relative mx-auto w-full max-w-xl lg:mx-0 lg:max-w-none">
                 <div
                   aria-hidden
-                  className="pointer-events-none absolute -right-12 top-1/2 z-0 hidden h-[100%] w-[90%] -translate-y-1/2 rounded-[9999px] bg-[radial-gradient(ellipse_at_center,rgba(109,40,217,0.12)_0%,rgba(109,40,217,0.04)_45%,transparent_70%)] lg:block"
+                  className="pointer-events-none absolute -right-16 top-1/2 z-0 h-[115%] w-[125%] -translate-y-1/2 rounded-[9999px] bg-[radial-gradient(ellipse_at_center,rgba(109,160,23,0.17)_0%,rgba(109,160,23,0.07)_42%,rgba(109,160,23,0)_75%)]"
                 />
-                <div className="relative overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-sm">
+                <div className="relative z-10">
                   <Image
                     src={imageUrl}
                     alt={imageAlt || 'Hero image'}
                     width={imageWidth}
                     height={imageHeight}
+                    quality={100}
                     unoptimized
                     priority
                     sizes="(min-width: 1024px) 45vw, 100vw"
-                    className="h-auto w-full object-cover"
+                    className="h-auto w-full object-contain"
                   />
                 </div>
               </div>
