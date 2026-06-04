@@ -3,7 +3,12 @@
 import Link from 'next/link';
 import { ChevronDown } from 'lucide-react';
 
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+  Popover,
+  PopoverClose,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 
 const navItemBase =
@@ -40,22 +45,24 @@ function NavDropdown({ label, items }: NavDropdownProps) {
       <PopoverContent
         align="start"
         sideOffset={8}
-        className="w-[min(100vw-2rem,22rem)] max-w-none rounded-lg border border-gray-200 bg-white p-2 shadow-lg"
+        className="w-[min(100vw-2rem,44rem)] max-w-none rounded-lg border border-gray-200 bg-white p-2 shadow-lg"
       >
-        <ul className="flex flex-col gap-2">
+        <ul className="grid grid-cols-2 gap-2">
           {items.map((item) => (
             <li key={item.title}>
-              <Link
-                href={item.href}
-                className="group block rounded-md p-2 outline-none transition-colors hover:bg-violet-50 focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2"
-              >
-                <span className="block font-semibold text-gray-800 group-hover:text-violet-700">
-                  {item.title}
-                </span>
-                <span className="mt-1 block text-sm leading-relaxed text-gray-500 group-hover:text-violet-600">
-                  {item.description}
-                </span>
-              </Link>
+              <PopoverClose asChild>
+                <Link
+                  href={item.href}
+                  className="group block rounded-md p-2 outline-none transition-colors hover:bg-violet-50 focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2"
+                >
+                  <span className="block font-semibold text-gray-800 group-hover:text-violet-700">
+                    {item.title}
+                  </span>
+                  <span className="mt-1 block text-sm leading-relaxed text-gray-500 group-hover:text-violet-600">
+                    {item.description}
+                  </span>
+                </Link>
+              </PopoverClose>
             </li>
           ))}
         </ul>
@@ -97,30 +104,42 @@ const ourServicesItems: MegaMenuItem[] = [
   },
 ];
 
-const softwareItems: MegaMenuItem[] = [
+const productsItems: MegaMenuItem[] = [
   {
-    href: '/features',
-    title: 'Digital Safety Forms',
+    href: '/policies_module',
+    title: 'Policies & Procedures',
     description:
-      'Mobile-friendly checklists for site inspections, pre-starts, and hazard reporting.',
+      'One hub for workplace policies and procedures — always current, no shared drives.',
   },
   {
-    href: '/features',
-    title: 'Asset & Equipment Tracking',
+    href: '/forms_module',
+    title: 'Forms',
     description:
-      'Tools for managing maintenance schedules, service history, and equipment registers.',
+      'Digital forms from sign-offs to audits and risk assessments — any device, no login.',
   },
   {
-    href: '/compare',
-    title: 'Incident Reporting & Analytics',
+    href: '/inspection_module',
+    title: 'Inspections',
     description:
-      'A dashboard for logging incidents in real-time and generating trend reports.',
+      'Schedule and track inspections with auto-escalation and exportable reports.',
   },
   {
-    href: '/features',
-    title: 'Online Inductions',
+    href: '/training_module',
+    title: 'Training',
     description:
-      'A system for workers to complete safety training and site orientations before they arrive.',
+      'Inductions, e-learning, and licence tracking — always know who is up to date.',
+  },
+  {
+    href: '/hazard_module',
+    title: 'Hazards',
+    description:
+      'Log hazards and incidents, assign actions, and track through to close-out.',
+  },
+  {
+    href: '/contractor_module',
+    title: 'Contractors',
+    description:
+      'Inductions, insurance, and compliance — know who is on site and current.',
   },
 ];
 
@@ -131,7 +150,7 @@ export function HeaderDesktopNav() {
         About Us
       </Link>
       <NavDropdown label="Our Services" items={ourServicesItems} />
-      <NavDropdown label="Software" items={softwareItems} />
+      <NavDropdown label="Products" items={productsItems} />
       <Link href="/blog" className={navLinkClass}>
         News
       </Link>
