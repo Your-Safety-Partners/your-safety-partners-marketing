@@ -27,3 +27,12 @@ export const contactUsSliceFormSchema = z.object({
 });
 
 export type ContactUsSliceFormData = z.infer<typeof contactUsSliceFormSchema>;
+
+export const bookADemoFormSchema = z.object({
+  name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
+  email: z.string().email({ message: 'Please enter a valid email address.' }),
+  company: z.string().min(1, { message: 'Please enter your company name.' }),
+  preferredDate: z.string().min(1, { message: 'Please pick a date.' }),
+});
+
+export type BookADemoFormData = z.infer<typeof bookADemoFormSchema>;

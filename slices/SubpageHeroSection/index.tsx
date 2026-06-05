@@ -15,7 +15,7 @@ type SubpageLink = Content.SubpageHeroSectionSliceDefaultPrimary['primary_cta'];
 
 const defaultTitle = 'Module overview';
 
-const PRIMARY_DEFAULT_HREF = '/contact';
+const PRIMARY_DEFAULT_HREF = '/book-a-demo';
 const PRIMARY_DEFAULT_LABEL = 'Book a demo';
 const SECONDARY_DEFAULT_HREF = '/pricing';
 const SECONDARY_DEFAULT_LABEL = 'See pricing';

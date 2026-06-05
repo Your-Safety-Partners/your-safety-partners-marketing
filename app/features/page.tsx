@@ -83,7 +83,7 @@ export default async function FeaturesPage() {
             Everything you need to manage compliance, protect your workforce, and build a world-class safety culture.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <CustomButton title="Book a Demo" url="/contact" size="lg" />
+            <CustomButton title="Book a Demo" url="/book-a-demo" size="lg" />
             <CustomButton title="Get Started" url="/contact" variant="outline" size="lg" />
           </div>
         </div>

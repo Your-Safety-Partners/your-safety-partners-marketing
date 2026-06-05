@@ -140,6 +140,71 @@ export type AboutUsDocument<Lang extends string = string> =
     Lang
   >;
 
+type BookADemoDocumentDataSlicesSlice = never;
+
+/**
+ * Content for Book a demo documents
+ */
+interface BookADemoDocumentData {
+  /**
+   * Slice Zone field in *Book a demo*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book_a_demo.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<BookADemoDocumentDataSlicesSlice>; /**
+   * Meta Title field in *Book a demo*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: book_a_demo.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Book a demo*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: book_a_demo.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Book a demo*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book_a_demo.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Book a demo document from Prismic
+ *
+ * - **API ID**: `book_a_demo`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type BookADemoDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<BookADemoDocumentData>,
+    'book_a_demo',
+    Lang
+  >;
+
 type ContractorModuleDocumentDataSlicesSlice =
   | SubpageHeroSectionSlice
   | ComplianceAuditSlice
@@ -631,6 +696,143 @@ export type PoliciesModuleDocument<Lang extends string = string> =
     Lang
   >;
 
+type SafetyAuditsAndInspectionsDocumentDataSlicesSlice =
+  | SubpageHeroSectionSlice
+  | CallToActionSlice
+  | BulletListSlice;
+
+/**
+ * Content for Safety Audits and Inspections documents
+ */
+interface SafetyAuditsAndInspectionsDocumentData {
+  /**
+   * Slice Zone field in *Safety Audits and Inspections*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: safety_audits_and_inspections.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<SafetyAuditsAndInspectionsDocumentDataSlicesSlice>; /**
+   * Meta Title field in *Safety Audits and Inspections*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: safety_audits_and_inspections.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Safety Audits and Inspections*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: safety_audits_and_inspections.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Safety Audits and Inspections*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: safety_audits_and_inspections.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Safety Audits and Inspections document from Prismic
+ *
+ * - **API ID**: `safety_audits_and_inspections`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type SafetyAuditsAndInspectionsDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<SafetyAuditsAndInspectionsDocumentData>,
+    'safety_audits_and_inspections',
+    Lang
+  >;
+
+type SafetyTrainingAndCompetencyManagementDocumentDataSlicesSlice =
+  | BulletListSlice
+  | CallToActionSlice
+  | SubpageHeroSectionSlice;
+
+/**
+ * Content for Safety Training and Competency Management documents
+ */
+interface SafetyTrainingAndCompetencyManagementDocumentData {
+  /**
+   * Slice Zone field in *Safety Training and Competency Management*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: safety_training_and_competency_management.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<SafetyTrainingAndCompetencyManagementDocumentDataSlicesSlice>; /**
+   * Meta Title field in *Safety Training and Competency Management*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: safety_training_and_competency_management.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Safety Training and Competency Management*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: safety_training_and_competency_management.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Safety Training and Competency Management*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: safety_training_and_competency_management.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Safety Training and Competency Management document from Prismic
+ *
+ * - **API ID**: `safety_training_and_competency_management`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type SafetyTrainingAndCompetencyManagementDocument<
+  Lang extends string = string,
+> = prismic.PrismicDocumentWithoutUID<
+  Simplify<SafetyTrainingAndCompetencyManagementDocumentData>,
+  'safety_training_and_competency_management',
+  Lang
+>;
+
 type TrainingModuleDocumentDataSlicesSlice =
   | SubpageHeroSectionSlice
   | BulletListSlice
@@ -700,8 +902,77 @@ export type TrainingModuleDocument<Lang extends string = string> =
     Lang
   >;
 
+type WhsComplianceManagementDocumentDataSlicesSlice =
+  | BulletListSlice
+  | CallToActionSlice
+  | SubpageHeroSectionSlice;
+
+/**
+ * Content for WHS Compliance Management documents
+ */
+interface WhsComplianceManagementDocumentData {
+  /**
+   * Slice Zone field in *WHS Compliance Management*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: whs_compliance_management.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<WhsComplianceManagementDocumentDataSlicesSlice>; /**
+   * Meta Title field in *WHS Compliance Management*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: whs_compliance_management.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *WHS Compliance Management*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: whs_compliance_management.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *WHS Compliance Management*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: whs_compliance_management.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * WHS Compliance Management document from Prismic
+ *
+ * - **API ID**: `whs_compliance_management`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type WhsComplianceManagementDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<WhsComplianceManagementDocumentData>,
+    'whs_compliance_management',
+    Lang
+  >;
+
 export type AllDocumentTypes =
   | AboutUsDocument
+  | BookADemoDocument
   | ContractorModuleDocument
   | FormsModuleDocument
   | HazardModuleDocument
@@ -709,7 +980,10 @@ export type AllDocumentTypes =
   | InspectionModuleDocument
   | PageDocument
   | PoliciesModuleDocument
-  | TrainingModuleDocument;
+  | SafetyAuditsAndInspectionsDocument
+  | SafetyTrainingAndCompetencyManagementDocument
+  | TrainingModuleDocument
+  | WhsComplianceManagementDocument;
 
 /**
  * Primary content in *AboutJohn → Default → Primary*
@@ -2643,6 +2917,9 @@ declare module '@prismicio/client' {
       AboutUsDocument,
       AboutUsDocumentData,
       AboutUsDocumentDataSlicesSlice,
+      BookADemoDocument,
+      BookADemoDocumentData,
+      BookADemoDocumentDataSlicesSlice,
       ContractorModuleDocument,
       ContractorModuleDocumentData,
       ContractorModuleDocumentDataSlicesSlice,
@@ -2664,9 +2941,18 @@ declare module '@prismicio/client' {
       PoliciesModuleDocument,
       PoliciesModuleDocumentData,
       PoliciesModuleDocumentDataSlicesSlice,
+      SafetyAuditsAndInspectionsDocument,
+      SafetyAuditsAndInspectionsDocumentData,
+      SafetyAuditsAndInspectionsDocumentDataSlicesSlice,
+      SafetyTrainingAndCompetencyManagementDocument,
+      SafetyTrainingAndCompetencyManagementDocumentData,
+      SafetyTrainingAndCompetencyManagementDocumentDataSlicesSlice,
       TrainingModuleDocument,
       TrainingModuleDocumentData,
       TrainingModuleDocumentDataSlicesSlice,
+      WhsComplianceManagementDocument,
+      WhsComplianceManagementDocumentData,
+      WhsComplianceManagementDocumentDataSlicesSlice,
       AllDocumentTypes,
       AboutJohnSlice,
       AboutJohnSliceDefaultPrimary,

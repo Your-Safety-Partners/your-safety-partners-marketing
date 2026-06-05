@@ -50,7 +50,7 @@ export default async function IndustryPage({ params }: Props) {
             <p className="text-xl text-muted-foreground mb-8">
               {page.subtitle}
             </p>
-            <CustomButton title="Book a Demo" url="/contact" size="lg" />
+            <CustomButton title="Book a Demo" url="/book-a-demo" size="lg" />
           </div>
         </div>
       </section>

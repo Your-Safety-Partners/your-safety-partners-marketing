@@ -53,7 +53,7 @@ export default async function ComparisonPage({ params }: Props) {
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <CustomButton title="Start Free Trial" url="/contact" size="lg" />
-            <CustomButton title="Book a Demo" url="/contact" variant="outline" className="text-black" size="lg" />
+            <CustomButton title="Book a Demo" url="/book-a-demo" variant="outline" className="text-black" size="lg" />
           </div>
         </div>
       </section>

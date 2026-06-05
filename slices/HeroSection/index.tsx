@@ -81,7 +81,7 @@ const HeroSection: FC<HeroSectionProps> = ({ slice }) => {
             <SliceEntrance from="left" delayMs={3 * LEFT_STAGGER_MS}>
               <div className="mt-12 flex flex-wrap gap-6">
                 <Link
-                  href="/contact"
+                  href="/book-a-demo"
                   className="inline-flex h-auto items-center justify-center rounded-[8px] border border-violet-700 bg-transparent px-[20px] py-[12px] text-[18px] font-medium text-violet-700 transition-colors hover:bg-violet-50/80 hover:text-violet-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2"
                 >
                   Book a Demo

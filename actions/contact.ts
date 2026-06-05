@@ -1,7 +1,11 @@
 'use server';
 
 import { actionClient } from '@/lib/server/safe-action';
-import { contactFormSchema, contactUsSliceFormSchema } from '@/lib/schemas';
+import {
+  bookADemoFormSchema,
+  contactFormSchema,
+  contactUsSliceFormSchema,
+} from '@/lib/schemas';
 import { globalPOSTRateLimitEffect } from '@/lib/server/request';
 import * as Effect from 'effect/Effect';
 import { getLoggerPromise } from '@/lib/server/logger.server';
@@ -61,3 +65,32 @@ export const submitContactUsSliceForm = actionClient
       throw new Error('An unexpected error occurred. Please try again.');
     }
   });
+
+export const submitBookADemoForm = actionClient
+  .schema(bookADemoFormSchema)
+  .action(
+    async ({
+      parsedInput: { name, email, company, preferredDate },
+    }) => {
+      const rateLimited = await Effect.runPromise(globalPOSTRateLimitEffect);
+      if (!rateLimited) {
+        const logger = await getLoggerPromise();
+        logger.warn(`Rate limit exceeded for book a demo submission from email: ${email}`);
+        throw new Error('Too many requests. Please try again in a moment.');
+      }
+
+      try {
+        const logger = await getLoggerPromise();
+        logger.info(
+          { lead: { name, email, company, preferredDate } },
+          'New book a demo form submission received.'
+        );
+
+        return `Thank you, ${name}! Your demo request is confirmed for ${preferredDate}. We'll be in touch shortly.`;
+      } catch (error) {
+        const logger = await getLoggerPromise();
+        logger.error(error, 'Failed to process book a demo form submission');
+        throw new Error('An unexpected error occurred. Please try again.');
+      }
+    }
+  );

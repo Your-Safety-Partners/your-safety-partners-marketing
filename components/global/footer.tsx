@@ -126,7 +126,7 @@ export function Footer() {
               <Link href="/pricing" className={linkClass}>
                 Pricing
               </Link>
-              <Link href="/contact" className={linkClass}>
+              <Link href="/book-a-demo" className={linkClass}>
                 Book a demo
               </Link>
             </nav>

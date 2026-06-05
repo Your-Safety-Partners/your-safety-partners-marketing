@@ -31,9 +31,10 @@ type MegaMenuItem = {
 type NavDropdownProps = {
   label: string;
   items: MegaMenuItem[];
+  columns?: 1 | 2;
 };
 
-function NavDropdown({ label, items }: NavDropdownProps) {
+function NavDropdown({ label, items, columns = 2 }: NavDropdownProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -45,9 +46,19 @@ function NavDropdown({ label, items }: NavDropdownProps) {
       <PopoverContent
         align="start"
         sideOffset={8}
-        className="w-[min(100vw-2rem,44rem)] max-w-none rounded-lg border border-gray-200 bg-white p-2 shadow-lg"
+        className={cn(
+          'max-w-none rounded-lg border border-gray-200 bg-white p-2 shadow-lg',
+          columns === 1
+            ? 'w-[min(100vw-2rem,24rem)]'
+            : 'w-[min(100vw-2rem,44rem)]'
+        )}
       >
-        <ul className="grid grid-cols-2 gap-2">
+        <ul
+          className={cn(
+            'grid gap-2',
+            columns === 1 ? 'grid-cols-1' : 'grid-cols-2'
+          )}
+        >
           {items.map((item) => (
             <li key={item.title}>
               <PopoverClose asChild>
@@ -71,36 +82,26 @@ function NavDropdown({ label, items }: NavDropdownProps) {
   );
 }
 
-const ourServicesItems: MegaMenuItem[] = [
+const PORTAL_LOGIN_URL = 'https://app.yoursafetyportal.com.au/login';
+
+const solutionsItems: MegaMenuItem[] = [
   {
-    href: '/industry',
+    href: PORTAL_LOGIN_URL,
+    title: 'WHS Compliance Management',
+    description:
+      'Manage obligations, policies, audits, and legislative requirements in one system.',
+  },
+  {
+    href: PORTAL_LOGIN_URL,
+    title: 'Safety Training & Competency Management',
+    description:
+      'Manage inductions, training records, competencies, and certification renewals.',
+  },
+  {
+    href: PORTAL_LOGIN_URL,
     title: 'Safety Audits & Inspections',
     description:
       'Detailed workplace assessments to identify hazards and ensure compliance with local regulations.',
-  },
-  {
-    href: '/about-us',
-    title: 'WHS/OHS Consulting',
-    description:
-      'Expert advice on developing safety management systems (SMS) and legal compliance frameworks.',
-  },
-  {
-    href: '/features',
-    title: 'Risk Assessments',
-    description:
-      'Formal identification of workplace risks (e.g., SWMS, JSEA) and the development of control measures.',
-  },
-  {
-    href: '/contact',
-    title: 'Training & Induction',
-    description:
-      'On-site or classroom-based safety training, including First Aid, Fire Safety, or Manual Handling.',
-  },
-  {
-    href: '/features',
-    title: 'Incident Investigation',
-    description:
-      'Professional analysis of workplace accidents to determine root causes and prevent recurrence.',
   },
 ];
 
@@ -149,7 +150,7 @@ export function HeaderDesktopNav() {
       <Link href="/about-us" className={navLinkClass}>
         About Us
       </Link>
-      <NavDropdown label="Our Services" items={ourServicesItems} />
+      <NavDropdown label="Solutions" items={solutionsItems} columns={1} />
       <NavDropdown label="Products" items={productsItems} />
       <Link href="/blog" className={navLinkClass}>
         News
