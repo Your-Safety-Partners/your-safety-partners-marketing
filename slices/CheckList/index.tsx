@@ -79,7 +79,7 @@ const BulletList: FC<BulletListProps> = ({ slice, index = 0, slices }) => {
       )}
     >
       {hasImage ? (
-        <div className="relative overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-sm">
+        <div className="relative overflow-hidden rounded-2xl shadow-sm">
           <Image
             src={imageUrl}
             alt={imageAlt || 'Section illustration'}
@@ -88,6 +88,10 @@ const BulletList: FC<BulletListProps> = ({ slice, index = 0, slices }) => {
             unoptimized
             sizes="(min-width: 1024px) 42vw, 100vw"
             className="h-auto w-full object-cover"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-violet-700/6"
           />
         </div>
       ) : (

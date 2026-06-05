@@ -204,7 +204,7 @@ const SubpageHeroSection: FC<SubpageHeroSectionProps> = ({ slice }) => {
                   className="pointer-events-none absolute -right-16 top-1/2 z-0 h-[115%] w-[125%] -translate-y-1/2 rounded-[9999px]"
                   style={{ background: gradientBackground }}
                 />
-                <div className="relative z-10">
+                <div className="relative z-10 overflow-hidden rounded-2xl">
                   <Image
                     src={imageUrl}
                     alt={imageAlt || 'Hero image'}
@@ -215,6 +215,10 @@ const SubpageHeroSection: FC<SubpageHeroSectionProps> = ({ slice }) => {
                     priority
                     sizes="(min-width: 1024px) 45vw, 100vw"
                     className="h-auto w-full object-contain"
+                  />
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute inset-0 bg-violet-700/6"
                   />
                 </div>
               </div>
