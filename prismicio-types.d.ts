@@ -70,6 +70,7 @@ type ContentRelationshipFieldWithData<
 }[Exclude<TCustomType[number], string>['id']];
 
 type AboutUsDocumentDataSlicesSlice =
+  | MeetTeamSlice
   | AboutJohnSlice
   | WhatWeDoSlice
   | TimelineSectionSlice
@@ -2149,6 +2150,116 @@ export type LegislativeSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Item in *OurTeam → Default → Primary → Teams*
+ */
+export interface MeetTeamSliceDefaultPrimaryTeamsItem {
+  /**
+   * Member Profile field in *OurTeam → Default → Primary → Teams*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: meet_team.default.primary.teams[].member_profile
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  member_profile: prismic.ImageField<never>;
+
+  /**
+   * Member Name field in *OurTeam → Default → Primary → Teams*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: meet_team.default.primary.teams[].member_name
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  member_name: prismic.KeyTextField;
+
+  /**
+   * Member Role field in *OurTeam → Default → Primary → Teams*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: meet_team.default.primary.teams[].member_role
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  member_role: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *OurTeam → Default → Primary*
+ */
+export interface MeetTeamSliceDefaultPrimary {
+  /**
+   * Section Title field in *OurTeam → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: meet_team.default.primary.section_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_title: prismic.KeyTextField;
+
+  /**
+   * Section Subtitle field in *OurTeam → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: meet_team.default.primary.section_subtitle
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  section_subtitle: prismic.RichTextField;
+
+  /**
+   * Teams field in *OurTeam → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: meet_team.default.primary.teams[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  teams: prismic.GroupField<Simplify<MeetTeamSliceDefaultPrimaryTeamsItem>>;
+
+  /**
+   * Description field in *OurTeam → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: meet_team.default.primary.description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  description: prismic.RichTextField;
+}
+
+/**
+ * Default variation for OurTeam Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type MeetTeamSliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<MeetTeamSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *OurTeam*
+ */
+type MeetTeamSliceVariation = MeetTeamSliceDefault;
+
+/**
+ * OurTeam Shared Slice
+ *
+ * - **API ID**: `meet_team`
+ * - **Description**: MeetTeam
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type MeetTeamSlice = prismic.SharedSlice<
+  'meet_team',
+  MeetTeamSliceVariation
+>;
+
+/**
  * Item in *OurMissionVision → Default → Primary → Cards*
  */
 export interface OurMissionSliceDefaultPrimaryCardItem {
@@ -3009,6 +3120,11 @@ declare module '@prismicio/client' {
       LegislativeSliceDefaultPrimary,
       LegislativeSliceVariation,
       LegislativeSliceDefault,
+      MeetTeamSlice,
+      MeetTeamSliceDefaultPrimaryTeamsItem,
+      MeetTeamSliceDefaultPrimary,
+      MeetTeamSliceVariation,
+      MeetTeamSliceDefault,
       OurMissionSlice,
       OurMissionSliceDefaultPrimaryCardItem,
       OurMissionSliceDefaultPrimary,

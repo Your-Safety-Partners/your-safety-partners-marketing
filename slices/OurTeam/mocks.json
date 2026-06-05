@@ -1,0 +1,240 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"section_title": {
+				"__TYPE__": "FieldContent",
+				"value": "Meet Our Team",
+				"type": "Text"
+			},
+			"section_subtitle": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Experienced Workplace Safety Experts"
+						}
+					}
+				]
+			},
+			"description": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Our consultants bring decades of combined experience across construction, manufacturing, healthcare, and corporate environments."
+						}
+					}
+				]
+			},
+			"teams": {
+				"__TYPE__": "GroupContentType",
+				"value": [
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"member_name",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "John Tregambe",
+									"type": "Text"
+								}
+							],
+							[
+								"member_role",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "Director",
+									"type": "Text"
+								}
+							],
+							[
+								"member_profile",
+								{
+									"origin": {
+										"id": "main",
+										"url": "https://images.unsplash.com/photo-1560250097-0b93528c311a",
+										"width": 800,
+										"height": 1000
+									},
+									"url": "https://images.unsplash.com/photo-1560250097-0b93528c311a",
+									"width": 800,
+									"height": 1000,
+									"edit": {
+										"zoom": 1,
+										"crop": {
+											"x": 0,
+											"y": 0
+										},
+										"background": "transparent"
+									},
+									"alt": "John Tregambe",
+									"credits": null,
+									"__TYPE__": "ImageContent",
+									"thumbnails": {}
+								}
+							]
+						]
+					},
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"member_name",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "Jane Ang",
+									"type": "Text"
+								}
+							],
+							[
+								"member_role",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "WHS Consultant",
+									"type": "Text"
+								}
+							],
+							[
+								"member_profile",
+								{
+									"origin": {
+										"id": "main",
+										"url": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2",
+										"width": 800,
+										"height": 1000
+									},
+									"url": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2",
+									"width": 800,
+									"height": 1000,
+									"edit": {
+										"zoom": 1,
+										"crop": {
+											"x": 0,
+											"y": 0
+										},
+										"background": "transparent"
+									},
+									"alt": "Jane Ang",
+									"credits": null,
+									"__TYPE__": "ImageContent",
+									"thumbnails": {}
+								}
+							]
+						]
+					},
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"member_name",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "Michael Chen",
+									"type": "Text"
+								}
+							],
+							[
+								"member_role",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "Senior Consultant",
+									"type": "Text"
+								}
+							],
+							[
+								"member_profile",
+								{
+									"origin": {
+										"id": "main",
+										"url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e",
+										"width": 800,
+										"height": 1000
+									},
+									"url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e",
+									"width": 800,
+									"height": 1000,
+									"edit": {
+										"zoom": 1,
+										"crop": {
+											"x": 0,
+											"y": 0
+										},
+										"background": "transparent"
+									},
+									"alt": "Michael Chen",
+									"credits": null,
+									"__TYPE__": "ImageContent",
+									"thumbnails": {}
+								}
+							]
+						]
+					},
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"member_name",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "Sarah Mitchell",
+									"type": "Text"
+								}
+							],
+							[
+								"member_role",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "Training Lead",
+									"type": "Text"
+								}
+							],
+							[
+								"member_profile",
+								{
+									"origin": {
+										"id": "main",
+										"url": "https://images.unsplash.com/photo-1580489944761-15a19d654956",
+										"width": 800,
+										"height": 1000
+									},
+									"url": "https://images.unsplash.com/photo-1580489944761-15a19d654956",
+									"width": 800,
+									"height": 1000,
+									"edit": {
+										"zoom": 1,
+										"crop": {
+											"x": 0,
+											"y": 0
+										},
+										"background": "transparent"
+									},
+									"alt": "Sarah Mitchell",
+									"credits": null,
+									"__TYPE__": "ImageContent",
+									"thumbnails": {}
+								}
+							]
+						]
+					}
+				]
+			},
+			"description": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Veniam ullamco nulla ipsum qui mollit non veniam culpa ut exercitation cillum irure. Dolor duis anim eu."
+						}
+					}
+				]
+			}
+		},
+		"items": []
+	}
+]

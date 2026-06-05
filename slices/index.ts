@@ -14,6 +14,7 @@ export const components = {
   hero_section: dynamic(() => import('./HeroSection')),
   how_we_can_welp: dynamic(() => import('./Industries')),
   legislative: dynamic(() => import('./Legislative')),
+  meet_team: dynamic(() => import('./OurTeam')),
   our_mission: dynamic(() => import('./OurMissionVision')),
   platform_apps: dynamic(() => import('./Modules')),
   subpage_hero_section: dynamic(() => import('./SubpageHeroSection')),
