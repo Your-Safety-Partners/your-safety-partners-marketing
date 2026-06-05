@@ -8,8 +8,14 @@ import { Button } from '@/components/ui/button';
 import { inter } from '@/lib/fonts/inter';
 import { cn } from '@/lib/utils';
 
-export type SubpageHeroSectionProps =
-  SliceComponentProps<Content.SubpageHeroSectionSlice>;
+type PageSliceContext = {
+  pageSlug?: string;
+};
+
+export type SubpageHeroSectionProps = SliceComponentProps<
+  Content.SubpageHeroSectionSlice,
+  PageSliceContext
+>;
 
 type SubpageLink = Content.SubpageHeroSectionSliceDefaultPrimary['primary_cta'];
 
@@ -78,7 +84,7 @@ const imagePlaceholderComponents = {
   ),
 };
 
-const SubpageHeroSection: FC<SubpageHeroSectionProps> = ({ slice }) => {
+const SubpageHeroSection: FC<SubpageHeroSectionProps> = ({ slice, context }) => {
   const {
     eyebrow_text,
     hero_title,
@@ -108,6 +114,7 @@ const SubpageHeroSection: FC<SubpageHeroSectionProps> = ({ slice }) => {
 
   const headingId = `subpage-hero-heading-${slice.id ?? 'subpage-hero'}`;
   const gradientBackground = heroGradientBackground(hero_gradient_color);
+  const isAboutUsPage = context?.pageSlug === 'about-us';
 
   return (
     <section
@@ -204,7 +211,12 @@ const SubpageHeroSection: FC<SubpageHeroSectionProps> = ({ slice }) => {
                   className="pointer-events-none absolute -right-16 top-1/2 z-0 h-[115%] w-[125%] -translate-y-1/2 rounded-[9999px]"
                   style={{ background: gradientBackground }}
                 />
-                <div className="relative z-10">
+                <div
+                  className={cn(
+                    'relative z-10',
+                    isAboutUsPage && 'overflow-hidden rounded-2xl'
+                  )}
+                >
                   <Image
                     src={imageUrl}
                     alt={imageAlt || 'Hero image'}
@@ -216,6 +228,12 @@ const SubpageHeroSection: FC<SubpageHeroSectionProps> = ({ slice }) => {
                     sizes="(min-width: 1024px) 45vw, 100vw"
                     className="h-auto w-full object-contain"
                   />
+                  {isAboutUsPage ? (
+                    <div
+                      aria-hidden
+                      className="pointer-events-none absolute inset-0 bg-violet-700/6"
+                    />
+                  ) : null}
                 </div>
               </div>
             ) : (

@@ -74,5 +74,11 @@ export default async function Page({ params }: Props) {
     notFound();
   }
 
-  return <SliceZone slices={page.data.slices} components={components} />;
+  return (
+    <SliceZone
+      slices={page.data.slices}
+      components={components}
+      context={{ pageSlug: slug }}
+    />
+  );
 }
