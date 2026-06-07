@@ -87,7 +87,7 @@ const Faq: FC<FaqProps> = ({ slice }) => {
           <SliceEntrance from="left" delayMs={0}>
             <h2
               id="faq-section-heading"
-              className="text-3xl font-bold leading-tight tracking-tight text-gray-800 md:text-4xl"
+              className="text-2xl md:text-3xl font-bold leading-tight tracking-tight text-gray-800 md:text-4xl"
             >
               {heading}
             </h2>

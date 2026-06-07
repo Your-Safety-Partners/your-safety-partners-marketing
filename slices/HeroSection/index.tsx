@@ -46,6 +46,23 @@ const HeroSection: FC<HeroSectionProps> = ({ slice }) => {
   const statsToShow =
     statsFromCms.length > 0 ? statsFromCms : [...fallbackStats];
 
+  const renderStatItem = (
+    stat: { number: string; description: string },
+    index: number
+  ) => (
+    <div
+      key={`${stat.description}-${stat.number}-${index}`}
+      className="text-center lg:text-left"
+    >
+      {stat.number ? (
+        <p className="text-2xl font-bold text-gray-900">{stat.number}</p>
+      ) : null}
+      {stat.description ? (
+        <p className="mt-1 text-sm text-gray-500">{stat.description}</p>
+      ) : null}
+    </div>
+  );
+
   const imageUrl = isFilled.image(hero_image)
     ? hero_image.url.split('?')[0] ?? hero_image.url
     : FALLBACK_HERO_SRC;
@@ -61,7 +78,7 @@ const HeroSection: FC<HeroSectionProps> = ({ slice }) => {
     >
       <div className="container mx-auto max-w-7xl px-4 md:px-6 lg:px-10">
         <SliceEntranceGroup className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16 xl:gap-20">
-          <div className="flex max-w-xl flex-col lg:max-w-none">
+          <div className="flex max-w-xl flex-col items-center text-center lg:max-w-none lg:items-start lg:text-left">
             <SliceEntrance from="left" delayMs={0 * LEFT_STAGGER_MS}>
               <p className="inline-block rounded-md bg-violet-100 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-violet-800">
                 {badgeText}
@@ -79,7 +96,7 @@ const HeroSection: FC<HeroSectionProps> = ({ slice }) => {
             </SliceEntrance>
 
             <SliceEntrance from="left" delayMs={3 * LEFT_STAGGER_MS}>
-              <div className="mt-12 flex flex-wrap gap-6">
+              <div className="mt-12 flex flex-wrap justify-center gap-6 lg:justify-start">
                 <Link
                   href="/book-a-demo"
                   className="inline-flex h-auto items-center justify-center rounded-[8px] border border-violet-700 bg-transparent px-[20px] py-[12px] text-[18px] font-medium text-violet-700 transition-colors hover:bg-violet-50/80 hover:text-violet-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2"
@@ -100,17 +117,21 @@ const HeroSection: FC<HeroSectionProps> = ({ slice }) => {
             </SliceEntrance>
 
             <SliceEntrance from="left" delayMs={4 * LEFT_STAGGER_MS}>
-              <div className="flex flex-row flex-wrap gap-6 pt-10 sm:gap-8">
-                {statsToShow.map((stat, index) => (
-                  <div key={`${stat.description}-${stat.number}-${index}`}>
-                    {stat.number ? (
-                      <p className="text-2xl font-bold text-gray-900">{stat.number}</p>
-                    ) : null}
-                    {stat.description ? (
-                      <p className="mt-1 text-sm text-gray-500">{stat.description}</p>
-                    ) : null}
+              <div className="w-full pt-10 lg:hidden">
+                <div className="flex justify-center gap-6 sm:gap-8">
+                  {statsToShow.slice(0, 2).map((stat, index) => renderStatItem(stat, index))}
+                </div>
+                {statsToShow.length > 2 ? (
+                  <div className="mt-6 flex justify-center gap-6 sm:gap-8">
+                    {statsToShow.slice(2).map((stat, index) =>
+                      renderStatItem(stat, index + 2)
+                    )}
                   </div>
-                ))}
+                ) : null}
+              </div>
+
+              <div className="hidden flex-row flex-wrap gap-6 pt-10 sm:gap-8 lg:flex">
+                {statsToShow.map((stat, index) => renderStatItem(stat, index))}
               </div>
             </SliceEntrance>
           </div>

@@ -129,13 +129,13 @@ const FinancialRelief: FC<FinancialReliefProps> = ({ slice }) => {
             Add metric cards in the Financial Relief slice (Cards group).
           </p>
         ) : (
-          <ul className="mt-12 grid list-none gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-12 grid list-none grid-cols-2 gap-4 md:gap-6 lg:grid-cols-4">
             {cardItems.map((row, index) => {
               const icon = row.card_icon;
 
               return (
                 <li key={`${row.card_title ?? 'card'}-${index}`}>
-                  <Card className="h-full rounded-xl border-0 bg-white p-6 shadow-[0_4px_8px_rgba(0,0,0,0.1)]">
+                  <Card className="h-full rounded-xl border-0 bg-white p-4 shadow-[0_4px_8px_rgba(0,0,0,0.1)] md:p-6">
                     {isFilled.image(icon) ? (
                       <div>
                         {/* eslint-disable-next-line @next/next/no-img-element -- Prismic card artwork */}
@@ -144,7 +144,7 @@ const FinancialRelief: FC<FinancialReliefProps> = ({ slice }) => {
                           alt={icon.alt ?? ''}
                           width={52}
                           height={52}
-                          className="size-13 object-contain"
+                          className="size-10 object-contain md:size-[52px]"
                           draggable={false}
                         />
                       </div>
@@ -152,20 +152,20 @@ const FinancialRelief: FC<FinancialReliefProps> = ({ slice }) => {
                     {row.card_title?.trim() ? (
                       <p
                         className={cn(
-                          'text-[24px] font-bold leading-snug tracking-tight text-gray-800',
-                          isFilled.image(icon) ? 'mt-4' : 'mt-0'
+                          'text-lg font-bold leading-snug tracking-tight text-gray-800 md:text-[24px]',
+                          isFilled.image(icon) ? 'mt-3 md:mt-4' : 'mt-0'
                         )}
                       >
                         {row.card_title.trim()}
                       </p>
                     ) : null}
                     {row.card_subtitle?.trim() ? (
-                      <p className="mt-2 text-base font-semibold text-gray-700">
+                      <p className="mt-1 text-sm font-semibold text-gray-700 md:mt-2 md:text-base">
                         {row.card_subtitle.trim()}
                       </p>
                     ) : null}
                     {row.card_text?.trim() ? (
-                      <p className="mt-1 text-sm leading-relaxed text-gray-500">
+                      <p className="mt-1 text-xs leading-relaxed text-gray-500 md:text-sm">
                         {row.card_text.trim()}
                       </p>
                     ) : null}

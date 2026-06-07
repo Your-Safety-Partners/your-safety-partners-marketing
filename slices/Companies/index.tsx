@@ -27,7 +27,7 @@ function renderLogoCells(
     return (
       <div
         key={`${keyPrefix}-${logo.url}`}
-        className="flex h-[80px] shrink-0 items-center justify-center px-2 sm:px-4"
+        className="flex h-12 shrink-0 items-center justify-center px-2 sm:px-4 md:h-[80px]"
         aria-hidden={ariaHidden}
       >
         {/* eslint-disable-next-line @next/next/no-img-element -- Prismic CDN logos */}
@@ -36,7 +36,7 @@ function renderLogoCells(
           alt={ariaHidden ? '' : (logo.alt ?? 'Partner company logo')}
           width={logo.dimensions?.width ?? 200}
           height={logo.dimensions?.height ?? 80}
-          className="h-[80px] max-h-[80px] w-auto max-w-[240px] object-contain"
+          className="h-12 max-h-12 w-auto max-w-[140px] object-contain md:h-[80px] md:max-h-[80px] md:max-w-[240px]"
           draggable={false}
         />
       </div>

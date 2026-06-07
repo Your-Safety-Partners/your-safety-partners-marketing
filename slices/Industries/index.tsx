@@ -44,14 +44,14 @@ const sectionIntroComponents = {
 };
 
 const industryCardClassName =
-  'group flex h-full flex-col rounded-2xl border border-transparent bg-white p-6 shadow-sm transition-colors duration-200 hover:border-violet-700 hover:bg-violet-700/10 md:p-7';
+  'group flex h-full flex-col rounded-2xl border border-transparent bg-white p-4 shadow-sm transition-colors duration-200 hover:border-violet-700 hover:bg-violet-700/10 md:p-6 lg:p-7';
 
 const industryTitleClassName =
   'text-base font-semibold leading-snug tracking-tight text-gray-700 transition-colors duration-200 group-hover:text-violet-700';
 
 const cardDescriptionComponents = {
   paragraph: ({ children }: { children: ReactNode }) => (
-    <p className="text-sm font-normal leading-relaxed text-gray-500 transition-colors duration-200 group-hover:text-violet-500">
+    <p className="text-xs font-normal leading-relaxed text-gray-500 transition-colors duration-200 group-hover:text-violet-500 md:text-sm">
       {children}
     </p>
   ),
@@ -117,18 +117,18 @@ const Industries: FC<IndustriesProps> = ({ slice }) => {
           ) : null}
         </div>
 
-        <SliceEntranceGroup className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:mt-14 lg:grid-cols-4 lg:gap-6">
+        <SliceEntranceGroup className="mt-12 grid grid-cols-2 gap-4 md:gap-5 lg:mt-14 lg:grid-cols-4 lg:gap-6">
           {useDefaults
             ? DEFAULT_CARDS.map((card, index) => {
                 const Icon = iconForIndustryTitle(card.title);
                 return (
                   <SliceEntrance key={card.title} from="left" delayMs={index * STAGGER_MS}>
                     <article className={industryCardClassName}>
-                      <div className="mb-4 text-violet-600" aria-hidden>
-                        <Icon className="size-9" strokeWidth={1.5} />
+                      <div className="mb-3 text-violet-600 md:mb-4" aria-hidden>
+                        <Icon className="size-8 md:size-9" strokeWidth={1.5} />
                       </div>
-                      <h3 className={industryTitleClassName}>{card.title}</h3>
-                      <p className="mt-2 text-sm leading-relaxed text-gray-500 transition-colors duration-200 group-hover:text-violet-500">
+                      <h3 className={cn(industryTitleClassName, 'text-sm md:text-base')}>{card.title}</h3>
+                      <p className="mt-1 text-xs leading-relaxed text-gray-500 transition-colors duration-200 group-hover:text-violet-500 md:mt-2 md:text-sm">
                         {card.description}
                       </p>
                     </article>
@@ -143,7 +143,7 @@ const Industries: FC<IndustriesProps> = ({ slice }) => {
                 return (
                   <SliceEntrance key={key} from="left" delayMs={index * STAGGER_MS}>
                     <article className={industryCardClassName}>
-                      <div className="mb-4 shrink-0" aria-hidden>
+                      <div className="mb-3 shrink-0 md:mb-4" aria-hidden>
                         {isFilled.image(row.industry_icon) ? (
                           // eslint-disable-next-line @next/next/no-img-element -- Prismic industry icon
                           <img
@@ -151,16 +151,18 @@ const Industries: FC<IndustriesProps> = ({ slice }) => {
                             alt={row.industry_icon.alt ?? ''}
                             width={36}
                             height={36}
-                            className="size-9 object-contain"
+                            className="size-8 object-contain md:size-9"
                             draggable={false}
                           />
                         ) : (
                           <span className="inline-flex text-violet-600">
-                            <Icon className="size-9" strokeWidth={1.5} />
+                            <Icon className="size-8 md:size-9" strokeWidth={1.5} />
                           </span>
                         )}
                       </div>
-                      {title ? <h3 className={industryTitleClassName}>{title}</h3> : null}
+                      {title ? (
+                        <h3 className={cn(industryTitleClassName, 'text-sm md:text-base')}>{title}</h3>
+                      ) : null}
                       {isFilled.richText(row.description) ? (
                         <div className="mt-1 min-w-0 [&_p+p]:mt-2">
                           <PrismicRichText

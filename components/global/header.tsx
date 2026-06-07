@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import { HeaderDesktopNav } from '@/components/global/header-desktop-nav';
+import { HeaderMobileNav } from '@/components/global/header-mobile-nav';
 import { inter } from '@/lib/fonts/inter';
 import { cn } from '@/lib/utils';
 
@@ -30,12 +31,15 @@ export function Header() {
           </Link>
           <HeaderDesktopNav />
         </div>
-        <Link
-          href="/contact"
-          className="inline-flex items-center justify-center rounded-md bg-violet-700 px-[20px] py-[12px] text-base font-medium text-white transition-colors hover:bg-violet-700/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2"
-        >
-          Contact Us
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/contact"
+            className="hidden md:inline-flex items-center justify-center rounded-md bg-violet-700 px-[20px] py-[12px] text-base font-medium text-white transition-colors hover:bg-violet-700/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2"
+          >
+            Contact Us
+          </Link>
+          <HeaderMobileNav />
+        </div>
       </div>
     </header>
   );

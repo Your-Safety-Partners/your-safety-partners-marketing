@@ -125,9 +125,9 @@ const SubpageHeroSection: FC<SubpageHeroSectionProps> = ({ slice, context }) => 
     >
       <div className="container mx-auto max-w-7xl px-4 md:px-6 lg:px-10">
         <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-14 xl:gap-16">
-          <div className="order-2 flex min-w-0 flex-col lg:order-1">
+          <div className="order-1 flex min-w-0 flex-col items-center text-center lg:order-1 lg:items-start lg:text-left">
             {eyebrow ? (
-              <p className="w-fit bg-violet-100 rounded-full px-3 py-1.5 text-xs font-semibold uppercase text-violet-700 md:text-sm">
+              <p className="w-fit rounded-full bg-violet-100 px-3 py-1.5 text-xs font-semibold uppercase text-violet-700 md:text-sm">
                 {eyebrow}
               </p>
             ) : null}
@@ -143,12 +143,12 @@ const SubpageHeroSection: FC<SubpageHeroSectionProps> = ({ slice, context }) => 
             </h1>
 
             {hasDescription ? (
-              <div className="mt-4 max-w-xl [&_p+p]:mt-3">
+              <div className="mt-4 max-w-xl lg:mx-0 lg:text-left [&_p+p]:mt-3 [&_p]:text-center lg:[&_p]:text-left">
                 <PrismicRichText field={hero_description} components={descriptionComponents} />
               </div>
             ) : null}
 
-            <div className="mt-8 flex flex-wrap items-center gap-4 md:mt-10">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-4 md:mt-10 lg:justify-start">
               {isProtocolHref(secondaryHref) ? (
                 <a
                   href={secondaryHref}
@@ -203,7 +203,7 @@ const SubpageHeroSection: FC<SubpageHeroSectionProps> = ({ slice, context }) => 
             </div>
           </div>
 
-          <div className="order-1 min-w-0 lg:order-2">
+          <div className="order-2 min-w-0 lg:order-2">
             {hasImage ? (
               <div className="relative mx-auto w-full max-w-xl lg:mx-0 lg:max-w-none">
                 <div

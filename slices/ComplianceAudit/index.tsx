@@ -101,11 +101,11 @@ const ComplianceAudit: FC<ComplianceAuditProps> = ({ slice }) => {
                   {eyebrowText.trim()}
                 </p>
 
-                <h2 className="mt-5 text-4xl font-bold tracking-tight text-slate-900">
+                <h2 className="mt-5 text-2xl md:text-4xl font-bold tracking-tight text-slate-900">
                   {section_title?.trim()}
                 </h2>
 
-                <div className="mt-4 max-w-xl text-lg leading-relaxed text-slate-600">
+                <div className="mt-4 max-w-xl text-base md:text-lg leading-relaxed text-slate-600">
                   <PrismicRichText field={section_subtitle} />
                 </div>
 
@@ -164,7 +164,7 @@ const ComplianceAudit: FC<ComplianceAuditProps> = ({ slice }) => {
                   return (
                     <li
                       key={`compliance-question-${index}`}
-                      className="flex items-center justify-between gap-4 rounded-xl border border-gray-200 bg-gray-50 px-5 py-4"
+                      className="flex flex-col items-stretch gap-4 rounded-xl border border-gray-200 bg-gray-50 px-5 py-4 md:flex-row md:items-center md:justify-between"
                     >
                       <div className="text-base leading-relaxed text-slate-800">
                         {isFilled.richText(question?.question_item) ? (
@@ -174,13 +174,13 @@ const ComplianceAudit: FC<ComplianceAuditProps> = ({ slice }) => {
                         )}
                       </div>
 
-                      <div className="inline-flex shrink-0 rounded-full border border-gray-200 bg-white p-1">
+                      <div className="flex w-full shrink-0 rounded-full border border-gray-200 bg-white p-1 md:inline-flex md:w-auto">
                         <Button
                           type="button"
                           variant="ghost"
                           onClick={() => setAnswer(index, 'yes')}
                           className={cn(
-                            'h-auto rounded-full px-4 py-1.5 text-sm font-semibold !bg-transparent',
+                            'h-auto flex-1 rounded-full px-4 py-1.5 text-sm font-semibold !bg-transparent md:flex-none',
                             answers[index] === 'yes'
                               ? '!bg-green-300 !text-green-700 hover:!bg-green-300 hover:!text-green-700'
                               : 'text-gray-600 hover:!bg-green-100 hover:!text-green-500'
@@ -193,7 +193,7 @@ const ComplianceAudit: FC<ComplianceAuditProps> = ({ slice }) => {
                           variant="ghost"
                           onClick={() => setAnswer(index, 'no')}
                           className={cn(
-                            'h-auto rounded-full px-4 py-1.5 text-sm font-semibold !bg-transparent',
+                            'h-auto flex-1 rounded-full px-4 py-1.5 text-sm font-semibold !bg-transparent md:flex-none',
                             answers[index] === 'no'
                               ? '!bg-red-300 !text-red-700 hover:!bg-red-300 hover:!text-red-700'
                               : 'text-gray-600 hover:!bg-red-100 hover:!text-red-500'

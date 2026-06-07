@@ -4,6 +4,10 @@ import Link from 'next/link';
 import { ChevronDown } from 'lucide-react';
 
 import {
+  mainNavItems,
+  type NavMenuItem,
+} from '@/components/global/header-nav-data';
+import {
   Popover,
   PopoverClose,
   PopoverContent,
@@ -22,15 +26,9 @@ const navTriggerClass = cn(
   'data-[state=open]:bg-violet-50 data-[state=open]:text-violet-700'
 );
 
-type MegaMenuItem = {
-  href: string;
-  title: string;
-  description: string;
-};
-
 type NavDropdownProps = {
   label: string;
-  items: MegaMenuItem[];
+  items: NavMenuItem[];
   columns?: 1 | 2;
 };
 
@@ -82,79 +80,23 @@ function NavDropdown({ label, items, columns = 2 }: NavDropdownProps) {
   );
 }
 
-const PORTAL_LOGIN_URL = 'https://app.yoursafetyportal.com.au/login';
-
-const solutionsItems: MegaMenuItem[] = [
-  {
-    href: PORTAL_LOGIN_URL,
-    title: 'WHS Compliance Management',
-    description:
-      'Manage obligations, policies, audits, and legislative requirements in one system.',
-  },
-  {
-    href: PORTAL_LOGIN_URL,
-    title: 'Safety Training & Competency Management',
-    description:
-      'Manage inductions, training records, competencies, and certification renewals.',
-  },
-  {
-    href: PORTAL_LOGIN_URL,
-    title: 'Safety Audits & Inspections',
-    description:
-      'Detailed workplace assessments to identify hazards and ensure compliance with local regulations.',
-  },
-];
-
-const productsItems: MegaMenuItem[] = [
-  {
-    href: '/policies_module',
-    title: 'Policies & Procedures',
-    description:
-      'One hub for workplace policies and procedures — always current, no shared drives.',
-  },
-  {
-    href: '/forms_module',
-    title: 'Forms',
-    description:
-      'Digital forms from sign-offs to audits and risk assessments — any device, no login.',
-  },
-  {
-    href: '/inspection_module',
-    title: 'Inspections',
-    description:
-      'Schedule and track inspections with auto-escalation and exportable reports.',
-  },
-  {
-    href: '/training_module',
-    title: 'Training',
-    description:
-      'Inductions, e-learning, and licence tracking — always know who is up to date.',
-  },
-  {
-    href: '/hazard_module',
-    title: 'Hazards',
-    description:
-      'Log hazards and incidents, assign actions, and track through to close-out.',
-  },
-  {
-    href: '/contractor_module',
-    title: 'Contractors',
-    description:
-      'Inductions, insurance, and compliance — know who is on site and current.',
-  },
-];
-
 export function HeaderDesktopNav() {
   return (
     <nav className="hidden md:flex items-center gap-6" aria-label="Main">
-      <Link href="/about-us" className={navLinkClass}>
-        About Us
-      </Link>
-      <NavDropdown label="Solutions" items={solutionsItems} columns={1} />
-      <NavDropdown label="Products" items={productsItems} />
-      <Link href="/blog" className={navLinkClass}>
-        News
-      </Link>
+      {mainNavItems.map((item) =>
+        item.type === 'link' ? (
+          <Link key={item.href} href={item.href} className={navLinkClass}>
+            {item.label}
+          </Link>
+        ) : (
+          <NavDropdown
+            key={item.label}
+            label={item.label}
+            items={item.items}
+            columns={item.columns}
+          />
+        )
+      )}
     </nav>
   );
 }
