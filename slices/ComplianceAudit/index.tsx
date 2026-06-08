@@ -6,6 +6,7 @@ import { Content, isFilled, type RichTextField } from '@prismicio/client';
 import { PrismicRichText, SliceComponentProps } from '@prismicio/react';
 
 import { SliceEntrance } from '@/components/slices/slice-entrance';
+import { productsItems } from '@/components/global/header-nav-data';
 import { Button } from '@/components/ui/button';
 import { inter } from '@/lib/fonts/inter';
 import { cn } from '@/lib/utils';
@@ -13,8 +14,23 @@ import { cn } from '@/lib/utils';
 /**
  * Props for `ComplianceAudit`.
  */
-export type ComplianceAuditProps =
-  SliceComponentProps<Content.ComplianceAuditSlice>;
+type PageSliceContext = {
+  pageSlug?: string;
+};
+
+export type ComplianceAuditProps = SliceComponentProps<
+  Content.ComplianceAuditSlice,
+  PageSliceContext
+>;
+
+const MODULE_NAME_BY_SLUG = Object.fromEntries(
+  productsItems.map((item) => [item.href.replace(/^\//, ''), item.title])
+) as Record<string, string>;
+
+function getModuleName(pageSlug?: string): string {
+  if (!pageSlug) return 'Inspections';
+  return MODULE_NAME_BY_SLUG[pageSlug] ?? 'Inspections';
+}
 
 type AnswerValue = 'yes' | 'no' | null;
 
@@ -40,7 +56,7 @@ function getAnswerLevel(yesCount: number): AnswerLevel {
   return 1;
 }
 
-const ComplianceAudit: FC<ComplianceAuditProps> = ({ slice }) => {
+const ComplianceAudit: FC<ComplianceAuditProps> = ({ slice, context }) => {
   const { section_title, section_subtitle, questions } = slice.primary;
   const primary = slice.primary as Record<string, unknown>;
   const eyebrowText =
@@ -69,6 +85,7 @@ const ComplianceAudit: FC<ComplianceAuditProps> = ({ slice }) => {
 
   const answerLevel = getAnswerLevel(yesCount);
   const activeTip = answersTips.find((tip) => tip.level === answerLevel);
+  const moduleName = getModuleName(context?.pageSlug);
 
   const setAnswer = (questionIndex: number, value: Exclude<AnswerValue, null>) => {
     setAnswers((previous) => {
@@ -128,8 +145,8 @@ const ComplianceAudit: FC<ComplianceAuditProps> = ({ slice }) => {
                       <PrismicRichText field={activeTip.tip_description} />
                     ) : !hasAllAnswered ? (
                       <p>
-                        Answer honestly — then we&apos;ll tell you where the Inspections
-                        module fits.
+                        Answer all the questions — then we&apos;ll tell you where the {moduleName}{' '}
+                        module can improve your process.
                       </p>
                     ) : null}
                   </div>
