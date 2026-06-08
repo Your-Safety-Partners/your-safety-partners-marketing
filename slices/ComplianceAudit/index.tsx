@@ -62,10 +62,6 @@ const ComplianceAudit: FC<ComplianceAuditProps> = ({ slice }) => {
     () => answers.reduce((count, value) => (value === 'yes' ? count + 1 : count), 0),
     [answers]
   );
-  const hasAnyAnswered = useMemo(
-    () => answers.some((value) => value !== null),
-    [answers]
-  );
   const hasAllAnswered = useMemo(
     () => answers.every((value) => value !== null),
     [answers]
@@ -118,7 +114,7 @@ const ComplianceAudit: FC<ComplianceAuditProps> = ({ slice }) => {
                   </p>
                   <p className="mt-2 text-lg text-slate-500">answered &quot;Yes&quot;</p>
                   <div className="mt-3 text-base leading-relaxed text-slate-600 [&_p+p]:mt-2">
-                    {hasAnyAnswered && activeTip?.tip_title ? (
+                    {hasAllAnswered && activeTip?.tip_title ? (
                       <p
                         className={cn(
                           'font-semibold',
@@ -128,14 +124,14 @@ const ComplianceAudit: FC<ComplianceAuditProps> = ({ slice }) => {
                         {activeTip.tip_title}
                       </p>
                     ) : null}
-                    {hasAnyAnswered && isFilled.richText(activeTip?.tip_description) ? (
+                    {hasAllAnswered && isFilled.richText(activeTip?.tip_description) ? (
                       <PrismicRichText field={activeTip.tip_description} />
-                    ) : (
+                    ) : !hasAllAnswered ? (
                       <p>
                         Answer honestly — then we&apos;ll tell you where the Inspections
                         module fits.
                       </p>
-                    )}
+                    ) : null}
                   </div>
                   {hasAllAnswered ? (
                     <div className="mt-5 flex flex-wrap gap-3">
