@@ -7,6 +7,8 @@ import {
   contactUsSliceFormSchema,
 } from '@/lib/schemas';
 import { globalPOSTRateLimitEffect } from '@/lib/server/request';
+import { isMicrosoftCalendarConfigured } from '@/lib/microsoft-graph/config';
+import { createTeamsDemoEvent } from '@/lib/microsoft-graph/booking';
 import * as Effect from 'effect/Effect';
 import { getLoggerPromise } from '@/lib/server/logger.server';
 
@@ -70,7 +72,7 @@ export const submitBookADemoForm = actionClient
   .schema(bookADemoFormSchema)
   .action(
     async ({
-      parsedInput: { name, email, company, preferredDate },
+      parsedInput: { name, email, company, preferredDate, preferredTime },
     }) => {
       const rateLimited = await Effect.runPromise(globalPOSTRateLimitEffect);
       if (!rateLimited) {
@@ -81,16 +83,36 @@ export const submitBookADemoForm = actionClient
 
       try {
         const logger = await getLoggerPromise();
+
+        if (isMicrosoftCalendarConfigured()) {
+          const booking = await createTeamsDemoEvent({
+            name,
+            email,
+            company,
+            preferredDate,
+            preferredTime,
+          });
+
+          logger.info(
+            { lead: { name, email, company, preferredDate, preferredTime, teamsJoinUrl: booking.teamsJoinUrl } },
+            'Teams demo booked successfully.'
+          );
+
+          return `Thank you, ${name}! Your demo is scheduled for ${booking.formattedDateTime}. A Teams calendar invite has been sent to ${email}.`;
+        }
+
         logger.info(
-          { lead: { name, email, company, preferredDate } },
-          'New book a demo form submission received.'
+          { lead: { name, email, company, preferredDate, preferredTime } },
+          'New book a demo form submission received (calendar not configured).'
         );
 
-        return `Thank you, ${name}! Your demo request is confirmed for ${preferredDate}. We'll be in touch shortly.`;
+        return `Thank you, ${name}! We've received your demo request for ${preferredDate} at ${preferredTime}. We'll be in touch shortly.`;
       } catch (error) {
         const logger = await getLoggerPromise();
         logger.error(error, 'Failed to process book a demo form submission');
-        throw new Error('An unexpected error occurred. Please try again.');
+        throw error instanceof Error
+          ? error
+          : new Error('An unexpected error occurred. Please try again.');
       }
     }
   );

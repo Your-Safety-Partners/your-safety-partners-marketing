@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 
 import { submitBookADemoForm } from '@/actions/contact';
 import { DemoDatePicker } from '@/components/book-a-demo/demo-date-picker';
+import { DemoTimeSlotPicker } from '@/components/book-a-demo/demo-time-slot-picker';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -35,14 +36,19 @@ export function BookADemoForm() {
     register,
     control,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<BookADemoFormData>({
     resolver: zodResolver(bookADemoFormSchema),
     defaultValues: {
       preferredDate: '',
+      preferredTime: '',
     },
   });
+
+  const selectedDate = watch('preferredDate');
 
   const onSubmit = async (data: BookADemoFormData) => {
     const result = await submitBookADemoForm(data);
@@ -128,9 +134,26 @@ export function BookADemoForm() {
           render={({ field }) => (
             <DemoDatePicker
               value={field.value}
-              onChange={field.onChange}
+              onChange={(nextDate) => {
+                field.onChange(nextDate);
+                setValue('preferredTime', '');
+              }}
               disabled={isSubmitting}
               error={errors.preferredDate?.message}
+            />
+          )}
+        />
+
+        <Controller
+          name="preferredTime"
+          control={control}
+          render={({ field }) => (
+            <DemoTimeSlotPicker
+              date={selectedDate}
+              value={field.value}
+              onChange={field.onChange}
+              disabled={isSubmitting}
+              error={errors.preferredTime?.message}
             />
           )}
         />

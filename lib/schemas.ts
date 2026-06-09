@@ -33,6 +33,7 @@ export const bookADemoFormSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address.' }),
   company: z.string().min(1, { message: 'Please enter your company name.' }),
   preferredDate: z.string().min(1, { message: 'Please pick a date.' }),
+  preferredTime: z.string().min(1, { message: 'Please pick a time.' }),
 });
 
 export type BookADemoFormData = z.infer<typeof bookADemoFormSchema>;
