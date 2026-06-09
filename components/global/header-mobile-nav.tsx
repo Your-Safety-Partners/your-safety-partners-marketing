@@ -29,7 +29,7 @@ import { inter } from '@/lib/fonts/inter';
 import { cn } from '@/lib/utils';
 
 const mobileNavTextClass =
-  'text-base font-medium text-gray-700 transition-colors hover:bg-violet-50 hover:text-violet-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2';
+  'text-base font-medium text-gray-900 transition-colors hover:bg-violet-50 hover:text-violet-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2';
 
 const mobileLinkClass = cn(mobileNavTextClass, 'block rounded-md px-4 py-3');
 

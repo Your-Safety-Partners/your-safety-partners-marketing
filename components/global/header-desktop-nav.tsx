@@ -16,7 +16,7 @@ import {
 import { cn } from '@/lib/utils';
 
 const navItemBase =
-  'text-base font-medium text-gray-700 rounded-md p-2 transition-colors hover:bg-violet-50 hover:text-violet-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2';
+  'text-base font-medium text-gray-900 rounded-md p-2 transition-colors hover:bg-violet-50 hover:text-violet-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2';
 
 const navLinkClass = `${navItemBase} inline-flex items-center`;
 
