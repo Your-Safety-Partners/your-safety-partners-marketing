@@ -1,14 +1,40 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { ArrowUpRight } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { contactFormSchema, type ContactFormData } from '@/lib/schemas';
 import { submitContactForm } from '@/actions/contact';
-import CustomInput from '@/components/custom-ui/custom-input';
-import CustomButton from '@/components/custom-ui/custom-button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { TextArea } from '@/components/ui/textarea';
+
+const fieldClass =
+  'h-11 rounded-xl border-gray-200 bg-white text-gray-900 shadow-none placeholder:text-gray-400 focus-visible:border-violet-500 focus-visible:ring-violet-500/30';
+
+const textAreaClass =
+  'min-h-[168px] resize-y rounded-xl border-gray-200 bg-white py-3 text-gray-900 shadow-none placeholder:text-gray-400 focus-visible:border-violet-500 focus-visible:ring-violet-500/30';
+
+function FieldLabel({
+  htmlFor,
+  children,
+  required = true,
+}: {
+  htmlFor: string;
+  children: ReactNode;
+  required?: boolean;
+}) {
+  return (
+    <Label htmlFor={htmlFor} className="text-sm font-medium text-gray-700">
+      {children}
+      {required ? <span className="text-destructive"> *</span> : null}
+    </Label>
+  );
+}
 
 export function ContactForm() {
   const {
@@ -32,58 +58,101 @@ export function ContactForm() {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Book a Demo</CardTitle>
-        <CardDescription>Fill out the form below and we&apos;ll contact you to schedule a personalized demo.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <CustomInput<ContactFormData>
-            label="Full Name"
-            name="name"
-            register={register}
+    <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-[0_8px_30px_rgba(15,23,42,0.08)] md:p-8">
+      <h2 className="text-xl font-bold tracking-tight text-gray-900 md:text-2xl">
+        Send us a message
+      </h2>
+      <p className="mt-2 text-sm text-gray-500 md:text-base">
+        Fill out the form below and we&apos;ll get back to you as soon as possible.
+      </p>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
+        <div className="space-y-2">
+          <FieldLabel htmlFor="contact-name">Full name</FieldLabel>
+          <Input
+            id="contact-name"
+            autoComplete="name"
             placeholder="Jane Doe"
-            validationError={errors.name?.message}
             disabled={isSubmitting}
+            aria-invalid={Boolean(errors.name)}
+            className={fieldClass}
+            {...register('name')}
           />
-          <CustomInput<ContactFormData>
-            label="Work Email"
-            name="email"
+          {errors.name?.message ? (
+            <p className="text-sm text-destructive" role="alert">
+              {errors.name.message}
+            </p>
+          ) : null}
+        </div>
+
+        <div className="space-y-2">
+          <FieldLabel htmlFor="contact-email">Work email</FieldLabel>
+          <Input
+            id="contact-email"
             type="email"
-            register={register}
-            placeholder="jane.doe@company.com"
-            validationError={errors.email?.message}
+            autoComplete="email"
+            placeholder="jane@company.com"
             disabled={isSubmitting}
+            aria-invalid={Boolean(errors.email)}
+            className={fieldClass}
+            {...register('email')}
           />
-          <CustomInput<ContactFormData>
-            label="Company Name (Optional)"
-            name="company"
-            register={register}
-            placeholder="ACME Inc."
-            validationError={errors.company?.message}
+          {errors.email?.message ? (
+            <p className="text-sm text-destructive" role="alert">
+              {errors.email.message}
+            </p>
+          ) : null}
+        </div>
+
+        <div className="space-y-2">
+          <FieldLabel htmlFor="contact-company" required={false}>
+            Company
+          </FieldLabel>
+          <Input
+            id="contact-company"
+            autoComplete="organization"
+            placeholder="ACME Pty Ltd"
             disabled={isSubmitting}
+            aria-invalid={Boolean(errors.company)}
+            className={fieldClass}
+            {...register('company')}
           />
-          <CustomInput<ContactFormData>
-            label="Message"
-            name="message"
-            register={register}
-            placeholder="Tell us a little about your safety needs..."
-            validationError={errors.message?.message}
-            multiline
-            rows={4}
+          {errors.company?.message ? (
+            <p className="text-sm text-destructive" role="alert">
+              {errors.company.message}
+            </p>
+          ) : null}
+        </div>
+
+        <div className="space-y-2">
+          <FieldLabel htmlFor="contact-message">Message</FieldLabel>
+          <TextArea
+            id="contact-message"
+            rows={6}
+            placeholder="Tell us about your safety needs..."
             disabled={isSubmitting}
+            aria-invalid={Boolean(errors.message)}
+            className={textAreaClass}
+            {...register('message')}
           />
-          <div className="flex justify-end">
-            <CustomButton
-              title="Submit Request"
-              type="submit"
-              isLoading={isSubmitting}
-              className="w-full sm:w-auto"
-            />
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+          {errors.message?.message ? (
+            <p className="text-sm text-destructive" role="alert">
+              {errors.message.message}
+            </p>
+          ) : null}
+        </div>
+
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="mt-2 h-auto w-full rounded-xl border-0 bg-violet-700 py-3 text-base font-medium text-white hover:bg-violet-500 focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2"
+        >
+          <span className="inline-flex items-center justify-center gap-2 text-sm md:text-base">
+            Send message
+            <ArrowUpRight className="size-4 shrink-0 stroke-[2]" aria-hidden />
+          </span>
+        </Button>
+      </form>
+    </div>
   );
 }
