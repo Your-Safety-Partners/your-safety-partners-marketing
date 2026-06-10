@@ -23,8 +23,6 @@ const defaultTitle = 'Module overview';
 
 const PRIMARY_DEFAULT_HREF = '/book-a-demo';
 const PRIMARY_DEFAULT_LABEL = 'Book a demo';
-const SECONDARY_DEFAULT_HREF = '/pricing';
-const SECONDARY_DEFAULT_LABEL = 'See pricing';
 
 function labelFromLinkField(field: SubpageLink, fallback: string): string {
   if (field != null && typeof field === 'object' && 'text' in field) {
@@ -93,7 +91,6 @@ const SubpageHeroSection: FC<SubpageHeroSectionProps> = ({ slice, context }) => 
     hero_gradient_color,
     hero_image_placeholder,
     primary_cta,
-    secondary_cta,
   } = slice.primary;
 
   const title =
@@ -109,8 +106,6 @@ const SubpageHeroSection: FC<SubpageHeroSectionProps> = ({ slice, context }) => 
 
   const primaryHref = hrefFromLinkField(primary_cta, PRIMARY_DEFAULT_HREF);
   const primaryLabel = labelFromLinkField(primary_cta, PRIMARY_DEFAULT_LABEL);
-  const secondaryHref = hrefFromLinkField(secondary_cta, SECONDARY_DEFAULT_HREF);
-  const secondaryLabel = labelFromLinkField(secondary_cta, SECONDARY_DEFAULT_LABEL);
 
   const headingId = `subpage-hero-heading-${slice.id ?? 'subpage-hero'}`;
   const gradientBackground = heroGradientBackground(hero_gradient_color);
@@ -149,33 +144,6 @@ const SubpageHeroSection: FC<SubpageHeroSectionProps> = ({ slice, context }) => 
             ) : null}
 
             <div className="mt-8 flex flex-wrap items-center justify-center gap-4 md:mt-10 lg:justify-start">
-              {isProtocolHref(secondaryHref) ? (
-                <a
-                  href={secondaryHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cn(
-                    'inline-flex h-auto items-center justify-center rounded-[8px] border border-violet-700 bg-transparent px-5 py-3 text-base font-medium text-violet-700 shadow-none transition-colors',
-                    'hover:border-violet-800 hover:text-violet-800',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2',
-                    'md:px-5 md:py-3 md:text-[18px]'
-                  )}
-                >
-                  {secondaryLabel}
-                </a>
-              ) : (
-                <Link
-                  href={secondaryHref}
-                  className={cn(
-                    'inline-flex h-auto items-center justify-center rounded-[8px] border border-violet-700 bg-transparent px-5 py-3 text-base font-medium text-violet-700 shadow-none transition-colors',
-                    'hover:border-violet-800 hover:text-violet-800',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2',
-                    'md:px-5 md:py-3 md:text-[18px]'
-                  )}
-                >
-                  {secondaryLabel}
-                </Link>
-              )}
               <Button
                 asChild
                 variant="default"
