@@ -57,6 +57,9 @@ const cardDescriptionComponents = {
   ),
 };
 
+const industryCardWrapperClassName =
+  'w-[calc(50%-0.5rem)] md:w-[calc(50%-0.625rem)] lg:w-[calc(25%-1.125rem)]';
+
 function iconForIndustryTitle(title: string): LucideIcon {
   const t = title.toLowerCase();
   if (t.includes('construction')) return HardHat;
@@ -117,12 +120,17 @@ const Industries: FC<IndustriesProps> = ({ slice }) => {
           ) : null}
         </div>
 
-        <SliceEntranceGroup className="mt-12 grid grid-cols-2 gap-4 md:gap-5 lg:mt-14 lg:grid-cols-4 lg:gap-6">
+        <SliceEntranceGroup className="mt-12 flex flex-wrap justify-center gap-4 md:gap-5 lg:mt-14 lg:gap-6">
           {useDefaults
             ? DEFAULT_CARDS.map((card, index) => {
                 const Icon = iconForIndustryTitle(card.title);
                 return (
-                  <SliceEntrance key={card.title} from="left" delayMs={index * STAGGER_MS}>
+                  <SliceEntrance
+                    key={card.title}
+                    from="left"
+                    delayMs={index * STAGGER_MS}
+                    className={industryCardWrapperClassName}
+                  >
                     <article className={industryCardClassName}>
                       <div className="mb-3 text-violet-600 md:mb-4" aria-hidden>
                         <Icon className="size-8 md:size-9" strokeWidth={1.5} />
@@ -141,7 +149,12 @@ const Industries: FC<IndustriesProps> = ({ slice }) => {
                 const key = `${title}-${index}`;
 
                 return (
-                  <SliceEntrance key={key} from="left" delayMs={index * STAGGER_MS}>
+                  <SliceEntrance
+                    key={key}
+                    from="left"
+                    delayMs={index * STAGGER_MS}
+                    className={industryCardWrapperClassName}
+                  >
                     <article className={industryCardClassName}>
                       <div className="mb-3 shrink-0 md:mb-4" aria-hidden>
                         {isFilled.image(row.industry_icon) ? (
