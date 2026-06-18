@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getIndustries, getIndustryBySlug } from "@/lib/outrank";
+import { canonicalAlternates, getIndustryPageSeo } from "@/lib/seo-metadata";
 import { CheckCircle2 } from "lucide-react";
 import CustomButton from "@/components/custom-ui/custom-button";
 
@@ -12,14 +13,19 @@ export async function generateMetadata({ params }: Props) {
   const page = await getIndustryBySlug(slug);
   
   if (!page) return {};
-  
+
+  const seo = getIndustryPageSeo(slug);
+  const title = seo?.title ?? page.title;
+  const description = seo?.description ?? page.metaDescription;
+
   return {
-    title: page.title,
-    description: page.metaDescription,
+    title,
+    description,
+    alternates: canonicalAlternates(`/industry/${slug}`),
     openGraph: {
-      title: page.title,
-      description: page.metaDescription,
-    }
+      title,
+      description,
+    },
   };
 }
 

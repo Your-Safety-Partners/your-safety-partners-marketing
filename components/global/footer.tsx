@@ -69,6 +69,7 @@ export function Footer() {
   const iconClass = "size-5 shrink-0 text-[#7b32d0]";
   const linkClass =
     "text-sm text-slate-600 transition-colors hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7b32d0] focus-visible:ring-offset-2 rounded-sm";
+  const staticTextClass = "text-sm text-slate-600";
 
   return (
     <footer className={cn(inter.className, "w-full bg-white")}>
@@ -123,9 +124,7 @@ export function Footer() {
           <div className="flex flex-col gap-3">
             <h3 className="text-base font-bold text-[#7b32d0]">Product</h3>
             <nav className="flex flex-col gap-2" aria-label="Product">
-              <Link href="/pricing" className={linkClass}>
-                Pricing
-              </Link>
+              <span className={staticTextClass}>Pricing</span>
               <Link href="/book-a-demo" className={linkClass}>
                 Book a demo
               </Link>
@@ -135,12 +134,8 @@ export function Footer() {
           <div className="flex flex-col gap-3">
             <h3 className="text-base font-bold text-[#7b32d0]">Support</h3>
             <nav className="flex flex-col gap-2" aria-label="Support">
-              <Link href="/faqs" className={linkClass}>
-                FAQs
-              </Link>
-              <Link href="/help-center" className={linkClass}>
-                Help Center
-              </Link>
+              <span className={staticTextClass}>FAQs</span>
+              <span className={staticTextClass}>Help Center</span>
               <Link href="/contact" className={linkClass}>
                 Contact Us
               </Link>
@@ -170,24 +165,14 @@ export function Footer() {
       <div className="w-full bg-violet-700 py-4 text-sm text-white md:py-5">
         <div className="container mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 md:flex-row md:px-6 lg:px-10">
           <p className="text-center md:text-left">
-            &copy;YourSafetyPartners {currentYear}. All Rights Reserved
+            &copy;Your Safety Portal {currentYear}. All Rights Reserved
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center md:justify-end">
-            <Link
-              href="/terms"
-              className="text-white underline-offset-2 transition-opacity hover:underline hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#7b32d0] rounded-sm"
-            >
-              Terms and Conditions
-            </Link>
+            <span>Terms and Conditions</span>
             <span className="text-white/80" aria-hidden>
               |
             </span>
-            <Link
-              href="/privacy"
-              className="text-white underline-offset-2 transition-opacity hover:underline hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#7b32d0] rounded-sm"
-            >
-              Privacy Policy
-            </Link>
+            <span>Privacy Policy</span>
           </div>
         </div>
       </div>

@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
+import { PAGE_SEO, canonicalAlternates } from "@/lib/seo-metadata";
 
 // export const revalidate = 3600; // 1 hour ISR caching
 
@@ -9,15 +10,23 @@ export async function generateMetadata(): Promise<Metadata> {
   const client = createClient();
   const page = await client.getByUID("home", "home").catch(() => null);
 
-  if (!page) return { title: "Your Safety Partners" };
+  const seo = PAGE_SEO.home;
+
+  if (!page) {
+    return {
+      ...seo,
+      alternates: canonicalAlternates("/"),
+    };
+  }
 
   return {
-    title: page.data.meta_title || "Your Safety Partners",
-    description: page.data.meta_description,
+    title: seo.title,
+    description: seo.description,
+    alternates: canonicalAlternates("/"),
     openGraph: {
-      title: page.data.meta_title || "Your Safety Partners",
-      description: page.data.meta_description || undefined,
-      images: page.data.meta_image?.url ? [page.data.meta_image.url] :[],
+      title: seo.title,
+      description: seo.description,
+      images: page.data.meta_image?.url ? [page.data.meta_image.url] : [],
     },
   };
 }

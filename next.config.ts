@@ -1,8 +1,12 @@
 import type { NextConfig } from "next";
+import { MODULE_REDIRECTS } from "./lib/module-routes";
 
 const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
+  async redirects() {
+    return MODULE_REDIRECTS;
+  },
   images: {
     remotePatterns: [
       {

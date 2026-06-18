@@ -1,3 +1,5 @@
+import { getModulePath } from '@/lib/module-routes';
+
 export type NavMenuItem = {
   href: string;
   title: string;
@@ -29,37 +31,37 @@ export const solutionsItems: NavMenuItem[] = [
 
 export const productsItems: NavMenuItem[] = [
   {
-    href: '/policies_module',
+    href: getModulePath('policies'),
     title: 'Policies & Procedures',
     description:
       'One hub for workplace policies and procedures — always current, no shared drives.',
   },
   {
-    href: '/forms_module',
+    href: getModulePath('forms'),
     title: 'Forms',
     description:
       'Digital forms from sign-offs to audits and risk assessments — any device, no login.',
   },
   {
-    href: '/inspection_module',
+    href: getModulePath('inspections'),
     title: 'Inspections',
     description:
       'Schedule and track inspections with auto-escalation and exportable reports.',
   },
   {
-    href: '/training_module',
+    href: getModulePath('training'),
     title: 'Training',
     description:
       'Inductions, e-learning, and licence tracking — always know who is up to date.',
   },
   {
-    href: '/hazard_module',
+    href: getModulePath('hazards'),
     title: 'Hazards',
     description:
       'Log hazards and incidents, assign actions, and track through to close-out.',
   },
   {
-    href: '/contractor_module',
+    href: getModulePath('contractors'),
     title: 'Contractors',
     description:
       'Inductions, insurance, and compliance — know who is on site and current.',
@@ -90,5 +92,4 @@ export const mainNavItems: NavItem[] = [
     columns: 1,
   },
   { type: 'dropdown', label: 'Products', items: productsItems, columns: 2 },
-  { type: 'link', href: '/blog', label: 'News' },
 ];

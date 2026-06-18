@@ -24,6 +24,7 @@
     "@hookform/resolvers": "^5.2.2",
     "@logtail/js": "^0.5.8",
     "@logtail/pino": "^0.5.8",
+    "@next/third-parties": "^16.2.9",
     "@prismicio/client": "^7.21.6",
     "@prismicio/next": "^2.2.2",
     "@prismicio/react": "^3.4.0",

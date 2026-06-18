@@ -1,12 +1,10 @@
 import Link from "next/link";
 import { getComparisons } from "@/lib/outrank";
+import { PAGE_SEO, noindexPageMetadata } from "@/lib/seo-metadata";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 
-export const metadata = {
-  title: "Compare Safety Software | Your Safety Partners",
-  description: "See how Your Safety Partners stacks up against other safety management solutions on the market.",
-};
+export const metadata = noindexPageMetadata("/compare", PAGE_SEO.compare);
 
 export const revalidate = 3600;
 

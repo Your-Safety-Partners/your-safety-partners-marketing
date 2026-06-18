@@ -31,7 +31,7 @@ export function BookADemoContent() {
             Book a demo
           </p>
           <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 md:text-4xl lg:text-[2.5rem] lg:leading-tight">
-            See Your Safety Partners in action
+            See Your Safety Portal in action
           </h1>
           <p className="mt-4 text-base leading-relaxed text-gray-600 md:text-lg">
             Schedule a 30-minute live walkthrough with a product expert. No slides, no fluff — just

@@ -1,25 +1,23 @@
 import { MetadataRoute } from 'next';
-import { PageDocument } from '#prismicio-types.js'; 
+import { PageDocument } from '#prismicio-types.js';
 import { createClient } from '@/prismicio';
-import ghost from '@/lib/ghost';
-import { getIndustries, getComparisons } from '@/lib/outrank';
-import { PostOrPage } from '@tryghost/content-api'; 
+import { getIndustries } from '@/lib/outrank';
+import { MODULE_SITEMAP_PATHS } from '@/lib/module-routes';
+import { SITE_URL } from '@/lib/seo-metadata';
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.yoursafetypartners.com';
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || SITE_URL;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const client = createClient();
 
   // 1. Static/Base routes
-  const routes =[
+  const routes = [
     '',
     '/contact',
     '/book-a-demo',
     '/features',
     '/about-us',
     '/industry',
-    '/compare',
-    '/blog',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
@@ -41,23 +39,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  // 3. Ghost Blog Posts
-  let ghostPosts: PostOrPage[] = [];
-  try {
-    ghostPosts = await ghost.posts.browse({ limit: 'all' });
-  } catch (e) {
-    console.error('Sitemap Ghost Error:', e);
-  }
-  const ghostRoutes = ghostPosts.map((post) => ({
-    url: `${baseUrl}/blog/${post.slug}`,
-    lastModified: new Date(post.updated_at || post.published_at || new Date()),
-    changeFrequency: 'weekly' as const,
-    priority: 0.7,
-  }));
-
-  // 4. Outrank Programmatic Pages
+  // 3. Outrank programmatic industry pages
   let industryRoutes: MetadataRoute.Sitemap = [];
-  let compareRoutes: MetadataRoute.Sitemap = [];
   try {
     const industries = await getIndustries();
     industryRoutes = industries.map((ind) => ({
@@ -66,17 +49,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly' as const,
       priority: 0.6,
     }));
-
-    const comparisons = await getComparisons();
-    compareRoutes = comparisons.map((comp) => ({
-      url: `${baseUrl}/compare/${comp.slug}`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly' as const,
-      priority: 0.6,
-    }));
   } catch (e) {
     console.error('Sitemap Outrank Error:', e);
   }
 
-  return [...routes, ...prismicRoutes, ...ghostRoutes, ...industryRoutes, ...compareRoutes];
+  const moduleRoutes = MODULE_SITEMAP_PATHS.map((route) => ({
+    url: `${baseUrl}${route}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }));
+
+  return [...routes, ...prismicRoutes, ...moduleRoutes, ...industryRoutes];
 }

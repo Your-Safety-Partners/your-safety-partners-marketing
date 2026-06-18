@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { createClient } from "@/prismicio";
+import { PAGE_SEO, canonicalAlternates } from "@/lib/seo-metadata";
 import { SliceZone } from "@prismicio/react";
 import { components } from "@/slices";
 import CustomButton from "@/components/custom-ui/custom-button";
@@ -11,19 +12,22 @@ export async function generateMetadata(): Promise<Metadata> {
   const client = createClient();
   const page = await client.getByUID("page", "features").catch(() => null);
 
+  const seo = PAGE_SEO.features;
+
   if (!page) {
     return {
-      title: "Features | Your Safety Partners",
-      description: "Explore the powerful features of our safety compliance software.",
+      ...seo,
+      alternates: canonicalAlternates("/features"),
     };
   }
 
   return {
-    title: page.data.meta_title || "Features | Your Safety Partners",
-    description: page.data.meta_description,
+    title: seo.title,
+    description: seo.description,
+    alternates: canonicalAlternates("/features"),
     openGraph: {
-      title: page.data.meta_title || "Features | Your Safety Partners",
-      description: page.data.meta_description || undefined,
+      title: seo.title,
+      description: seo.description,
       images: page.data.meta_image?.url ? [page.data.meta_image.url] : [],
     },
   };
@@ -113,7 +117,7 @@ export default async function FeaturesPage() {
         <div className="container mx-auto px-4 text-center max-w-2xl">
           <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">Ready to upgrade your safety program?</h2>
           <p className="text-lg mb-10 text-white/90">
-            Join thousands of safety professionals who trust Your Safety Partners to keep their teams compliant and secure.
+            Join thousands of safety professionals who trust Your Safety Portal to keep their teams compliant and secure.
           </p>
           <CustomButton
             title="Get Started Today"

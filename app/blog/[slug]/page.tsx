@@ -1,5 +1,5 @@
-// app/blog/[slug]/page.tsx
-import { Metadata } from "next"; 
+import { Metadata } from "next";
+import { BRAND_NAME, canonicalAlternates } from "@/lib/seo-metadata";
 import ghost from "@/lib/ghost";
 import { sanitizeHtmlForDangerouslySetInnerHTML } from "@/lib/sanitize-html";
 import { notFound } from "next/navigation";
@@ -37,12 +37,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!post) return {};
 
-  const title = `${post.title} | Your Safety Partners`;
-  const description = post.custom_excerpt || post.excerpt || `Read ${post.title} on Your Safety Partners.`;
+  const title = `${post.title} | ${BRAND_NAME}`;
+  const description = post.custom_excerpt || post.excerpt || `Read ${post.title} on ${BRAND_NAME}.`;
 
   return {
     title,
     description,
+    alternates: canonicalAlternates(`/blog/${slug}`),
     openGraph: {
       title,
       description,

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getComparisons, getComparisonBySlug } from "@/lib/outrank";
+import { canonicalAlternates, NOINDEX_ROBOTS } from "@/lib/seo-metadata";
 import { CheckCircle2, XCircle } from "lucide-react";
 import CustomButton from "@/components/custom-ui/custom-button";
 
@@ -16,6 +17,8 @@ export async function generateMetadata({ params }: Props) {
   return {
     title: page.title,
     description: page.metaDescription,
+    robots: NOINDEX_ROBOTS,
+    alternates: canonicalAlternates(`/compare/${competitor}`),
     openGraph: {
       title: page.title,
       description: page.metaDescription,
@@ -75,7 +78,7 @@ export default async function ComparisonPage({ params }: Props) {
           {/* Feature Comparison Table Equivalent */}
           <div className="mt-20 border border-border rounded-xl overflow-hidden">
             <div className="bg-muted px-6 py-4 border-b border-border">
-              <h3 className="font-bold text-lg">Why Choose Your Safety Partners</h3>
+              <h3 className="font-bold text-lg">Why Choose Your Safety Portal</h3>
             </div>
             <div className="divide-y divide-border">
               {page.features.map((feature, index) => (

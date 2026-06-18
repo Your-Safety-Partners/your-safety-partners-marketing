@@ -1,21 +1,13 @@
 import { notFound } from 'next/navigation';
-import { Metadata } from "next"; 
+import { Metadata } from "next";
 import { SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
+import { canonicalAlternates, formatTitleWithBrand, getPageSeo } from "@/lib/seo-metadata";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
-
-const MODULE_CUSTOM_TYPES = [
-  'inspection_module',
-  'policies_module',
-  'forms_module',
-  'training_module',
-  'hazard_module',
-  'contractor_module',
-] as const;
 
 const SINGLE_TYPE_SLUG_MAP = {
   'about-us': 'about_us',
@@ -32,12 +24,6 @@ async function getDocumentBySlug(slug: string) {
   const page = await client.getByUID('page', slug).catch(() => null);
   if (page) return page;
 
-  if (MODULE_CUSTOM_TYPES.includes(slug as (typeof MODULE_CUSTOM_TYPES)[number])) {
-    return client
-      .getSingle(slug as (typeof MODULE_CUSTOM_TYPES)[number])
-      .catch(() => null);
-  }
-
   return null;
 }
 
@@ -47,21 +33,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!page) return {};
 
+  const seo = getPageSeo(slug);
+  const fallbackTitle = formatTitleWithBrand(
+    slug.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+  );
+  const title = seo?.title ?? page.data.meta_title ?? fallbackTitle;
+  const description = seo?.description ?? page.data.meta_description ?? undefined;
+
   return {
-    title:
-      page.data.meta_title ||
-      `${slug
-        .replace(/[-_]/g, ' ')
-        .replace(/\b\w/g, (c) => c.toUpperCase())} | Your Safety Partners`,
-    description: page.data.meta_description,
+    title,
+    description,
+    alternates: canonicalAlternates(`/${slug}`),
     openGraph: {
-      title:
-        page.data.meta_title ||
-        `${slug
-          .replace(/[-_]/g, ' ')
-          .replace(/\b\w/g, (c) => c.toUpperCase())} | Your Safety Partners`,
-      description: page.data.meta_description || undefined,
-      images: page.data.meta_image?.url ?[page.data.meta_image.url] :[],
+      title,
+      description,
+      images: page.data.meta_image?.url ? [page.data.meta_image.url] : [],
     },
   };
 }

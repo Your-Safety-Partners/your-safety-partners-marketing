@@ -1,10 +1,7 @@
 import { ContactPageContent } from '@/components/contact/contact-page-content';
+import { PAGE_SEO, pageMetadata } from '@/lib/seo-metadata';
 
-export const metadata = {
-  title: 'Contact Us | Your Safety Partners',
-  description:
-    'Get in touch with our team to book a demo or learn more about our safety compliance software.',
-};
+export const metadata = pageMetadata('/contact', PAGE_SEO.contact);
 
 export const revalidate = 3600;
 

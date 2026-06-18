@@ -2,6 +2,7 @@ import ghost from "@/lib/ghost";
 import type { PostOrPage } from "@tryghost/content-api";
 import Link from "next/link";
 import Image from 'next/image';
+import { PAGE_SEO, canonicalAlternates } from "@/lib/seo-metadata";
 
 async function getPosts() {
   try {
@@ -49,12 +50,13 @@ function BlogCard({ post }: { post: PostOrPage }) {
 export const revalidate = 3600;
 
 export const metadata = {
-  title: "Safety Blog | Your Safety Partners",
-  description: "Insights and updates on safety compliance and best practices.",
+  title: PAGE_SEO.blog.title,
+  description: PAGE_SEO.blog.description,
+  alternates: canonicalAlternates("/blog"),
   openGraph: {
-    title: "Safety Blog | Your Safety Partners",
-    description: "Insights and updates on safety compliance and best practices.",
-  }
+    title: PAGE_SEO.blog.title,
+    description: PAGE_SEO.blog.description,
+  },
 };
 
 export default async function BlogIndex() {

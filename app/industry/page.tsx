@@ -1,12 +1,10 @@
 import Link from "next/link";
 import { getIndustries } from "@/lib/outrank";
+import { PAGE_SEO, pageMetadata } from "@/lib/seo-metadata";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 
-export const metadata = {
-  title: "Industries We Serve | Your Safety Partners",
-  description: "Discover how our safety compliance software helps businesses across various industries maintain compliance and protect their workforce.",
-};
+export const metadata = pageMetadata("/industry", PAGE_SEO.industry);
 
 export const revalidate = 3600;
 

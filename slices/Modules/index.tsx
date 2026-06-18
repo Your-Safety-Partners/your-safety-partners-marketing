@@ -7,6 +7,7 @@ import { ArrowRight } from 'lucide-react';
 import { SliceEntrance } from '@/components/slices/slice-entrance';
 import { Card } from '@/components/ui/card';
 import { inter } from '@/lib/fonts/inter';
+import { getModuleHrefFromName } from '@/lib/module-routes';
 import { cn } from '@/lib/utils';
 
 export type PlatformAppsProps = SliceComponentProps<Content.PlatformAppsSlice>;
@@ -36,17 +37,6 @@ function getModuleAccentColor(moduleName: string): string {
   if (n.includes('hazard')) return MODULE_COLORS.hazards;
   if (n.includes('contractor')) return MODULE_COLORS.contractors;
   return '#64748b';
-}
-
-function getModuleHref(moduleName: string): string {
-  const n = moduleName.toLowerCase().trim();
-  if (n.includes('polic')) return '/policies_module';
-  if (n.includes('form')) return '/forms_module';
-  if (n.includes('inspection')) return '/inspection_module';
-  if (n.includes('train')) return '/training_module';
-  if (n.includes('hazard')) return '/hazard_module';
-  if (n.includes('contractor')) return '/contractor_module';
-  return '/features';
 }
 
 const richComponents = {
@@ -111,7 +101,7 @@ const PlatformApps: FC<PlatformAppsProps> = ({ slice }) => {
             {rows.map((row, index) => {
               const name = row.module_name?.trim() ?? '';
               const accent = getModuleAccentColor(name);
-              const href = getModuleHref(name);
+              const href = getModuleHrefFromName(name);
               const hasBody = isFilled.richText(row.module_description);
               const logo = row.module_logo;
 

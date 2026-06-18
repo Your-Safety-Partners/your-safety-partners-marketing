@@ -1,10 +1,7 @@
 import { BookADemoContent } from '@/components/book-a-demo/book-a-demo-content';
+import { PAGE_SEO, pageMetadata } from '@/lib/seo-metadata';
 
-export const metadata = {
-  title: 'Book a Demo | Your Safety Partners',
-  description:
-    'Schedule a 30-minute live walkthrough of Your Safety Partners. See compliance, training, and safety workflows tailored to your business.',
-};
+export const metadata = pageMetadata('/book-a-demo', PAGE_SEO['book-a-demo']);
 
 export const revalidate = 3600;
 
