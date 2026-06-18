@@ -1,30 +1,17 @@
 import { Metadata } from "next";
 import { BRAND_NAME, canonicalAlternates } from "@/lib/seo-metadata";
-import ghost from "@/lib/ghost";
+import { getGhostPostBySlug, getGhostPostSlugs } from "@/lib/ghost";
 import { sanitizeHtmlForDangerouslySetInnerHTML } from "@/lib/sanitize-html";
 import { notFound } from "next/navigation";
 import type { PostOrPage } from "@tryghost/content-api";
 
 async function getPost(slug: string): Promise<PostOrPage | null> {
-  if (!slug) return null;
-  try {
-    return await ghost.posts.read(
-      { slug }, 
-      { include: ['authors', 'tags'] }
-    );
-  } catch (error) {
-    console.error("Ghost API Request Failed:", error);
-    return null;
-  }
+  return getGhostPostBySlug(slug);
 }
 
 export async function generateStaticParams() {
-  try {
-    const posts = await ghost.posts.browse({ limit: 'all', fields: 'slug' });
-    return posts.map((post) => ({ slug: post.slug }));
-  } catch {
-    return [];
-  }
+  const slugs = await getGhostPostSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 type Props = {

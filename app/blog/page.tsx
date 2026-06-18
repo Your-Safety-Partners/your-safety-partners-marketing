@@ -1,19 +1,11 @@
-import ghost from "@/lib/ghost";
+import { getGhostPosts } from "@/lib/ghost";
 import type { PostOrPage } from "@tryghost/content-api";
 import Link from "next/link";
 import Image from 'next/image';
 import { PAGE_SEO, canonicalAlternates } from "@/lib/seo-metadata";
 
 async function getPosts() {
-  try {
-    return await ghost.posts.browse({
-      limit: 'all',
-      include: ['tags', 'authors'],
-    });
-  } catch (error) {
-    console.error("Failed to fetch posts from Ghost:", error);
-    return [];
-  }
+  return getGhostPosts();
 }
 
 function BlogCard({ post }: { post: PostOrPage }) {
@@ -75,7 +67,7 @@ export default async function BlogIndex() {
           ))}
         </div>
       ) : (
-        <p className="text-center text-muted-foreground">No articles found. Please check the Ghost integration.</p>
+        <p className="text-center text-muted-foreground">No articles published yet.</p>
       )}
     </div>
   );
