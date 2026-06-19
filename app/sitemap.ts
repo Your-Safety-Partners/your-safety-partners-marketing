@@ -5,7 +5,8 @@ import { getIndustries } from '@/lib/outrank';
 import { MODULE_SITEMAP_PATHS } from '@/lib/module-routes';
 import { SITE_URL } from '@/lib/seo-metadata';
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || SITE_URL;
+// Always use the canonical production domain (with www) for sitemap URLs.
+const baseUrl = SITE_URL;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const client = createClient();
