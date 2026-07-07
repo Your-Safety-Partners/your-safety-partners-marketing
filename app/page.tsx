@@ -8,7 +8,7 @@ import { PAGE_SEO, canonicalAlternates } from "@/lib/seo-metadata";
 
 export async function generateMetadata(): Promise<Metadata> {
   const client = createClient();
-  const page = await client.getByUID("home", "home").catch(() => null);
+  const page = await client.getSingle("home").catch(() => null);
 
   const seo = PAGE_SEO.home;
 
@@ -33,22 +33,20 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Home() {
   const client = createClient();
-  
-  // Let's try getting it as a Reusable Type first
-  let page = await client.getByUID("home", "home").catch(() => null);
 
-  // If that fails, let's try getting it as a Single Type
-  if (!page) {
-    page = await client.getSingle("home").catch(() => null);
-  }
+  const page = await client.getSingle("home").catch((error) => {
+    console.error("Failed to fetch Prismic home document:", error);
+    return null;
+  });
+
   if (!page) {
     return (
       <div className="py-24 text-center px-4">
         <h1 className="text-4xl font-bold text-red-500 mb-6">
-          Next.js still cannot find the Prismic Document.
+          Next.js cannot find the published Prismic home document.
         </h1>
         <p className="text-lg">
-          Check your VS Code terminal for the console.log.
+          Check the dev server terminal for the fetch error.
         </p>
       </div>
     );

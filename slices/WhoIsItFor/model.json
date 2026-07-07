@@ -2,15 +2,14 @@
   "id": "why_choose_us",
   "type": "SharedSlice",
   "name": "WhoIsItFor",
-  "description": "WhyChooseUs",
   "variations": [
     {
       "id": "default",
       "name": "Default",
+      "description": "Default",
+      "imageUrl": "https://images.prismic.io/yoursafetyportal/shared-slices/why_choose_us/default/f0c0e82f6db13e88feefc806180184f97f9fd8aa.png?auto=compress%2Cformat",
       "docURL": "...",
       "version": "initial",
-      "description": "Default",
-      "imageUrl": "",
       "primary": {
         "section_title": {
           "type": "Text",
@@ -24,8 +23,8 @@
           "config": {
             "label": "Section Subtitle",
             "placeholder": "",
-            "allowTargetBlank": true,
-            "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+            "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl",
+            "allowTargetBlank": true
           }
         },
         "who_is_it_for_items": {
@@ -53,8 +52,8 @@
                 "config": {
                   "label": "Description",
                   "placeholder": "",
-                  "allowTargetBlank": true,
-                  "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+                  "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl",
+                  "allowTargetBlank": true
                 }
               }
             }
@@ -63,5 +62,6 @@
       },
       "items": {}
     }
-  ]
+  ],
+  "description": "WhyChooseUs"
 }
