@@ -98,7 +98,7 @@ const INDUSTRIES: IndustryContent[] = [
         {
           heading: "Mini case study angle: scaffold safety records across active sites",
           paragraph:
-            "Scaffright's work depends on keeping safety records current while crews, contractors and site conditions change. A practical case study would focus on replacing scattered scaffold inspection notes, SWMS sign-offs, worker records and action follow-up with one portal for site evidence. Supervisors can capture checks and hazards from the field, actions can be assigned to the right person, and managers can see what is complete, overdue or unresolved across active jobs.",
+            "Scaffright needed a cleaner way to keep scaffold safety evidence current across active jobs where crews, contractors and site conditions change quickly. Your Safety Portal brought scaffold inspection records, SWMS sign-offs, worker documents, site hazards and corrective actions into one place. Supervisors can capture checks and hazards from the field, assign actions to the right person and give managers a clearer view of what is complete, overdue or unresolved across active sites.",
         },
       ],
       meta_title: "Construction WHS Software Australia | Your Safety Portal",
@@ -183,7 +183,7 @@ const INDUSTRIES: IndustryContent[] = [
         {
           heading: "Mini case study angle: WHS records for meat production",
           paragraph:
-            "V&V Meats is a practical manufacturing proof point because meat production needs WHS records that work around real operational pressure. A passable case study would show production checks, worker training, SOP sign-offs, hazards and corrective actions being managed in one place instead of across clipboards and spreadsheets. The story should stay focused on cleaner record control, easier supervisor follow-up and faster access to evidence for audits or internal reviews.",
+            "V&V Meats needed WHS records that could support production-floor work without adding more disconnected admin. Your Safety Portal gives supervisors one place to manage production checks, worker training, SOP acknowledgements, hazards and corrective actions instead of relying on clipboards, spreadsheets and email follow-up. The result is cleaner record control, easier supervisor follow-up and faster access to evidence for audits or internal reviews.",
         },
       ],
       meta_title: "Manufacturing WHS Software Australia | Your Safety Portal",
@@ -268,7 +268,7 @@ const INDUSTRIES: IndustryContent[] = [
         {
           heading: "Mini case study angle: safety evidence for trailer and transport operations",
           paragraph:
-            "AA Semi Trailers is a strong fit for a transport and equipment-focused case study because safety admin is created by everyday operational movement: trailer checks, yard work, workshop activity, contractors and vehicle interactions. A passable case study would show pre-starts, inspection records, training evidence, contractor documents, hazard reports and corrective actions being brought into one portal. The value is simple: equipment checks create actions, actions have owners, and managers can see what is ready, overdue or unresolved before records are needed for a client, regulator or internal review.",
+            "AA Semi Trailers needed safety evidence to keep pace with trailer checks, yard work, workshop activity, contractors and vehicle movement. Your Safety Portal brought pre-starts, inspection records, training evidence, contractor documents, hazard reports and corrective actions into one portal. Equipment checks can create actions, actions can be given owners, and managers can see what is ready, overdue or unresolved before records are needed for a client, regulator or internal review.",
         },
       ],
       meta_title: "Warehouse & Logistics WHS Software | YSP",
@@ -353,7 +353,7 @@ const INDUSTRIES: IndustryContent[] = [
         {
           heading: "Mini case study angle: WHS records alongside food and agribusiness operations",
           paragraph:
-            "Greenlife Oil Holdings gives the food, beverage and agribusiness page a practical proof point for teams that need worker safety records alongside operational checks. A passable case study would keep WHS separate from food safety while showing how site checks, equipment inspections, worker training, contractor records, hazard reporting and action follow-up can be managed in one place. The case study should focus on practical visibility: managers know what has been completed, what needs action and where evidence sits when it is needed.",
+            "Greenlife Oil Holdings needed worker safety records to sit alongside practical operational checks without confusing WHS with food safety. Your Safety Portal gives the team one place for site checks, equipment inspections, worker training, contractor records, hazard reporting and action follow-up. Managers can see what has been completed, what still needs action and where the evidence sits when records are needed.",
         },
       ],
       meta_title: "Food & Agribusiness WHS Software | Your Safety Portal",
@@ -438,7 +438,7 @@ const INDUSTRIES: IndustryContent[] = [
         {
           heading: "Mini case study angle: WHS consistency for a fast-growing wellness brand",
           paragraph:
-            "Your Reformer is a useful multi-site retail and franchise proof point because the public business footprint spans consumer reformer products, an on-demand app, education, support and commercial fit-outs. A passable case study would show how a growing wellness brand can keep policies, training, equipment-related checks, showroom tasks, contractor records and team actions consistent across consumer, commercial and digital channels. The story connects operational complexity to repeatable WHS workflows without relying on unapproved performance metrics.",
+            "Your Reformer needed safety processes that could keep pace with a business spanning consumer reformer products, an on-demand app, education, support and commercial fit-outs. Your Safety Portal gives the team one place to organise policies, training, equipment-related checks, showroom tasks, contractor records and team actions across consumer, commercial and digital channels. The result is a more repeatable WHS workflow for a growing wellness brand without relying on unapproved performance metrics.",
         },
       ],
       meta_title: "Retail Safety Software Australia | Your Safety Portal",
