@@ -18,7 +18,8 @@
           "options": [
             "core_intent",
             "competitor_alternative",
-            "module_workflow"
+            "module_workflow",
+            "partner_program"
           ],
           "default_value": "core_intent"
         }

@@ -85,6 +85,7 @@ export default function DemandPageContent({ data, slug }: Props) {
   const faqs = data.faqs?.filter((item) => hasText(item.question) || hasText(item.answer)) ?? [];
   const internalLinks = data.internal_links?.filter((item) => hasText(item.label) && hasText(item.url)) ?? [];
   const hasProof = hasText(data.proof_quote) || hasText(data.proof_case_study);
+  const isPartnerProgram = data.page_type === "partner_program";
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
@@ -128,9 +129,13 @@ export default function DemandPageContent({ data, slug }: Props) {
         <section className="bg-slate-50 py-16 md:py-20">
           <div className="container mx-auto px-4">
             <div className="mb-10 max-w-3xl">
-              <h2 className="text-3xl font-bold tracking-tight">What this solves</h2>
+              <h2 className="text-3xl font-bold tracking-tight">
+                {isPartnerProgram ? "Who this is for" : "What this solves"}
+              </h2>
               <p className="mt-4 text-lg leading-relaxed text-slate-600">
-                These pages are built for buyers trying to fix a real WHS record, inspection, training, hazard or compliance problem.
+                {isPartnerProgram
+                  ? "A practical referral channel for trusted advisors who work with Australian SMBs around risk, people, training, insurance, operations or compliance."
+                  : "These pages are built for buyers trying to fix a real WHS record, inspection, training, hazard or compliance problem."}
               </p>
             </div>
             <div className="grid gap-4 md:grid-cols-3">
