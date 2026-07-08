@@ -93,12 +93,12 @@ const INDUSTRIES: IndustryContent[] = [
         {
           heading: "Relevant client proof: Scaffright",
           paragraph:
-            "Use Scaffright as the construction and trades proof point once approval is confirmed. The strongest testimonial angle is scaffolding-specific: keeping scaffold inspections, SWMS access, worker inductions, hazard reports and corrective actions visible across active work sites instead of relying on paper folders, texts and follow-up calls.",
+            "Scaffright is the clearest construction and trades proof point for scaffolding-heavy work, where safety evidence has to keep pace with changing sites, crews and builder requirements. The proof story is practical site visibility: scaffold inspections, SWMS access, worker inductions, hazard reports and corrective actions staying visible to supervisors and managers instead of being split across paper folders, text messages and follow-up calls.",
         },
         {
           heading: "Mini case study angle: scaffold safety records across active sites",
           paragraph:
-            "A practical Scaffright case study should focus on how a scaffolding team can standardise inspection evidence, track worker and contractor records, assign actions from site checks, and keep managers clear on what is complete, overdue or unresolved. Keep the outcome language operational unless Scaffright approves exact results.",
+            "For Scaffright, the case study focus is standardising the evidence trail across active jobs: inspection records, worker and contractor documents, SWMS access, site hazards and corrective actions. The operational value is straightforward: managers can see what is complete, overdue or unresolved, while site teams have a clearer way to capture checks and close actions from the field.",
         },
       ],
       meta_title: "Construction WHS Software Australia | Your Safety Portal",
@@ -178,12 +178,12 @@ const INDUSTRIES: IndustryContent[] = [
         {
           heading: "Relevant client proof: V&V Meats",
           paragraph:
-            "Use V&V Meats as the manufacturing and industrial proof point once approval is confirmed. The strongest testimonial angle is production-floor practicality: keeping SOPs, inspections, training records, hygiene-adjacent WHS checks, hazards and corrective actions accessible for supervisors and workers in a busy meat production environment.",
+            "V&V Meats is the strongest proof point for manufacturing and industrial teams that need WHS records to work on the production floor, not just in the office. The proof story is meat-production practicality: supervisors and workers need easy access to SOPs, inspection forms, training records, hygiene-adjacent WHS checks, hazards and corrective actions in a busy environment where paperwork can quickly fall behind the work.",
         },
         {
           heading: "Mini case study angle: WHS records for meat production",
           paragraph:
-            "A practical V&V Meats case study should focus on replacing disconnected inspection forms, training spreadsheets and corrective-action follow-up with one WHS portal for production checks, worker competency records, hazard reporting and audit-ready evidence. Avoid making claims about injury reduction or audit results unless the client approves them.",
+            "For V&V Meats, the case study focus is the shift from disconnected inspection forms, training spreadsheets and corrective-action follow-up to one WHS portal for production checks, worker competency records, hazard reporting and evidence retrieval. The story stays grounded in operational value: cleaner record control, easier supervisor follow-up and faster access to audit evidence without making injury-reduction or audit-result claims.",
         },
       ],
       meta_title: "Manufacturing WHS Software Australia | Your Safety Portal",
@@ -263,12 +263,12 @@ const INDUSTRIES: IndustryContent[] = [
         {
           heading: "Relevant client proof: AA Semi Trailers",
           paragraph:
-            "Use AA Semi Trailers as the warehousing, logistics and transport proof point once approval is confirmed. The strongest testimonial angle is operational visibility: keeping trailer, yard, workshop, driver, contractor, inspection and corrective-action records together for a transport-focused business where equipment and movement create daily WHS admin.",
+            "AA Semi Trailers is the proof point for transport-adjacent operations where trailers, yards, workshop activity, contractors and vehicle movement create daily WHS admin. The proof story is operational visibility: keeping inspection records, pre-start evidence, worker training, contractor documents, hazards and corrective actions together so managers are not chasing separate spreadsheets, folders and messages across a busy equipment-focused workplace.",
         },
         {
           heading: "Mini case study angle: safety evidence for trailer and transport operations",
           paragraph:
-            "A practical AA Semi Trailers case study should focus on bringing pre-starts, workshop checks, training records, contractor documents, hazard reports and action close-out into one place. Keep the story tied to transport operations and audit-ready evidence, not generic office compliance.",
+            "For AA Semi Trailers, the case study focus is bringing pre-starts, workshop or yard checks, training records, contractor documents, hazard reports and action close-out into one place. The story stays tied to trailer and transport operations: equipment checks create actions, actions need owners, and managers need a simple view of what is ready, overdue or unresolved before records are needed for a client, regulator or internal review.",
         },
       ],
       meta_title: "Warehouse & Logistics WHS Software | YSP",
@@ -348,12 +348,12 @@ const INDUSTRIES: IndustryContent[] = [
         {
           heading: "Relevant client proof: Greenlife Oil Holdings",
           paragraph:
-            "Use Greenlife Oil Holdings as the food, beverage and agribusiness proof point once approval is confirmed. The strongest testimonial angle is mixed operational WHS: keeping farm, production, equipment, contractor, training, hazard and corrective-action records together for a business that needs practical safety evidence across operational sites.",
+            "Greenlife Oil Holdings is the proof point for food, beverage and agribusiness teams where WHS records need to sit alongside practical operational checks. The proof story is mixed-site control: keeping production, equipment, contractor, training, hazard and corrective-action records together for a business where food or agribusiness activity creates hands-on safety admin as well as compliance obligations.",
         },
         {
           heading: "Mini case study angle: WHS records alongside food and agribusiness operations",
           paragraph:
-            "A practical Greenlife Oil Holdings case study should focus on how WHS records can sit alongside production and agribusiness workflows: site checks, equipment inspections, worker training, contractor records, hazard reporting and action follow-up. Keep food safety and WHS separate so the story stays accurate.",
+            "For Greenlife Oil Holdings, the case study focus is WHS records sitting alongside operational workflows without confusing worker safety with food safety. The story covers site checks, equipment inspections, worker training, contractor records, hazard reporting and action follow-up, with the value kept to practical visibility and record control.",
         },
       ],
       meta_title: "Food & Agribusiness WHS Software | Your Safety Portal",
@@ -433,12 +433,12 @@ const INDUSTRIES: IndustryContent[] = [
         {
           heading: "Relevant client proof: Your Reformer",
           paragraph:
-            "Use Your Reformer as the multi-site retail and franchise proof point once approval is confirmed. Public information positions the business as an Australian reformer Pilates brand with consumer products, an app, education, commercial fit-outs and international reach, which makes it a strong proof point for retail, wellness, ecommerce and service-network WHS workflows.",
+            "Your Reformer is the strongest proof point for a modern retail, wellness and commercial fit-out brand. Public information shows a business spanning reformer products, an on-demand app, education, support and commercial customers, making the proof story especially useful for multi-channel teams that need consistent WHS processes across showroom, ecommerce, education, commercial and equipment-related workflows.",
         },
         {
           heading: "Mini case study angle: WHS consistency for a fast-growing wellness brand",
           paragraph:
-            "A practical Your Reformer case study should focus on keeping policies, training, equipment-related checks, store or showroom tasks, contractor records and team actions consistent as a wellness and reformer Pilates business grows across consumer, commercial and digital channels. Use approved metrics only; public site copy mentions commercial fit-outs and a large app audience, but client-specific WHS outcomes should be confirmed before publication.",
+            "For Your Reformer, the case study focus is keeping policies, training, equipment-related checks, showroom or store tasks, contractor records and team actions consistent as the business grows across consumer, commercial and digital channels. Public site copy already points to app usage, customer reviews and commercial fit-outs; the YSP story connects that operational complexity to repeatable WHS workflows without relying on unapproved performance metrics.",
         },
       ],
       meta_title: "Retail Safety Software Australia | Your Safety Portal",
