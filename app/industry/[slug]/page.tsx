@@ -96,6 +96,41 @@ export default async function IndustryPage({ params }: Props) {
           </section>
         )}
 
+        {hasClientProof && (
+          <section className="bg-slate-50 py-16 md:py-20">
+            <div className="container mx-auto px-4">
+              <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-stretch">
+                <div className="rounded-lg border border-slate-200 bg-white p-6 md:p-8">
+                  <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-orange-50 text-orange-600">
+                    <Quote className="h-6 w-6" aria-hidden />
+                  </div>
+                  <p className="text-sm font-semibold uppercase tracking-wide text-orange-600">
+                    Client proof
+                  </p>
+                  <h2 className="mt-3 text-2xl font-bold tracking-tight md:text-3xl">
+                    {proofClientName}
+                  </h2>
+                  <p className="mt-5 text-lg leading-relaxed text-slate-700">
+                    {proofSection?.paragraph}
+                  </p>
+                </div>
+
+                <div className="rounded-lg border border-slate-200 bg-white p-6 md:p-8">
+                  <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                    Mini case study
+                  </p>
+                  <h3 className="mt-3 text-2xl font-bold tracking-tight">
+                    {proofCaseStudyHeading}
+                  </h3>
+                  <p className="mt-5 text-lg leading-relaxed text-slate-700">
+                    {caseStudySection?.paragraph}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Content & Features Section - only show if there's content */}
         {(standardContentSections.length > 0 || keyFeatures.length > 0) && (
           <section className="bg-white py-20">
@@ -148,44 +183,6 @@ export default async function IndustryPage({ params }: Props) {
                   </div>
                 </div>
               )}
-            </div>
-          </section>
-        )}
-
-        {hasClientProof && (
-          <section className="bg-slate-50 py-16 md:py-20">
-            <div className="container mx-auto px-4">
-              <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-stretch">
-                <div className="rounded-lg border border-slate-200 bg-white p-6 md:p-8">
-                  <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-orange-50 text-orange-600">
-                    <Quote className="h-6 w-6" aria-hidden />
-                  </div>
-                  <p className="text-sm font-semibold uppercase tracking-wide text-orange-600">
-                    Client proof
-                  </p>
-                  <h2 className="mt-3 text-2xl font-bold tracking-tight md:text-3xl">
-                    {proofClientName}
-                  </h2>
-                  <p className="mt-5 text-lg leading-relaxed text-slate-700">
-                    {proofSection?.paragraph}
-                  </p>
-                </div>
-
-                <div className="rounded-lg border border-slate-200 bg-white p-6 md:p-8">
-                  <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
-                    Mini case study
-                  </p>
-                  <h3 className="mt-3 text-2xl font-bold tracking-tight">
-                    {proofCaseStudyHeading}
-                  </h3>
-                  <p className="mt-5 text-lg leading-relaxed text-slate-700">
-                    {caseStudySection?.paragraph}
-                  </p>
-                  <div className="mt-8">
-                    <CustomButton title="Book a Demo" url={bookDemoUrl} size="lg" />
-                  </div>
-                </div>
-              </div>
             </div>
           </section>
         )}
