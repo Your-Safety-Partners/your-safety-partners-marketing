@@ -1,286 +1,635 @@
 /**
- * Migration Script: Create Industry Pages in Prismic
+ * Create or update Industry pages in Prismic.
  *
- * This script programmatically creates industry documents in Prismic using the Migration API.
- *
- * Prerequisites:
- * 1. Push the Industry custom type to Prismic via Slice Machine
- * 2. Create a token in Prismic Settings > API & Security > Tokens section
- * 3. Add it to your .env file as PRISMIC_MIGRATION_TOKEN
+ * Source research:
+ * /home/garth/files/code/ysp/seomachine/research/brief-*-2026-07-07.md
  *
  * Usage:
  *   pnpm run create-industries
+ *   pnpm run create-industries -- --dry-run
  */
 
-import 'dotenv/config';
+import "dotenv/config";
+import * as prismic from "@prismicio/client";
 
-// Industry data to create
-const INDUSTRIES = [
+import type { IndustryDocument } from "../prismicio-types";
+import config from "../slicemachine.config.json";
+
+type IndustryContent = {
+  uid: string;
+  title: string;
+  data: IndustryDocument["data"];
+};
+
+const INDUSTRIES: IndustryContent[] = [
   {
-    uid: 'construction',
-    industry_name: 'Construction',
-    subtitle: 'Built specifically for the unique hazards and fast-paced environment of construction sites.',
-    meta_title: 'Construction Safety Software | Your Safety Partners',
-    meta_description: 'Ensure OSHA compliance and streamline safety management on construction sites with our dedicated safety software.',
-    content_sections: [
-      {
-        heading: 'Streamline Jobsite Inspections',
-        paragraph: 'Conduct daily hazard assessments and tool-box talks directly from your mobile device. Keep your team safe and compliant with real-time reporting.'
-      },
-      {
-        heading: 'Manage Subcontractor Compliance',
-        paragraph: 'Ensure every contractor on site has the proper certifications and training records before stepping foot on the job. Automated reminders keep everyone current.'
-      },
-      {
-        heading: 'Site-Specific Safety Plans',
-        paragraph: 'Create and distribute site-specific safety plans instantly. Update workers on new hazards and control measures in real-time.'
-      }
-    ],
-    key_features: [
-      { feature_title: 'Mobile Inspections', feature_description: 'Complete safety inspections from anywhere on site' },
-      { feature_title: 'Contractor Portal', feature_description: 'Manage subcontractor credentials and compliance' },
-      { feature_title: 'Offline Mode', feature_description: 'Work without internet, sync when connected' },
-      { feature_title: 'Incident Reporting', feature_description: 'Report and track incidents in real-time' },
-      { feature_title: 'Toolbox Talks', feature_description: 'Digital toolbox talk delivery and attendance' },
-      { feature_title: 'Site Inductions', feature_description: 'Automate site induction and sign-offs' }
-    ]
+    uid: "construction-trades",
+    title: "Construction & Trades",
+    data: {
+      industry_name: "Construction & Trades",
+      subtitle:
+        "Manage SWMS, site inspections, inductions, training records, hazards, contractors and corrective actions in one practical portal built for Australian builders and trade teams.",
+      hero_image: {},
+      slices: [],
+      key_features: [
+        {
+          feature_title: "SWMS and site records",
+          feature_description:
+            "Keep SWMS, site checks, photos and evidence organised for high-risk construction work.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Site inspections",
+          feature_description:
+            "Run mobile site inspections, roofing checks, scaffold checks and corrective actions from one portal.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Inductions and training",
+          feature_description:
+            "Track worker inductions, toolbox talks, licences and refresher training before people step on site.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Contractor compliance",
+          feature_description:
+            "Manage subcontractor records, insurance, sign-offs and site readiness without spreadsheet chasing.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Hazards and actions",
+          feature_description:
+            "Report hazards from site, assign actions and keep a close-out trail for managers and audits.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Consultant-led setup",
+          feature_description:
+            "Set up practical construction WHS workflows with safety consultants who understand Australian worksites.",
+          feature_icon: null,
+        },
+      ],
+      content_sections: [
+        {
+          heading: "Built for Australian construction and trade teams",
+          paragraph:
+            "Construction WHS records often live in too many places: SWMS in folders, site checks on paper, inductions in email threads, training records in spreadsheets and hazard reports in supervisor notebooks. Your Safety Portal brings the working records together so builders, roofing contractors, scaffolding businesses and site-based teams can see what is current, overdue and unresolved.",
+        },
+        {
+          heading: "A SWMS template is not the full safety system",
+          paragraph:
+            "A SWMS is important, but the document on its own does not prove that workers can access it, understand the controls, complete the related inspections, report hazards, close actions and keep evidence available when work changes. YSP helps connect SWMS access with inspections, inductions, training records, hazards and corrective actions.",
+        },
+        {
+          heading: "Control the site workflows that create risk",
+          paragraph:
+            "Use the portal for high-risk construction work, working at heights, roofing hazards, scaffolding checks, field service work, contractor records and site inspection evidence. Supervisors can complete forms from site, while managers keep visibility over open actions and missing records.",
+        },
+        {
+          heading: "Practical alternative to templates and enterprise EHS",
+          paragraph:
+            "Templates help you start. Enterprise platforms can be powerful. Many trade businesses need something simpler to implement and easier for site supervisors to use. Your Safety Portal is built for practical adoption, with safety consultants who understand Australian workplaces.",
+        },
+      ],
+      meta_title: "Construction WHS Software Australia | Your Safety Portal",
+      meta_description:
+        "WHS software for Australian builders and trades. Manage SWMS, inspections, inductions, training, hazards, contractors and actions in one portal.",
+      meta_image: {},
+    },
   },
   {
-    uid: 'manufacturing',
-    industry_name: 'Manufacturing',
-    subtitle: 'Reduce downtime and protect your workers with streamlined EHS compliance for the factory floor.',
-    meta_title: 'Manufacturing Safety & EHS Software | Your Safety Partners',
-    meta_description: 'Automate lock-out/tag-out procedures and manage factory floor safety with our manufacturing EHS software.',
-    content_sections: [
-      {
-        heading: 'Lockout/Tagout Automation',
-        paragraph: 'Digitize your LOTO procedures to ensure absolute compliance and worker safety during machine maintenance. Track every lock, every time.'
-      },
-      {
-        heading: 'Real-time Hazard Tracking',
-        paragraph: 'Empower floor workers to report near-misses and hazards instantly via QR codes. Get ahead of incidents before they happen.'
-      },
-      {
-        heading: 'Equipment Safety Management',
-        paragraph: 'Maintain comprehensive records of machine safety checks, maintenance schedules, and compliance documentation all in one place.'
-      }
-    ],
-    key_features: [
-      { feature_title: 'LOTO Management', feature_description: 'Digital lockout/tagout procedures and tracking' },
-      { feature_title: 'QR Code Reporting', feature_description: 'Scan and report hazards instantly' },
-      { feature_title: 'Training Matrix', feature_description: 'Track employee certifications and training' },
-      { feature_title: 'Audit Trails', feature_description: 'Complete compliance documentation' },
-      { feature_title: 'Machine Safety', feature_description: 'Equipment inspection and maintenance tracking' },
-      { feature_title: 'Near Miss Reporting', feature_description: 'Capture and analyze near-miss incidents' }
-    ]
+    uid: "manufacturing-industrial",
+    title: "Manufacturing & Industrial",
+    data: {
+      industry_name: "Manufacturing & Industrial",
+      subtitle:
+        "Manage policies, SOPs, inspections, training records, hazards, contractors and corrective actions in one practical portal built for Australian manufacturers.",
+      hero_image: {},
+      slices: [],
+      key_features: [
+        {
+          feature_title: "Factory inspections",
+          feature_description:
+            "Digitise factory, plant, equipment and production-floor checks with photo evidence and action tracking.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "SOP and policy sign-offs",
+          feature_description:
+            "Keep WHS policies and SOPs accessible, current and linked to worker acknowledgement records.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Training matrix",
+          feature_description:
+            "Track worker training, licences, competencies and overdue refreshers across production teams.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Hazard close-out",
+          feature_description:
+            "Report production-floor hazards, assign corrective actions and keep managers clear on unresolved risks.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Contractor and visitor records",
+          feature_description:
+            "Manage site inductions, contractor documents and visitor safety records in one place.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Audit-ready evidence",
+          feature_description:
+            "Find inspections, sign-offs, training records, hazards and actions quickly during audits or customer reviews.",
+          feature_icon: null,
+        },
+      ],
+      content_sections: [
+        {
+          heading: "WHS software for the production floor",
+          paragraph:
+            "Manufacturing safety records often sit across paper inspection forms, SOP folders, spreadsheets, emails and notebooks. Your Safety Portal gives Australian manufacturers one place to manage policies, SOPs, inspections, training records, hazards, contractors and corrective actions.",
+        },
+        {
+          heading: "Keep plant, machinery and equipment checks visible",
+          paragraph:
+            "Use digital forms for machine checks, plant inspections, manual handling risks, forklift checks, chemical controls and production-area inspections. Supervisors can complete checks on the floor, and managers can see what is due, overdue and unresolved.",
+        },
+        {
+          heading: "Connect SOPs, training and hazards",
+          paragraph:
+            "Manufacturing teams usually need more than an inspection app. YSP connects forms to SOP access, policy sign-offs, worker competency records, incident reports, hazard close-out and contractor management.",
+        },
+        {
+          heading: "Built for SMB manufacturers, not enterprise complexity",
+          paragraph:
+            "Enterprise EHS platforms can be heavy to implement. YSP is built for practical adoption across food production, meat processing, sheetmetal, fabrication, equipment manufacturing and industrial workshops, with setup support from Australian safety consultants.",
+        },
+      ],
+      meta_title: "Manufacturing WHS Software Australia | Your Safety Portal",
+      meta_description:
+        "WHS software for Australian manufacturers. Manage policies, SOPs, inspections, training, hazards, contractors and actions in one practical portal.",
+      meta_image: {},
+    },
   },
   {
-    uid: 'healthcare',
-    industry_name: 'Healthcare',
-    subtitle: 'Protect your staff and patients with comprehensive healthcare safety management.',
-    meta_title: 'Healthcare Safety Management Software | Your Safety Partners',
-    meta_description: 'Manage clinical safety, infection control, and compliance for hospitals, aged care, and healthcare facilities.',
-    content_sections: [
-      {
-        heading: 'Clinical Safety Management',
-        paragraph: 'Track clinical incidents, manage patient safety reporting, and maintain compliance with healthcare regulations all in one integrated platform.'
-      },
-      {
-        heading: 'Infection Control Monitoring',
-        paragraph: 'Monitor and document infection control procedures, track outbreaks, and ensure staff compliance with hygiene protocols.'
-      },
-      {
-        heading: 'Staff Safety & Wellbeing',
-        paragraph: 'Manage workplace violence prevention, manual handling training, and staff incident reporting to protect your healthcare workers.'
-      }
-    ],
-    key_features: [
-      { feature_title: 'Clinical Incident Reporting', feature_description: 'Comprehensive patient safety incident tracking' },
-      { feature_title: 'Infection Control', feature_description: 'Monitor hygiene and infection prevention measures' },
-      { feature_title: 'Manual Handling', feature_description: 'Track training and equipment compliance' },
-      { feature_title: 'Workplace Violence Prevention', feature_description: 'Document and manage security incidents' },
-      { feature_title: 'PPE Management', feature_description: 'Track PPE usage and compliance' },
-      { feature_title: 'Regulatory Compliance', feature_description: 'Meet NDIS, aged care, and health standards' }
-    ]
+    uid: "warehousing-logistics-transport",
+    title: "Warehousing, Logistics & Transport",
+    data: {
+      industry_name: "Warehousing, Logistics & Transport",
+      subtitle:
+        "Manage warehouse inspections, forklift checks, training records, hazards and contractor compliance in one Australian WHS portal built for logistics teams.",
+      hero_image: {},
+      slices: [],
+      key_features: [
+        {
+          feature_title: "Forklift and warehouse checks",
+          feature_description:
+            "Run pre-starts, racking checks, loading dock inspections and warehouse safety forms from any device.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Training and licence records",
+          feature_description:
+            "Track forklift licences, inductions, refreshers and role-based training evidence.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Traffic and loading dock risks",
+          feature_description:
+            "Capture hazards around vehicle movement, pedestrian separation, loading docks and manual handling.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Driver and contractor compliance",
+          feature_description:
+            "Keep contractor, visitor and driver records together with site access and induction evidence.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Corrective action tracking",
+          feature_description:
+            "Assign actions from inspections and hazard reports, then track close-out across busy operations.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Multi-site visibility",
+          feature_description:
+            "Give managers visibility across warehouses, depots, transport yards and high-turnover teams.",
+          feature_icon: null,
+        },
+      ],
+      content_sections: [
+        {
+          heading: "Built for busy warehouses, depots and transport operations",
+          paragraph:
+            "Warehouses, depots and transport yards run on movement. Forklifts, vehicles, contractors, drivers, deliveries, racking, loading docks and manual handling all create safety admin that paper forms struggle to keep up with.",
+        },
+        {
+          heading: "Replace scattered records with one WHS portal",
+          paragraph:
+            "YSP helps logistics and warehouse teams bring clipboards, spreadsheets, inboxes and shared drives into one place for inspections, training records, forms, hazards, policies and contractor compliance.",
+        },
+        {
+          heading: "Control the risks that show up every day",
+          paragraph:
+            "Use the portal for forklift and pedestrian separation, loading dock risks, traffic movement, manual handling, driver records, contractor inductions, hazard reporting and missed inspection follow-up.",
+        },
+        {
+          heading: "More than a warehouse inspection app",
+          paragraph:
+            "Inspection apps capture forms. WHS software connects those forms to training records, hazards, contractors, policies, evidence and management visibility, with consultant-led setup to make the workflows practical.",
+        },
+      ],
+      meta_title: "Warehouse & Logistics WHS Software | YSP",
+      meta_description:
+        "Manage warehouse inspections, forklift checks, training records, hazards and contractor compliance in one Australian WHS portal built for logistics teams.",
+      meta_image: {},
+    },
   },
   {
-    uid: 'mining',
-    industry_name: 'Mining',
-    subtitle: 'Heavy industry safety management for mining operations of all sizes.',
-    meta_title: 'Mining Safety Software | Your Safety Partners',
-    meta_description: 'Comprehensive safety management for mining operations. Track hazards, manage compliance, and protect your workforce.',
-    content_sections: [
-      {
-        heading: 'Critical Risk Management',
-        paragraph: 'Identify, assess, and control critical risks specific to mining operations. Implement and track critical control management programs.'
-      },
-      {
-        heading: 'Pre-Start Inspections',
-        paragraph: 'Digital pre-start checks for all mobile equipment and machinery. Ensure every shift starts safely with documented inspections.'
-      },
-      {
-        heading: 'High Risk Work Permits',
-        paragraph: 'Streamline permit-to-work systems for high-risk activities. Ensure all controls are in place before work begins.'
-      }
-    ],
-    key_features: [
-      { feature_title: 'Critical Risk Controls', feature_description: 'Manage and verify critical controls' },
-      { feature_title: 'Pre-Start Checklists', feature_description: 'Digital equipment inspection forms' },
-      { feature_title: 'Permit to Work', feature_description: 'Digital permit and isolation management' },
-      { feature_title: 'Fatigue Management', feature_description: 'Track hours and manage fatigue risks' },
-      { feature_title: 'Emergency Response', feature_description: 'Emergency management and mustering' },
-      { feature_title: 'Contractor Management', feature_description: 'Comprehensive contractor compliance tracking' }
-    ]
+    uid: "food-beverage-agribusiness",
+    title: "Food, Beverage & Agribusiness",
+    data: {
+      industry_name: "Food, Beverage & Agribusiness",
+      subtitle:
+        "Manage safety forms, inspections, training records, policies, hazards, contractors and corrective actions in one practical portal built for Australian operational teams.",
+      hero_image: {},
+      slices: [],
+      key_features: [
+        {
+          feature_title: "Production and site checks",
+          feature_description:
+            "Digitise production, farm, equipment, restaurant and cellar-door WHS checks.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Training and competency",
+          feature_description:
+            "Track role training, licences, inductions and refresher records for operational teams.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Policies and SOPs",
+          feature_description:
+            "Keep WHS policies, procedures and acknowledgements accessible and current.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Hazards and incidents",
+          feature_description:
+            "Capture hazards, incidents, near misses and corrective actions from production, farm or venue teams.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Contractor records",
+          feature_description:
+            "Manage contractor inductions, insurance, site records and follow-up actions.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "WHS alongside operational checks",
+          feature_description:
+            "Keep worker safety evidence visible alongside the operational checks your team already understands.",
+          feature_icon: null,
+        },
+      ],
+      content_sections: [
+        {
+          heading: "WHS records for food, beverage and agribusiness teams",
+          paragraph:
+            "Food, beverage and agribusiness safety records often sit in too many places: paper production checklists, training spreadsheets, shared-drive SOPs, hazard reports in emails or notebooks, contractor files and informal farm or equipment checks.",
+        },
+        {
+          heading: "Food safety and WHS are not the same job",
+          paragraph:
+            "Food safety systems help protect consumers and support food compliance. WHS systems help protect workers and support workplace safety duties. YSP focuses on the WHS side: inspections, forms, training, policies, hazards, corrective actions and contractor records.",
+        },
+        {
+          heading: "Built for mixed operational environments",
+          paragraph:
+            "Use the portal across food production, meat and smallgoods, farms, horticulture, restaurants, wineries, cellar doors, beverage operations and equipment-heavy sites where practical worker safety records need to be easy to find.",
+        },
+        {
+          heading: "Connect forms to the rest of the safety system",
+          paragraph:
+            "A checklist app can digitise a form. A WHS portal connects the form to the rest of the safety system: training records, policies, hazards, actions, contractors and management visibility.",
+        },
+      ],
+      meta_title: "Food & Agribusiness WHS Software | Your Safety Portal",
+      meta_description:
+        "WHS software for Australian food, beverage and agribusiness teams. Manage forms, inspections, training, hazards, contractors and actions in one portal.",
+      meta_image: {},
+    },
   },
   {
-    uid: 'logistics',
-    industry_name: 'Logistics & Warehousing',
-    subtitle: 'Keep your warehouse operations safe, compliant, and efficient.',
-    meta_title: 'Warehouse & Logistics Safety Software | Your Safety Partners',
-    meta_description: 'Safety management for warehousing, distribution, and logistics operations. Forklift safety, loading dock management, and more.',
-    content_sections: [
-      {
-        heading: 'Forklift & Mobile Equipment Safety',
-        paragraph: 'Manage operator licenses, conduct daily pre-operational checks, and track equipment maintenance to prevent incidents.'
-      },
-      {
-        heading: 'Loading Dock Safety',
-        paragraph: 'Monitor and control loading dock operations with digital checklists, vehicle restraints verification, and driver communications.'
-      },
-      {
-        heading: 'Manual Handling Prevention',
-        paragraph: 'Track manual handling risks, ensure proper training, and document safe work procedures for warehouse operations.'
-      }
-    ],
-    key_features: [
-      { feature_title: 'Forklift Management', feature_description: 'License tracking and equipment checks' },
-      { feature_title: 'Loading Dock Safety', feature_description: 'Control dock operations and loading procedures' },
-      { feature_title: 'Manual Handling', feature_description: 'Risk assessment and training tracking' },
-      { feature_title: 'Warehouse Inspections', feature_description: 'Racking, PPE, and facility inspections' },
-      { feature_title: 'Traffic Management', feature_description: 'Pedestrian and vehicle separation monitoring' },
-      { feature_title: 'Chemical Management', feature_description: 'Track dangerous goods and hazardous substances' }
-    ]
+    uid: "multi-site-retail-franchise",
+    title: "Multi-site Retail & Franchise",
+    data: {
+      industry_name: "Multi-site Retail & Franchise",
+      subtitle:
+        "Manage WHS across every store with retail safety software for Australian multi-site and franchise teams. Inspections, training, hazards and policies in one portal.",
+      hero_image: {},
+      slices: [],
+      key_features: [
+        {
+          feature_title: "Consistent store inspections",
+          feature_description:
+            "Standardise daily, weekly and monthly checks across every store, showroom, clinic or workshop.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Frontline hazard reporting",
+          feature_description:
+            "Make it simple for store teams to report hazards, incidents, photos and actions.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Training and sign-offs",
+          feature_description:
+            "Know who is trained, who is overdue and which policies new starters have acknowledged.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Head-office visibility",
+          feature_description:
+            "Spot repeat risks, overdue actions and inconsistent processes across locations.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Retail risk coverage",
+          feature_description:
+            "Manage manual handling, slips and trips, lacerations, equipment, maintenance and customer aggression records.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Franchise consistency",
+          feature_description:
+            "Keep processes consistent across stores and franchisees without relying on manager memory.",
+          feature_icon: null,
+        },
+      ],
+      content_sections: [
+        {
+          heading: "WHS software built for multi-site retail operations",
+          paragraph:
+            "Every store has similar WHS obligations, but not every store follows the same process. YSP gives retail and franchise teams one practical portal for policies, forms, inspections, training and hazards.",
+        },
+        {
+          heading: "Keep store inspections and actions consistent",
+          paragraph:
+            "Use standard forms for stockrooms, showrooms, clinics, workshops and service locations. Store teams can complete checks quickly, while head office can see overdue actions and repeat risks across locations.",
+        },
+        {
+          heading: "Track training, inductions and policy sign-offs",
+          paragraph:
+            "Keep new starters current, standardise procedures across stores, and maintain evidence of training, policy acknowledgement and safety communication across retail and franchise teams.",
+        },
+        {
+          heading: "Manage the risks that actually show up in retail",
+          paragraph:
+            "Use the portal for manual handling and stock movement, slips and trips, equipment maintenance, lacerations, customer aggression, stress and psychosocial hazard reporting.",
+        },
+      ],
+      meta_title: "Retail Safety Software Australia | Your Safety Portal",
+      meta_description:
+        "Manage WHS across every store with retail safety software for Australian multi-site and franchise teams. Inspections, training, hazards and policies.",
+      meta_image: {},
+    },
   },
   {
-    uid: 'hospitality',
-    industry_name: 'Hospitality',
-    subtitle: 'Food safety, workplace safety, and compliance for restaurants, hotels, and venues.',
-    meta_title: 'Hospitality Safety Management Software | Your Safety Partners',
-    meta_description: 'Integrated safety and food safety management for hospitality venues. Track incidents, manage training, ensure compliance.',
-    content_sections: [
-      {
-        heading: 'Food Safety Management',
-        paragraph: 'Digital temperature logs, food safety checklists, and HACCP documentation. Ensure compliance with food safety standards.'
-      },
-      {
-        heading: 'Venue Safety Inspections',
-        paragraph: 'Conduct regular safety inspections of kitchens, dining areas, and facilities. Identify and resolve hazards quickly.'
-      },
-      {
-        heading: 'Staff Training Records',
-        paragraph: 'Track food handling certificates, RSA, and other mandatory training. Automated reminders ensure staff stay current.'
-      }
-    ],
-    key_features: [
-      { feature_title: 'Food Safety Logs', feature_description: 'Digital temperature and safety checks' },
-      { feature_title: 'Kitchen Safety', feature_description: 'Equipment inspections and hazard reporting' },
-      { feature_title: 'Incident Management', feature_description: 'Track slips, trips, and workplace incidents' },
-      { feature_title: 'Training Tracking', feature_description: 'Food handler and RSA certification management' },
-      { feature_title: 'Cleaning Schedules', feature_description: 'Track cleaning and maintenance tasks' },
-      { feature_title: 'Allergen Management', feature_description: 'Document allergen procedures and training' }
-    ]
-  }
+    uid: "professional-services-office-based",
+    title: "Professional Services & Office-based",
+    data: {
+      industry_name: "Professional Services & Office-based",
+      subtitle:
+        "Office WHS software for Australian professional services teams. Manage policies, training, incidents, hazards, ergonomic checks and contractors.",
+      hero_image: {},
+      slices: [],
+      key_features: [
+        {
+          feature_title: "Policy sign-offs",
+          feature_description:
+            "Keep WHS policies, workplace behaviour procedures and acknowledgements in one place.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Office training records",
+          feature_description:
+            "Track inductions, emergency procedures, psychosocial hazard awareness, ergonomics and manual handling training.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Incident and hazard reporting",
+          feature_description:
+            "Capture office, remote-worker, visitor and contractor incidents with corrective action tracking.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Ergonomic checks",
+          feature_description:
+            "Manage workstation setup, home office checklists, equipment requests and follow-up actions.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Psychosocial hazard records",
+          feature_description:
+            "Give office teams a structured way to record and respond to psychosocial hazards.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Hybrid work support",
+          feature_description:
+            "Keep WHS records for office-based, hybrid and working-from-home teams visible and current.",
+          feature_icon: null,
+        },
+      ],
+      content_sections: [
+        {
+          heading: "Office businesses still need WHS records",
+          paragraph:
+            "Professional services and office-based businesses still need practical WHS records, even if they do not run forklifts or construction sites. Policies, training, incidents, ergonomic checks and contractor records are often scattered across HR files, spreadsheets and emails.",
+        },
+        {
+          heading: "Keep policies, procedures and sign-offs in one place",
+          paragraph:
+            "Use YSP to manage WHS policies, workplace behaviour procedures, hybrid work procedures, version control and acknowledgement records so leaders can see what has been communicated and signed off.",
+        },
+        {
+          heading: "Cover office risks that are easy to overlook",
+          paragraph:
+            "Manage psychosocial hazards, ergonomics, slips and trips, manual handling, office equipment, visitors, contractors and facilities work with records that are easy to update and retrieve.",
+        },
+        {
+          heading: "Support hybrid and working-from-home WHS",
+          paragraph:
+            "Use home workstation checklists, remote incident reporting, equipment requests and corrective action tracking to keep WHS visible for teams that do not work in one place every day.",
+        },
+      ],
+      meta_title: "Office WHS Software Australia | Your Safety Portal",
+      meta_description:
+        "Office WHS software for Australian professional services teams. Manage policies, training, incidents, hazards, ergonomic checks and contractors.",
+      meta_image: {},
+    },
+  },
+  {
+    uid: "community-education-training",
+    title: "Community, Education & Training",
+    data: {
+      industry_name: "Community, Education & Training",
+      subtitle:
+        "Manage WHS records for schools, RTOs and community organisations. Training, policies, inspections, incidents and hazards in one portal.",
+      hero_image: {},
+      slices: [],
+      key_features: [
+        {
+          feature_title: "Staff and volunteer records",
+          feature_description:
+            "Keep inductions, onboarding, policy sign-offs, contractor records and visitor records together.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Training and competency",
+          feature_description:
+            "Track staff training, trainer and assessor records, renewals and overdue items.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Incident and hazard reporting",
+          feature_description:
+            "Capture staff, student, client, visitor, aggression and psychosocial hazard reports with actions.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Facility and activity inspections",
+          feature_description:
+            "Run school, office, training room, practical area, excursion and off-site activity checks.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "People-facing risk controls",
+          feature_description:
+            "Manage psychosocial hazards, manual handling, people handling, slips and trips, equipment and outreach risks.",
+          feature_icon: null,
+        },
+        {
+          feature_title: "Leadership visibility",
+          feature_description:
+            "Give leaders confidence that training, policies, incidents, inspections and actions are being managed consistently.",
+          feature_icon: null,
+        },
+      ],
+      content_sections: [
+        {
+          heading: "Built for people-facing organisations",
+          paragraph:
+            "Community, education and training organisations often have safety records everywhere: staff files, student systems, paper forms, emails and spreadsheets. YSP gives one practical WHS portal for policies, forms, inspections, training, hazards and contractors.",
+        },
+        {
+          heading: "Keep staff, volunteer and contractor records together",
+          paragraph:
+            "Manage inductions, onboarding, policy and procedure sign-offs, contractor documents and visitor records in one place so WHS evidence is not split across disconnected systems.",
+        },
+        {
+          heading: "Manage training, incidents and site activity",
+          paragraph:
+            "Track staff training registers, trainer and assessor records, renewal reminders, school and office inspections, practical area checks, excursions, off-site activities, incidents, hazards and corrective actions.",
+        },
+        {
+          heading: "Cover the risks that show up in people-facing work",
+          paragraph:
+            "Use the portal for psychosocial hazards, aggression reports, manual handling, people handling, slips and trips, machinery or practical learning spaces, remote work and outreach activity.",
+        },
+      ],
+      meta_title: "Education WHS Software Australia | Your Safety Portal",
+      meta_description:
+        "Manage WHS records for schools, RTOs and community organisations. Training, policies, inspections, incidents and hazards in one portal.",
+      meta_image: {},
+    },
+  },
 ];
 
-// Helper to delay between requests (avoid rate limiting)
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const isDryRun = process.argv.includes("--dry-run");
 
-async function createIndustries() {
-  const migrationToken = process.env.PRISMIC_MIGRATION_TOKEN;
+function report(event: prismic.MigrateReporterEvents) {
+  if (event.type === "documents:creating") {
+    console.log(
+      `  Creating ${event.data.current}/${event.data.total}: ${event.data.document.title}`,
+    );
+  }
 
-  if (!migrationToken) {
-    console.error('❌ Error: PRISMIC_MIGRATION_TOKEN not found in environment variables');
-    console.log('\n📝 To get your Migration API token:');
-    console.log('1. Go to https://yoursafetyportal.prismic.io/settings/api-security');
-    console.log('2. Scroll down to the "Tokens" section');
-    console.log('3. Click "Generate a token" or use an existing one');
-    console.log('4. Add to .env: PRISMIC_MIGRATION_TOKEN=your_token_here\n');
+  if (event.type === "documents:updating") {
+    console.log(
+      `  Updating ${event.data.current}/${event.data.total}: ${event.data.document.title}`,
+    );
+  }
+}
+
+async function upsertIndustries() {
+  const writeToken = process.env.PRISMIC_MIGRATION_TOKEN;
+
+  if (!writeToken) {
+    console.error("Error: PRISMIC_MIGRATION_TOKEN not found in environment variables");
+    console.log("Add it to .env as PRISMIC_MIGRATION_TOKEN=your_token_here");
     process.exit(1);
   }
 
-  const migrationApiEndpoint = 'https://migration.prismic.io';
-  const repository = 'yoursafetyportal';
+  const client = prismic.createWriteClient<IndustryDocument>(config.repositoryName, {
+    writeToken,
+  });
+  const migration = prismic.createMigration<IndustryDocument>();
 
-  console.log('🚀 Starting industry document creation via Migration API...\n');
+  console.log(`${isDryRun ? "Checking" : "Preparing"} ${INDUSTRIES.length} industry pages...\n`);
 
   for (const industry of INDUSTRIES) {
-    try {
-      console.log(`📄 Creating: ${industry.industry_name} (${industry.uid})...`);
+    const existingDocument = await client.getByUID("industry", industry.uid).catch(() => null);
 
-      const response = await fetch(`${migrationApiEndpoint}/documents`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${migrationToken}`,
-          'Content-Type': 'application/json',
-          'repository': repository,
-          'x-api-key': migrationToken
-        },
-        body: JSON.stringify({
-          title: industry.industry_name,
-          type: 'industry',
-          uid: industry.uid,
-          lang: 'en-us',
-          data: {
-            industry_name: industry.industry_name,
-            subtitle: industry.subtitle,
-            meta_title: industry.meta_title,
-            meta_description: industry.meta_description,
-            content_sections: industry.content_sections,
-            key_features: industry.key_features,
-            slices: []
-          }
-        })
-      });
+    if (existingDocument) {
+      console.log(`- ${industry.uid}: update existing document ${existingDocument.id}`);
 
-      const responseText = await response.text();
-
-      if (!response.ok) {
-        console.error(`  ❌ Failed to create ${industry.industry_name}`);
-        console.error(`  Status: ${response.status} ${response.statusText}`);
-        console.error(`  Response: ${responseText}`);
-
-        // Try to parse error message
-        try {
-          const errorData = JSON.parse(responseText);
-          if (errorData.message) {
-            console.error(`  Error: ${errorData.message}`);
-          }
-        } catch {
-          // Not JSON, already logged raw response
-        }
-        continue;
+      if (!isDryRun) {
+        migration.updateDocument(
+          {
+            ...existingDocument,
+            data: industry.data,
+            tags: existingDocument.tags ?? [],
+          },
+          industry.title,
+        );
       }
+    } else {
+      console.log(`- ${industry.uid}: create new document`);
 
-      const result = JSON.parse(responseText);
-      console.log(`  ✅ Created successfully (ID: ${result.id || 'created'})`);
-
-    } catch (error) {
-      console.error(`  ❌ Error creating ${industry.industry_name}:`, error instanceof Error ? error.message : error);
+      if (!isDryRun) {
+        migration.createDocument(
+          {
+            type: "industry",
+            uid: industry.uid,
+            lang: "en-us",
+            tags: [],
+            data: industry.data,
+          },
+          industry.title,
+        );
+      }
     }
-
-    // Wait 2 seconds between requests to avoid rate limiting
-    await delay(2000);
   }
 
-  console.log('\n✨ Migration complete!');
-  console.log('📋 Next steps:');
-  console.log('1. Go to https://yoursafetyportal.prismic.io');
-  console.log('2. Review your new Industry documents');
-  console.log('3. Add hero images and Slices to each page');
-  console.log('4. Publish each document when ready');
+  if (isDryRun) {
+    console.log("\nDry run complete. No Prismic changes were made.");
+    return;
+  }
+
+  await client.migrate(migration, { reporter: report });
+
+  console.log("\nIndustry migration complete.");
+  console.log("Next steps:");
+  console.log("1. Review the created/updated Industry documents in Prismic.");
+  console.log("2. Publish the migration release when the content is ready.");
+  console.log("3. Check /industry and the individual /industry/[uid] pages.");
 }
 
-createIndustries().catch((error) => {
-  console.error('Fatal error:', error);
+upsertIndustries().catch((error) => {
+  console.error("Fatal error:", error);
   process.exit(1);
 });

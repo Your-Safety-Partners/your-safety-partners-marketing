@@ -3,6 +3,7 @@ import { createClient } from "@/prismicio";
 import { isFilled } from "@prismicio/client";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
+import { isResearchedIndustryUID, sortByResearchedIndustryOrder } from "@/lib/industry-pages";
 
 export const metadata = {
   title: "Industries We Serve | Your Safety Partners",
@@ -18,6 +19,10 @@ export default async function IndustryIndex() {
       { field: 'document.first_publication_date', direction: 'desc' }
     ]
   });
+  const researchedIndustries = sortByResearchedIndustryOrder(
+    industries.filter((industry) => isResearchedIndustryUID(industry.uid)),
+  );
+  const visibleIndustries = researchedIndustries.length > 0 ? researchedIndustries : industries;
 
   return (
     <div className="container mx-auto px-4 py-24">
@@ -28,7 +33,7 @@ export default async function IndustryIndex() {
         </p>
       </div>
 
-      {industries.length === 0 ? (
+      {visibleIndustries.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-lg text-muted-foreground">
             No industries found. Create your first industry page in Prismic!
@@ -36,7 +41,7 @@ export default async function IndustryIndex() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {industries.map((industry) => {
+          {visibleIndustries.map((industry) => {
             const industryName = industry.data.industry_name || 'Industry';
             const subtitle = industry.data.subtitle || '';
 

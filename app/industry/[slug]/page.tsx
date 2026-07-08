@@ -59,11 +59,29 @@ export default async function IndustryPage({ params }: Props) {
     const subtitle = page.data.subtitle || '';
     const contentSections = page.data.content_sections || [];
     const keyFeatures = page.data.key_features || [];
+    const hasSlices = page.data.slices.length > 0;
 
     return (
       <div className="flex flex-col min-h-screen">
-        {/* Render Slices first (includes any hero sections) */}
-        <SliceZone slices={page.data.slices} components={components} />
+        {hasSlices ? (
+          <SliceZone slices={page.data.slices} components={components} />
+        ) : (
+          <section className="bg-muted/40 py-20 md:py-28">
+            <div className="container mx-auto px-4">
+              <div className="max-w-4xl">
+                <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-6">
+                  {industryName}
+                </h1>
+                {subtitle && (
+                  <p className="text-xl text-muted-foreground leading-relaxed mb-8">
+                    {subtitle}
+                  </p>
+                )}
+                <CustomButton title="Book a Demo" url="/book-a-demo" size="lg" />
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Content & Features Section - only show if there's content */}
         {(contentSections.length > 0 || keyFeatures.length > 0) && (
