@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Check } from 'lucide-react';
 
 import { BookADemoForm } from '@/components/forms/book-a-demo-form';
@@ -93,7 +94,9 @@ export function BookADemoContent() {
             </div>
           </div>
 
-          <BookADemoForm />
+          <Suspense fallback={null}>
+            <BookADemoForm />
+          </Suspense>
         </div>
       </div>
     </section>
