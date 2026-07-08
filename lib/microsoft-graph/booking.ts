@@ -13,6 +13,10 @@ export type BookDemoEventInput = {
   company: string;
   preferredDate: string;
   preferredTime: string;
+  source?: string;
+  industry?: string;
+  landingPage?: string;
+  referrer?: string;
 };
 
 type CreateEventResponse = {
@@ -37,7 +41,17 @@ function getSlotDateTimes(date: string, time: string, slotMinutes: number, timeZ
 export async function createTeamsDemoEvent(
   input: BookDemoEventInput
 ): Promise<{ formattedDateTime: string; teamsJoinUrl?: string }> {
-  const { name, email, company, preferredDate, preferredTime } = input;
+  const {
+    name,
+    email,
+    company,
+    preferredDate,
+    preferredTime,
+    source,
+    industry,
+    landingPage,
+    referrer,
+  } = input;
 
   if (!isIsoDate(preferredDate) || !isTimeValue(preferredTime)) {
     throw new Error('Invalid demo date or time.');
@@ -73,6 +87,10 @@ export async function createTeamsDemoEvent(
           `<p><strong>Name:</strong> ${name}</p>`,
           `<p><strong>Email:</strong> ${email}</p>`,
           `<p><strong>Company:</strong> ${company}</p>`,
+          source ? `<p><strong>Source:</strong> ${source}</p>` : '',
+          industry ? `<p><strong>Industry page:</strong> ${industry}</p>` : '',
+          landingPage ? `<p><strong>Booking page URL:</strong> ${landingPage}</p>` : '',
+          referrer ? `<p><strong>Referrer:</strong> ${referrer}</p>` : '',
         ].join(''),
       },
       start: { dateTime: startDateTime, timeZone },

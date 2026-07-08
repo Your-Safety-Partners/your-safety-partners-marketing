@@ -60,6 +60,7 @@ export default async function IndustryPage({ params }: Props) {
     const contentSections = page.data.content_sections || [];
     const keyFeatures = page.data.key_features || [];
     const hasSlices = page.data.slices.length > 0;
+    const bookDemoUrl = `/book-a-demo?source=industry&industry=${encodeURIComponent(slug)}`;
 
     return (
       <div className="flex flex-col min-h-screen">
@@ -77,7 +78,7 @@ export default async function IndustryPage({ params }: Props) {
                     {subtitle}
                   </p>
                 )}
-                <CustomButton title="Book a Demo" url="/book-a-demo" size="lg" />
+                <CustomButton title="Book a Demo" url={bookDemoUrl} size="lg" />
               </div>
             </div>
           </section>
@@ -130,7 +131,7 @@ export default async function IndustryPage({ params }: Props) {
                       ))}
                     </ul>
                     <div className="mt-8">
-                      <CustomButton title="Book a Demo" url="/book-a-demo" size="lg" />
+                      <CustomButton title="Book a Demo" url={bookDemoUrl} size="lg" />
                     </div>
                   </div>
                 </div>

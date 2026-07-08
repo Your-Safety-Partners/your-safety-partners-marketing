@@ -90,6 +90,16 @@ const INDUSTRIES: IndustryContent[] = [
           paragraph:
             "Templates help you start. Enterprise platforms can be powerful. Many trade businesses need something simpler to implement and easier for site supervisors to use. Your Safety Portal is built for practical adoption, with safety consultants who understand Australian workplaces.",
         },
+        {
+          heading: "Relevant client proof: Scaffright",
+          paragraph:
+            "Use Scaffright as the construction and trades proof point once approval is confirmed. The strongest testimonial angle is scaffolding-specific: keeping scaffold inspections, SWMS access, worker inductions, hazard reports and corrective actions visible across active work sites instead of relying on paper folders, texts and follow-up calls.",
+        },
+        {
+          heading: "Mini case study angle: scaffold safety records across active sites",
+          paragraph:
+            "A practical Scaffright case study should focus on how a scaffolding team can standardise inspection evidence, track worker and contractor records, assign actions from site checks, and keep managers clear on what is complete, overdue or unresolved. Keep the outcome language operational unless Scaffright approves exact results.",
+        },
       ],
       meta_title: "Construction WHS Software Australia | Your Safety Portal",
       meta_description:
@@ -164,6 +174,16 @@ const INDUSTRIES: IndustryContent[] = [
           heading: "Built for SMB manufacturers, not enterprise complexity",
           paragraph:
             "Enterprise EHS platforms can be heavy to implement. YSP is built for practical adoption across food production, meat processing, sheetmetal, fabrication, equipment manufacturing and industrial workshops, with setup support from Australian safety consultants.",
+        },
+        {
+          heading: "Relevant client proof: V&V Meats",
+          paragraph:
+            "Use V&V Meats as the manufacturing and industrial proof point once approval is confirmed. The strongest testimonial angle is production-floor practicality: keeping SOPs, inspections, training records, hygiene-adjacent WHS checks, hazards and corrective actions accessible for supervisors and workers in a busy meat production environment.",
+        },
+        {
+          heading: "Mini case study angle: WHS records for meat production",
+          paragraph:
+            "A practical V&V Meats case study should focus on replacing disconnected inspection forms, training spreadsheets and corrective-action follow-up with one WHS portal for production checks, worker competency records, hazard reporting and audit-ready evidence. Avoid making claims about injury reduction or audit results unless the client approves them.",
         },
       ],
       meta_title: "Manufacturing WHS Software Australia | Your Safety Portal",
@@ -240,6 +260,16 @@ const INDUSTRIES: IndustryContent[] = [
           paragraph:
             "Inspection apps capture forms. WHS software connects those forms to training records, hazards, contractors, policies, evidence and management visibility, with consultant-led setup to make the workflows practical.",
         },
+        {
+          heading: "Relevant client proof: AA Semi Trailers",
+          paragraph:
+            "Use AA Semi Trailers as the warehousing, logistics and transport proof point once approval is confirmed. The strongest testimonial angle is operational visibility: keeping trailer, yard, workshop, driver, contractor, inspection and corrective-action records together for a transport-focused business where equipment and movement create daily WHS admin.",
+        },
+        {
+          heading: "Mini case study angle: safety evidence for trailer and transport operations",
+          paragraph:
+            "A practical AA Semi Trailers case study should focus on bringing pre-starts, workshop checks, training records, contractor documents, hazard reports and action close-out into one place. Keep the story tied to transport operations and audit-ready evidence, not generic office compliance.",
+        },
       ],
       meta_title: "Warehouse & Logistics WHS Software | YSP",
       meta_description:
@@ -315,6 +345,16 @@ const INDUSTRIES: IndustryContent[] = [
           paragraph:
             "A checklist app can digitise a form. A WHS portal connects the form to the rest of the safety system: training records, policies, hazards, actions, contractors and management visibility.",
         },
+        {
+          heading: "Relevant client proof: Greenlife Oil Holdings",
+          paragraph:
+            "Use Greenlife Oil Holdings as the food, beverage and agribusiness proof point once approval is confirmed. The strongest testimonial angle is mixed operational WHS: keeping farm, production, equipment, contractor, training, hazard and corrective-action records together for a business that needs practical safety evidence across operational sites.",
+        },
+        {
+          heading: "Mini case study angle: WHS records alongside food and agribusiness operations",
+          paragraph:
+            "A practical Greenlife Oil Holdings case study should focus on how WHS records can sit alongside production and agribusiness workflows: site checks, equipment inspections, worker training, contractor records, hazard reporting and action follow-up. Keep food safety and WHS separate so the story stays accurate.",
+        },
       ],
       meta_title: "Food & Agribusiness WHS Software | Your Safety Portal",
       meta_description:
@@ -389,6 +429,16 @@ const INDUSTRIES: IndustryContent[] = [
           heading: "Manage the risks that actually show up in retail",
           paragraph:
             "Use the portal for manual handling and stock movement, slips and trips, equipment maintenance, lacerations, customer aggression, stress and psychosocial hazard reporting.",
+        },
+        {
+          heading: "Relevant client proof: Your Reformer",
+          paragraph:
+            "Use Your Reformer as the multi-site retail and franchise proof point once approval is confirmed. Public information positions the business as an Australian reformer Pilates brand with consumer products, an app, education, commercial fit-outs and international reach, which makes it a strong proof point for retail, wellness, ecommerce and service-network WHS workflows.",
+        },
+        {
+          heading: "Mini case study angle: WHS consistency for a fast-growing wellness brand",
+          paragraph:
+            "A practical Your Reformer case study should focus on keeping policies, training, equipment-related checks, store or showroom tasks, contractor records and team actions consistent as a wellness and reformer Pilates business grows across consumer, commercial and digital channels. Use approved metrics only; public site copy mentions commercial fit-outs and a large app audience, but client-specific WHS outcomes should be confirmed before publication.",
         },
       ],
       meta_title: "Retail Safety Software Australia | Your Safety Portal",

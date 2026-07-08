@@ -1,9 +1,10 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowUpRight } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 
 import { submitBookADemoForm } from '@/actions/contact';
@@ -32,6 +33,7 @@ function FieldLabel({
 }
 
 export function BookADemoForm() {
+  const searchParams = useSearchParams();
   const {
     register,
     control,
@@ -45,10 +47,21 @@ export function BookADemoForm() {
     defaultValues: {
       preferredDate: '',
       preferredTime: '',
+      source: '',
+      industry: '',
+      landingPage: '',
+      referrer: '',
     },
   });
 
   const selectedDate = watch('preferredDate');
+
+  useEffect(() => {
+    setValue('source', searchParams.get('source') ?? '');
+    setValue('industry', searchParams.get('industry') ?? '');
+    setValue('landingPage', window.location.href);
+    setValue('referrer', document.referrer);
+  }, [searchParams, setValue]);
 
   const onSubmit = async (data: BookADemoFormData) => {
     const result = await submitBookADemoForm(data);
@@ -56,6 +69,12 @@ export function BookADemoForm() {
     if (result?.serverError) {
       toast.error(result.serverError);
     } else if (result?.data) {
+      window.dataLayer?.push({
+        event: 'demo_booking_submitted',
+        source: data.source,
+        industry: data.industry,
+        landing_page: data.landingPage,
+      });
       toast.success(result.data);
       reset();
     }
@@ -71,6 +90,11 @@ export function BookADemoForm() {
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-5">
+        <input type="hidden" {...register('source')} />
+        <input type="hidden" {...register('industry')} />
+        <input type="hidden" {...register('landingPage')} />
+        <input type="hidden" {...register('referrer')} />
+
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <FieldLabel htmlFor="demo-name">Full name</FieldLabel>

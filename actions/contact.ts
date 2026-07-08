@@ -72,7 +72,17 @@ export const submitBookADemoForm = actionClient
   .schema(bookADemoFormSchema)
   .action(
     async ({
-      parsedInput: { name, email, company, preferredDate, preferredTime },
+      parsedInput: {
+        name,
+        email,
+        company,
+        preferredDate,
+        preferredTime,
+        source,
+        industry,
+        landingPage,
+        referrer,
+      },
     }) => {
       const rateLimited = await Effect.runPromise(globalPOSTRateLimitEffect);
       if (!rateLimited) {
@@ -91,10 +101,27 @@ export const submitBookADemoForm = actionClient
             company,
             preferredDate,
             preferredTime,
+            source,
+            industry,
+            landingPage,
+            referrer,
           });
 
           logger.info(
-            { lead: { name, email, company, preferredDate, preferredTime, teamsJoinUrl: booking.teamsJoinUrl } },
+            {
+              lead: {
+                name,
+                email,
+                company,
+                preferredDate,
+                preferredTime,
+                source,
+                industry,
+                landingPage,
+                referrer,
+                teamsJoinUrl: booking.teamsJoinUrl,
+              },
+            },
             'Teams demo booked successfully.'
           );
 
@@ -102,7 +129,19 @@ export const submitBookADemoForm = actionClient
         }
 
         logger.info(
-          { lead: { name, email, company, preferredDate, preferredTime } },
+          {
+            lead: {
+              name,
+              email,
+              company,
+              preferredDate,
+              preferredTime,
+              source,
+              industry,
+              landingPage,
+              referrer,
+            },
+          },
           'New book a demo form submission received (calendar not configured).'
         );
 
