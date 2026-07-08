@@ -104,10 +104,7 @@ export default async function IndustryPage({ params }: Props) {
                   <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-orange-50 text-orange-600">
                     <Quote className="h-6 w-6" aria-hidden />
                   </div>
-                  <p className="text-sm font-semibold uppercase tracking-wide text-orange-600">
-                    Client proof
-                  </p>
-                  <h2 className="mt-3 text-2xl font-bold tracking-tight md:text-3xl">
+                  <h2 className="text-2xl font-bold tracking-tight md:text-3xl">
                     {proofClientName}
                   </h2>
                   <p className="mt-5 text-lg leading-relaxed text-slate-700">
