@@ -1,0 +1,293 @@
+{
+  "id": "demand_page",
+  "label": "Demand Page",
+  "repeatable": true,
+  "json": {
+    "Main": {
+      "uid": {
+        "type": "UID",
+        "config": {
+          "label": "UID",
+          "placeholder": "e.g., whs-management-software-australia"
+        }
+      },
+      "page_type": {
+        "type": "Select",
+        "config": {
+          "label": "Page Type",
+          "options": [
+            "core_intent",
+            "competitor_alternative",
+            "module_workflow"
+          ],
+          "default_value": "core_intent"
+        }
+      },
+      "primary_keyword": {
+        "type": "Text",
+        "config": {
+          "label": "Primary Keyword",
+          "placeholder": "e.g., WHS management software Australia"
+        }
+      },
+      "search_intent": {
+        "type": "Text",
+        "config": {
+          "label": "Search Intent",
+          "placeholder": "e.g., Core category commercial investigation"
+        }
+      },
+      "title": {
+        "type": "Text",
+        "config": {
+          "label": "H1 Title",
+          "placeholder": "Keyword-aligned page heading"
+        }
+      },
+      "subtitle": {
+        "type": "Text",
+        "config": {
+          "label": "Subtitle",
+          "placeholder": "Short conversion-focused value proposition"
+        }
+      },
+      "trust_statement": {
+        "type": "Text",
+        "config": {
+          "label": "Trust Statement",
+          "placeholder": "Built by safety professionals with 30+ years of experience."
+        }
+      },
+      "primary_cta_label": {
+        "type": "Text",
+        "config": {
+          "label": "Primary CTA Label",
+          "placeholder": "Book a WHS Software Demo"
+        }
+      },
+      "primary_cta_url": {
+        "type": "Text",
+        "config": {
+          "label": "Primary CTA URL",
+          "placeholder": "/book-a-demo?source=demand&page=..."
+        }
+      },
+      "secondary_cta_label": {
+        "type": "Text",
+        "config": {
+          "label": "Secondary CTA Label",
+          "placeholder": "Optional secondary CTA"
+        }
+      },
+      "secondary_cta_url": {
+        "type": "Text",
+        "config": {
+          "label": "Secondary CTA URL",
+          "placeholder": "Optional secondary CTA URL"
+        }
+      }
+    },
+    "Content": {
+      "pain_points": {
+        "type": "Group",
+        "config": {
+          "label": "Pain Points",
+          "repeat": true,
+          "fields": {
+            "title": {
+              "type": "Text",
+              "config": {
+                "label": "Title"
+              }
+            },
+            "description": {
+              "type": "Text",
+              "config": {
+                "label": "Description"
+              }
+            }
+          }
+        }
+      },
+      "capabilities": {
+        "type": "Group",
+        "config": {
+          "label": "Capabilities",
+          "repeat": true,
+          "fields": {
+            "title": {
+              "type": "Text",
+              "config": {
+                "label": "Title"
+              }
+            },
+            "description": {
+              "type": "Text",
+              "config": {
+                "label": "Description"
+              }
+            }
+          }
+        }
+      },
+      "workflow_steps": {
+        "type": "Group",
+        "config": {
+          "label": "Workflow Steps",
+          "repeat": true,
+          "fields": {
+            "step_title": {
+              "type": "Text",
+              "config": {
+                "label": "Step Title"
+              }
+            },
+            "step_description": {
+              "type": "Text",
+              "config": {
+                "label": "Step Description"
+              }
+            }
+          }
+        }
+      },
+      "content_sections": {
+        "type": "Group",
+        "config": {
+          "label": "Content Sections",
+          "repeat": true,
+          "fields": {
+            "heading": {
+              "type": "Text",
+              "config": {
+                "label": "Heading"
+              }
+            },
+            "paragraph": {
+              "type": "Text",
+              "config": {
+                "label": "Paragraph"
+              }
+            }
+          }
+        }
+      },
+      "comparison_rows": {
+        "type": "Group",
+        "config": {
+          "label": "Comparison Rows",
+          "repeat": true,
+          "fields": {
+            "feature": {
+              "type": "Text",
+              "config": {
+                "label": "Feature"
+              }
+            },
+            "ysp_position": {
+              "type": "Text",
+              "config": {
+                "label": "YSP Position"
+              }
+            },
+            "alternative_position": {
+              "type": "Text",
+              "config": {
+                "label": "Alternative Position"
+              }
+            }
+          }
+        }
+      },
+      "proof_quote": {
+        "type": "Text",
+        "config": {
+          "label": "Proof Quote"
+        }
+      },
+      "proof_client_name": {
+        "type": "Text",
+        "config": {
+          "label": "Proof Client Name"
+        }
+      },
+      "proof_case_study": {
+        "type": "Text",
+        "config": {
+          "label": "Proof Case Study"
+        }
+      },
+      "faqs": {
+        "type": "Group",
+        "config": {
+          "label": "FAQs",
+          "repeat": true,
+          "fields": {
+            "question": {
+              "type": "Text",
+              "config": {
+                "label": "Question"
+              }
+            },
+            "answer": {
+              "type": "Text",
+              "config": {
+                "label": "Answer"
+              }
+            }
+          }
+        }
+      },
+      "internal_links": {
+        "type": "Group",
+        "config": {
+          "label": "Internal Links",
+          "repeat": true,
+          "fields": {
+            "label": {
+              "type": "Text",
+              "config": {
+                "label": "Label"
+              }
+            },
+            "url": {
+              "type": "Text",
+              "config": {
+                "label": "URL"
+              }
+            }
+          }
+        }
+      }
+    },
+    "SEO & Metadata": {
+      "meta_title": {
+        "type": "Text",
+        "config": {
+          "label": "Meta Title",
+          "placeholder": "SEO title for search engines"
+        }
+      },
+      "meta_description": {
+        "type": "Text",
+        "config": {
+          "label": "Meta Description",
+          "placeholder": "SEO description for search engines"
+        }
+      },
+      "meta_image": {
+        "type": "Image",
+        "config": {
+          "label": "Meta Image",
+          "constraint": {
+            "width": 2400,
+            "height": 1260
+          },
+          "thumbnails": []
+        }
+      }
+    }
+  },
+  "status": true,
+  "format": "page"
+}
