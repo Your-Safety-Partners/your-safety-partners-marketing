@@ -20,17 +20,8 @@ const routes: prismic.ClientConfig['routes'] = [
     path: '/about-us',
   },
   {
-<<<<<<< HEAD
     type: 'privacy_policy',
     path: '/privacy-policy',
-=======
-    type: 'industry',
-    path: '/industry/:uid',
-  },
-  {
-    type: 'demand_page',
-    path: '/:uid',
->>>>>>> 346d2b24a2aa69586c8aa76950183790e2f61a77
   },
   {
     type: 'page',
