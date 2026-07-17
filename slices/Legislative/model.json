@@ -2,15 +2,14 @@
   "id": "legislative",
   "type": "SharedSlice",
   "name": "Legislative",
-  "description": "Legislative",
   "variations": [
     {
       "id": "default",
       "name": "Default",
+      "description": "Default",
+      "imageUrl": "https://images.prismic.io/yoursafetyportal/shared-slices/legislative/default/4f4458dd854812f12fe57be6df0b92a300996944.png?auto=compress%2Cformat",
       "docURL": "...",
       "version": "initial",
-      "description": "Default",
-      "imageUrl": "",
       "primary": {
         "section_title": {
           "type": "Text",
@@ -24,8 +23,8 @@
           "config": {
             "label": "Section Subtitle",
             "placeholder": "",
-            "allowTargetBlank": true,
-            "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+            "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl",
+            "allowTargetBlank": true
           }
         },
         "whs_image": {
@@ -39,5 +38,6 @@
       },
       "items": {}
     }
-  ]
+  ],
+  "description": "Legislative"
 }

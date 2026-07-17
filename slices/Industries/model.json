@@ -2,15 +2,14 @@
   "id": "how_we_can_welp",
   "type": "SharedSlice",
   "name": "Industries",
-  "description": "Industries",
   "variations": [
     {
       "id": "default",
       "name": "Default",
+      "description": "Default",
+      "imageUrl": "https://images.prismic.io/yoursafetyportal/shared-slices/how_we_can_welp/default/73c7fd5c71e69c8d9475e36a6fc28371f209ddb0.png?auto=compress%2Cformat",
       "docURL": "...",
       "version": "initial",
-      "description": "Default",
-      "imageUrl": "",
       "primary": {
         "section_title": {
           "type": "Text",
@@ -24,8 +23,8 @@
           "config": {
             "label": "Section Description",
             "placeholder": "",
-            "allowTargetBlank": true,
-            "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+            "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl",
+            "allowTargetBlank": true
           }
         },
         "industries": {
@@ -54,8 +53,8 @@
                 "config": {
                   "label": "Description",
                   "placeholder": "",
-                  "allowTargetBlank": true,
-                  "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+                  "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl",
+                  "allowTargetBlank": true
                 }
               }
             }
@@ -64,5 +63,6 @@
       },
       "items": {}
     }
-  ]
+  ],
+  "description": "Industries"
 }

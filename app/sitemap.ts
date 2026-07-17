@@ -1,9 +1,9 @@
 import { MetadataRoute } from 'next';
 import { PageDocument } from '#prismicio-types.js';
 import { createClient } from '@/prismicio';
-import { getIndustries } from '@/lib/outrank';
 import { MODULE_SITEMAP_PATHS } from '@/lib/module-routes';
 import { SITE_URL } from '@/lib/seo-metadata';
+import { isResearchedIndustryUID, sortByResearchedIndustryOrder } from '@/lib/industry-pages';
 
 // Always use the canonical production domain (with www) for sitemap URLs.
 const baseUrl = SITE_URL;
@@ -41,18 +41,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  // 3. Outrank programmatic industry pages
+  // 3. Prismic industry pages
   let industryRoutes: MetadataRoute.Sitemap = [];
   try {
-    const industries = await getIndustries();
-    industryRoutes = industries.map((ind) => ({
-      url: `${baseUrl}/industry/${ind.slug}`,
-      lastModified: new Date(),
+    const industries = await client.getAllByType('industry');
+    const researchedIndustries = sortByResearchedIndustryOrder(
+      industries.filter((industry) => isResearchedIndustryUID(industry.uid)),
+    );
+
+    industryRoutes = researchedIndustries.map((industry) => ({
+      url: `${baseUrl}/industry/${industry.uid}`,
+      lastModified: new Date(industry.last_publication_date),
       changeFrequency: 'weekly' as const,
       priority: 0.6,
     }));
   } catch (e) {
-    console.error('Sitemap Outrank Error:', e);
+    console.error('Sitemap industry Prismic error:', e);
   }
 
   const moduleRoutes = MODULE_SITEMAP_PATHS.map((route) => ({

@@ -2,15 +2,14 @@
   "id": "call_to_action",
   "type": "SharedSlice",
   "name": "CallToAction",
-  "description": "CallToAction",
   "variations": [
     {
       "id": "default",
       "name": "Default",
+      "description": "Default",
+      "imageUrl": "https://images.prismic.io/yoursafetyportal/shared-slices/call_to_action/default/748f13ef7a33422bce42cb6fcd4acdab5fe34438.png?auto=compress%2Cformat",
       "docURL": "...",
       "version": "initial",
-      "description": "Default",
-      "imageUrl": "",
       "primary": {
         "section_title": {
           "type": "Text",
@@ -52,5 +51,6 @@
       },
       "items": {}
     }
-  ]
+  ],
+  "description": "CallToAction"
 }

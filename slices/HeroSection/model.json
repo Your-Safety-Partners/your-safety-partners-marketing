@@ -2,15 +2,14 @@
   "id": "hero_section",
   "type": "SharedSlice",
   "name": "HeroSection",
-  "description": "HeroSection",
   "variations": [
     {
       "id": "default",
       "name": "Default",
+      "description": "Default",
+      "imageUrl": "https://images.prismic.io/yoursafetyportal/shared-slices/hero_section/default/6dc339311217b5274c0adb44ebc6a24ab0c7561c.png?auto=compress%2Cformat",
       "docURL": "...",
       "version": "initial",
-      "description": "Default",
-      "imageUrl": "",
       "primary": {
         "subtitle": {
           "type": "Text",
@@ -67,5 +66,6 @@
       },
       "items": {}
     }
-  ]
+  ],
+  "description": "HeroSection"
 }

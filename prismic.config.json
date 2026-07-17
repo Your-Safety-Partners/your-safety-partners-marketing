@@ -1,0 +1,64 @@
+{
+  "repositoryName": "yoursafetyportal",
+  "libraries": [
+    "./slices"
+  ],
+  "routes": [
+    {
+      "type": "about_us",
+      "path": "/about-us"
+    },
+    {
+      "type": "book_a_demo",
+      "path": "/book-a-demo"
+    },
+    {
+      "type": "contractor_module",
+      "path": "/contractor-module"
+    },
+    {
+      "type": "forms_module",
+      "path": "/forms-module"
+    },
+    {
+      "type": "hazard_module",
+      "path": "/hazard-module"
+    },
+    {
+      "type": "home",
+      "path": "/home"
+    },
+    {
+      "type": "industry",
+      "path": "/industry/:uid"
+    },
+    {
+      "type": "inspection_module",
+      "path": "/inspection-module"
+    },
+    {
+      "type": "page",
+      "path": "/:uid"
+    },
+    {
+      "type": "policies_module",
+      "path": "/policies-module"
+    },
+    {
+      "type": "safety_audits_and_inspections",
+      "path": "/safety-audits-and-inspections"
+    },
+    {
+      "type": "safety_training_and_competency_management",
+      "path": "/safety-training-and-competency-management"
+    },
+    {
+      "type": "training_module",
+      "path": "/training-module"
+    },
+    {
+      "type": "whs_compliance_management",
+      "path": "/whs-compliance-management"
+    }
+  ]
+}

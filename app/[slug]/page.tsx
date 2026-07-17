@@ -4,6 +4,7 @@ import { SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
 import { canonicalAlternates, formatTitleWithBrand, getPageSeo } from "@/lib/seo-metadata";
+import DemandPageContent, { type DemandPageData } from "@/components/demand-page/demand-page-content";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -21,6 +22,9 @@ async function getDocumentBySlug(slug: string) {
   if (singleType) {
     return client.getSingle(singleType).catch(() => null);
   }
+
+  const demandPage = await (client as any).getByUID('demand_page', slug).catch(() => null);
+  if (demandPage) return demandPage;
 
   const page = await client.getByUID('page', slug).catch(() => null);
   if (page) return page;
@@ -59,6 +63,10 @@ export default async function Page({ params }: Props) {
 
   if (!page) {
     notFound();
+  }
+
+  if (page.type === "demand_page") {
+    return <DemandPageContent data={page.data as DemandPageData} slug={slug} />;
   }
 
   return (

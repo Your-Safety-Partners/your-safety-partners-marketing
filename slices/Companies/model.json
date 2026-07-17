@@ -2,15 +2,14 @@
   "id": "companies",
   "type": "SharedSlice",
   "name": "Companies",
-  "description": "Companies",
   "variations": [
     {
       "id": "default",
       "name": "Default",
+      "description": "Default",
+      "imageUrl": "https://images.prismic.io/yoursafetyportal/shared-slices/companies/default/53bcde9a8733399901691186ed2ce0e667a7bdec.png?auto=compress%2Cformat",
       "docURL": "...",
       "version": "initial",
-      "description": "Default",
-      "imageUrl": "",
       "primary": {
         "companies": {
           "type": "Group",
@@ -32,5 +31,6 @@
       },
       "items": {}
     }
-  ]
+  ],
+  "description": "Companies"
 }
