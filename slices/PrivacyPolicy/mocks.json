@@ -1,0 +1,25 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"page_title": {
+				"__TYPE__": "FieldContent",
+				"value": "himself",
+				"type": "Text"
+			},
+			"page_content": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Dolore cupidatat ipsum culpa id ullamco. Ea dolore incididunt id sit dolor tempor incididunt minim laboris tempor irure velit nostrud."
+						}
+					}
+				]
+			}
+		},
+		"items": []
+	}
+]

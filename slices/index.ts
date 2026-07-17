@@ -17,6 +17,7 @@ export const components = {
   meet_team: dynamic(() => import('./OurTeam')),
   our_mission: dynamic(() => import('./OurMissionVision')),
   platform_apps: dynamic(() => import('./Modules')),
+  privacy_policy: dynamic(() => import('./PrivacyPolicy')),
   subpage_hero_section: dynamic(() => import('./SubpageHeroSection')),
   testimonial: dynamic(() => import('./Testimonial')),
   timeline_section: dynamic(() => import('./Timeline')),

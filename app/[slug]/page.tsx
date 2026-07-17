@@ -11,6 +11,7 @@ type Props = {
 
 const SINGLE_TYPE_SLUG_MAP = {
   'about-us': 'about_us',
+  'privacy-policy': 'privacy_policy',
 } as const;
 
 async function getDocumentBySlug(slug: string) {

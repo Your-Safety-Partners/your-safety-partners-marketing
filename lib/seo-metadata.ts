@@ -19,6 +19,11 @@ export const PAGE_SEO: Record<string, PageSeo> = {
     description:
       "Meet the team behind Your Safety Portal - 100 years of combined WHS consulting experience, now built into Australia's leading online safety management platform.",
   },
+  "privacy-policy": {
+    title: "Privacy Policy | Your Safety Portal",
+    description:
+      "Learn how Your Safety Portal collects, uses, and protects personal information across our WHS management platform and website.",
+  },
   blog: {
     title: "Blog | Your Safety Portal",
     description:

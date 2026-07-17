@@ -697,6 +697,71 @@ export type PoliciesModuleDocument<Lang extends string = string> =
     Lang
   >;
 
+type PrivacyPolicyDocumentDataSlicesSlice = PrivacyPolicySlice;
+
+/**
+ * Content for Privacy Policy documents
+ */
+interface PrivacyPolicyDocumentData {
+  /**
+   * Slice Zone field in *Privacy Policy*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: privacy_policy.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<PrivacyPolicyDocumentDataSlicesSlice>; /**
+   * Meta Title field in *Privacy Policy*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: privacy_policy.meta_title
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_title: prismic.KeyTextField;
+
+  /**
+   * Meta Description field in *Privacy Policy*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: privacy_policy.meta_description
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  meta_description: prismic.KeyTextField;
+
+  /**
+   * Meta Image field in *Privacy Policy*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: privacy_policy.meta_image
+   * - **Tab**: SEO & Metadata
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Privacy Policy document from Prismic
+ *
+ * - **API ID**: `privacy_policy`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type PrivacyPolicyDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<PrivacyPolicyDocumentData>,
+    'privacy_policy',
+    Lang
+  >;
+
 type SafetyAuditsAndInspectionsDocumentDataSlicesSlice =
   | SubpageHeroSectionSlice
   | CallToActionSlice
@@ -981,6 +1046,7 @@ export type AllDocumentTypes =
   | InspectionModuleDocument
   | PageDocument
   | PoliciesModuleDocument
+  | PrivacyPolicyDocument
   | SafetyAuditsAndInspectionsDocument
   | SafetyTrainingAndCompetencyManagementDocument
   | TrainingModuleDocument
@@ -2452,6 +2518,61 @@ export type PlatformAppsSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Primary content in *PrivacyPolicy → Default → Primary*
+ */
+export interface PrivacyPolicySliceDefaultPrimary {
+  /**
+   * Page Title field in *PrivacyPolicy → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: privacy_policy.default.primary.page_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  page_title: prismic.KeyTextField;
+
+  /**
+   * Page Content field in *PrivacyPolicy → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: privacy_policy.default.primary.page_content
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  page_content: prismic.RichTextField;
+}
+
+/**
+ * Default variation for PrivacyPolicy Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type PrivacyPolicySliceDefault = prismic.SharedSliceVariation<
+  'default',
+  Simplify<PrivacyPolicySliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *PrivacyPolicy*
+ */
+type PrivacyPolicySliceVariation = PrivacyPolicySliceDefault;
+
+/**
+ * PrivacyPolicy Shared Slice
+ *
+ * - **API ID**: `privacy_policy`
+ * - **Description**: PrivacyPolicy
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type PrivacyPolicySlice = prismic.SharedSlice<
+  'privacy_policy',
+  PrivacyPolicySliceVariation
+>;
+
+/**
  * Primary content in *SubpageHeroSection → Default → Primary*
  */
 export interface SubpageHeroSectionSliceDefaultPrimary {
@@ -3052,6 +3173,9 @@ declare module '@prismicio/client' {
       PoliciesModuleDocument,
       PoliciesModuleDocumentData,
       PoliciesModuleDocumentDataSlicesSlice,
+      PrivacyPolicyDocument,
+      PrivacyPolicyDocumentData,
+      PrivacyPolicyDocumentDataSlicesSlice,
       SafetyAuditsAndInspectionsDocument,
       SafetyAuditsAndInspectionsDocumentData,
       SafetyAuditsAndInspectionsDocumentDataSlicesSlice,
@@ -3135,6 +3259,10 @@ declare module '@prismicio/client' {
       PlatformAppsSliceDefaultPrimary,
       PlatformAppsSliceVariation,
       PlatformAppsSliceDefault,
+      PrivacyPolicySlice,
+      PrivacyPolicySliceDefaultPrimary,
+      PrivacyPolicySliceVariation,
+      PrivacyPolicySliceDefault,
       SubpageHeroSectionSlice,
       SubpageHeroSectionSliceDefaultPrimary,
       SubpageHeroSectionSliceVariation,

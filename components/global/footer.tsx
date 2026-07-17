@@ -172,7 +172,12 @@ export function Footer() {
             <span className="text-white/80" aria-hidden>
               |
             </span>
-            <span>Privacy Policy</span>
+            <Link
+              href="/privacy-policy"
+              className="rounded-sm transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-violet-700"
+            >
+              Privacy Policy
+            </Link>
           </div>
         </div>
       </div>
