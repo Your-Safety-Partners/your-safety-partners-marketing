@@ -406,176 +406,6 @@ interface HomeDocumentData {
  */
 export type HomeDocument<Lang extends string = string> = prismic.PrismicDocumentWithoutUID<Simplify<HomeDocumentData>, "home", Lang>;
 
-type IndustryDocumentDataSlicesSlice = HeroSectionSlice | SubpageHeroSectionSlice | CallToActionSlice | TestimonialSlice | CompaniesSlice | FaqSlice | WhatWeDoSlice
-
-/**
- * Item in *Industry → Key Features*
- */
-export interface IndustryDocumentDataKeyFeaturesItem {
-	/**
-	 * Feature Title field in *Industry → Key Features*
-	 *
-	 * - **Field Type**: Text
-	 * - **Placeholder**: e.g., Mobile Inspections
-	 * - **API ID Path**: industry.key_features[].feature_title
-	 * - **Documentation**: https://prismic.io/docs/fields/text
-	 */
-	feature_title: prismic.KeyTextField;
-	
-	/**
-	 * Feature Description field in *Industry → Key Features*
-	 *
-	 * - **Field Type**: Text
-	 * - **Placeholder**: Brief description of this capability
-	 * - **API ID Path**: industry.key_features[].feature_description
-	 * - **Documentation**: https://prismic.io/docs/fields/text
-	 */
-	feature_description: prismic.KeyTextField;
-	
-	/**
-	 * Feature Icon (optional) field in *Industry → Key Features*
-	 *
-	 * - **Field Type**: Text
-	 * - **Placeholder**: Icon name from lucide-react
-	 * - **API ID Path**: industry.key_features[].feature_icon
-	 * - **Documentation**: https://prismic.io/docs/fields/text
-	 */
-	feature_icon: prismic.KeyTextField;
-}
-
-/**
- * Item in *Industry → Content Sections*
- */
-export interface IndustryDocumentDataContentSectionsItem {
-	/**
-	 * Section Heading field in *Industry → Content Sections*
-	 *
-	 * - **Field Type**: Text
-	 * - **Placeholder**: e.g., Streamline Jobsite Inspections
-	 * - **API ID Path**: industry.content_sections[].heading
-	 * - **Documentation**: https://prismic.io/docs/fields/text
-	 */
-	heading: prismic.KeyTextField;
-	
-	/**
-	 * Paragraph field in *Industry → Content Sections*
-	 *
-	 * - **Field Type**: Text
-	 * - **Placeholder**: Section content
-	 * - **API ID Path**: industry.content_sections[].paragraph
-	 * - **Documentation**: https://prismic.io/docs/fields/text
-	 */
-	paragraph: prismic.KeyTextField;
-}
-
-/**
- * Content for Industry documents
- */
-interface IndustryDocumentData {
-	/**
-	 * Industry Name field in *Industry*
-	 *
-	 * - **Field Type**: Text
-	 * - **Placeholder**: e.g., Construction
-	 * - **API ID Path**: industry.industry_name
-	 * - **Tab**: Main
-	 * - **Documentation**: https://prismic.io/docs/fields/text
-	 */
-	industry_name: prismic.KeyTextField;
-	
-	/**
-	 * Subtitle field in *Industry*
-	 *
-	 * - **Field Type**: Text
-	 * - **Placeholder**: Brief description or value proposition
-	 * - **API ID Path**: industry.subtitle
-	 * - **Tab**: Main
-	 * - **Documentation**: https://prismic.io/docs/fields/text
-	 */
-	subtitle: prismic.KeyTextField;
-	
-	/**
-	 * Hero Image field in *Industry*
-	 *
-	 * - **Field Type**: Image
-	 * - **Placeholder**: *None*
-	 * - **API ID Path**: industry.hero_image
-	 * - **Tab**: Main
-	 * - **Documentation**: https://prismic.io/docs/fields/image
-	 */
-	hero_image: prismic.ImageField<never>;
-	
-	/**
-	 * Slice Zone field in *Industry*
-	 *
-	 * - **Field Type**: Slice Zone
-	 * - **Placeholder**: *None*
-	 * - **API ID Path**: industry.slices[]
-	 * - **Tab**: Main
-	 * - **Documentation**: https://prismic.io/docs/slices
-	 */
-	slices: prismic.SliceZone<IndustryDocumentDataSlicesSlice>;/**
-	 * Key Features field in *Industry*
-	 *
-	 * - **Field Type**: Group
-	 * - **Placeholder**: *None*
-	 * - **API ID Path**: industry.key_features[]
-	 * - **Tab**: Features & Capabilities
-	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
-	 */
-	key_features: prismic.GroupField<Simplify<IndustryDocumentDataKeyFeaturesItem>>;/**
-	 * Content Sections field in *Industry*
-	 *
-	 * - **Field Type**: Group
-	 * - **Placeholder**: *None*
-	 * - **API ID Path**: industry.content_sections[]
-	 * - **Tab**: Content Blocks
-	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
-	 */
-	content_sections: prismic.GroupField<Simplify<IndustryDocumentDataContentSectionsItem>>;/**
-	 * Meta Title field in *Industry*
-	 *
-	 * - **Field Type**: Text
-	 * - **Placeholder**: SEO title for search engines
-	 * - **API ID Path**: industry.meta_title
-	 * - **Tab**: SEO & Metadata
-	 * - **Documentation**: https://prismic.io/docs/fields/text
-	 */
-	meta_title: prismic.KeyTextField;
-	
-	/**
-	 * Meta Description field in *Industry*
-	 *
-	 * - **Field Type**: Text
-	 * - **Placeholder**: SEO description for search engines
-	 * - **API ID Path**: industry.meta_description
-	 * - **Tab**: SEO & Metadata
-	 * - **Documentation**: https://prismic.io/docs/fields/text
-	 */
-	meta_description: prismic.KeyTextField;
-	
-	/**
-	 * Meta Image field in *Industry*
-	 *
-	 * - **Field Type**: Image
-	 * - **Placeholder**: *None*
-	 * - **API ID Path**: industry.meta_image
-	 * - **Tab**: SEO & Metadata
-	 * - **Documentation**: https://prismic.io/docs/fields/image
-	 */
-	meta_image: prismic.ImageField<never>;
-}
-
-/**
- * Industry document from Prismic
- *
- * - **API ID**: `industry`
- * - **Repeatable**: `true`
- * - **Documentation**: https://prismic.io/docs/content-modeling
- *
- * @typeParam Lang - Language API ID of the document.
- */
-export type IndustryDocument<Lang extends string = string> = prismic.PrismicDocumentWithUID<Simplify<IndustryDocumentData>, "industry", Lang>;
 
 type InspectionModuleDocumentDataSlicesSlice = SubpageHeroSectionSlice | CallToActionSlice | BulletListSlice | ComplianceAuditSlice | FaqSlice
 
@@ -757,7 +587,6 @@ interface PoliciesModuleDocumentData {
  */
 export type PoliciesModuleDocument<Lang extends string = string> = prismic.PrismicDocumentWithoutUID<Simplify<PoliciesModuleDocumentData>, "policies_module", Lang>;
 
-<<<<<<< HEAD
 type PrivacyPolicyDocumentDataSlicesSlice = PrivacyPolicySlice;
 
 /**
@@ -827,9 +656,6 @@ type SafetyAuditsAndInspectionsDocumentDataSlicesSlice =
   | SubpageHeroSectionSlice
   | CallToActionSlice
   | BulletListSlice;
-=======
-type SafetyAuditsAndInspectionsDocumentDataSlicesSlice = SubpageHeroSectionSlice | CallToActionSlice | BulletListSlice
->>>>>>> 346d2b24a2aa69586c8aa76950183790e2f61a77
 
 /**
  * Content for Safety Audits and Inspections documents
@@ -1069,7 +895,6 @@ interface WhsComplianceManagementDocumentData {
  */
 export type WhsComplianceManagementDocument<Lang extends string = string> = prismic.PrismicDocumentWithoutUID<Simplify<WhsComplianceManagementDocumentData>, "whs_compliance_management", Lang>;
 
-<<<<<<< HEAD
 export type AllDocumentTypes =
   | AboutUsDocument
   | BookADemoDocument
@@ -1085,9 +910,6 @@ export type AllDocumentTypes =
   | SafetyTrainingAndCompetencyManagementDocument
   | TrainingModuleDocument
   | WhsComplianceManagementDocument;
-=======
-export type AllDocumentTypes = AboutUsDocument | BookADemoDocument | ContractorModuleDocument | FormsModuleDocument | HazardModuleDocument | HomeDocument | IndustryDocument | InspectionModuleDocument | PageDocument | PoliciesModuleDocument | SafetyAuditsAndInspectionsDocument | SafetyTrainingAndCompetencyManagementDocument | TrainingModuleDocument | WhsComplianceManagementDocument;
->>>>>>> 346d2b24a2aa69586c8aa76950183790e2f61a77
 
 /**
  * Primary content in *AboutJohn → Default → Primary*
@@ -2996,7 +2818,6 @@ type WhyChooseUsSliceVariation = WhyChooseUsSliceDefault
  */
 export type WhyChooseUsSlice = prismic.SharedSlice<"why_choose_us", WhyChooseUsSliceVariation>;
 
-<<<<<<< HEAD
 declare module '@prismicio/client' {
   interface CreateClient {
     (
@@ -3162,162 +2983,3 @@ declare module '@prismicio/client' {
     };
   }
 }
-=======
-declare module "@prismicio/client" {
-	interface CreateClient {
-		(repositoryNameOrEndpoint: string, options?: prismic.ClientConfig): prismic.Client<AllDocumentTypes>;
-	}
-	
-	interface CreateWriteClient {
-		(repositoryNameOrEndpoint: string, options: prismic.WriteClientConfig): prismic.WriteClient<AllDocumentTypes>;
-	}
-	
-	interface CreateMigration {
-		(): prismic.Migration<AllDocumentTypes>;
-	}
-	
-	namespace Content {
-		export type {
-			AboutUsDocument,
-			AboutUsDocumentData,
-			AboutUsDocumentDataSlicesSlice,
-			BookADemoDocument,
-			BookADemoDocumentData,
-			BookADemoDocumentDataSlicesSlice,
-			ContractorModuleDocument,
-			ContractorModuleDocumentData,
-			ContractorModuleDocumentDataSlicesSlice,
-			FormsModuleDocument,
-			FormsModuleDocumentData,
-			FormsModuleDocumentDataSlicesSlice,
-			HazardModuleDocument,
-			HazardModuleDocumentData,
-			HazardModuleDocumentDataSlicesSlice,
-			HomeDocument,
-			HomeDocumentData,
-			HomeDocumentDataSlicesSlice,
-			IndustryDocument,
-			IndustryDocumentData,
-			IndustryDocumentDataSlicesSlice,
-			IndustryDocumentDataKeyFeaturesItem,
-			IndustryDocumentDataContentSectionsItem,
-			InspectionModuleDocument,
-			InspectionModuleDocumentData,
-			InspectionModuleDocumentDataSlicesSlice,
-			PageDocument,
-			PageDocumentData,
-			PageDocumentDataSlicesSlice,
-			PoliciesModuleDocument,
-			PoliciesModuleDocumentData,
-			PoliciesModuleDocumentDataSlicesSlice,
-			SafetyAuditsAndInspectionsDocument,
-			SafetyAuditsAndInspectionsDocumentData,
-			SafetyAuditsAndInspectionsDocumentDataSlicesSlice,
-			SafetyTrainingAndCompetencyManagementDocument,
-			SafetyTrainingAndCompetencyManagementDocumentData,
-			SafetyTrainingAndCompetencyManagementDocumentDataSlicesSlice,
-			TrainingModuleDocument,
-			TrainingModuleDocumentData,
-			TrainingModuleDocumentDataSlicesSlice,
-			WhsComplianceManagementDocument,
-			WhsComplianceManagementDocumentData,
-			WhsComplianceManagementDocumentDataSlicesSlice,
-			AllDocumentTypes,
-			AboutJohnSlice,
-			AboutJohnSliceDefaultPrimary,
-			AboutJohnSliceVariation,
-			AboutJohnSliceDefault,
-			BulletListSlice,
-			BulletListSliceDefaultPrimaryCheckListItem,
-			BulletListSliceDefaultPrimary,
-			BulletListSliceVariation,
-			BulletListSliceDefault,
-			CallToActionSlice,
-			CallToActionSliceDefaultPrimaryStatsItem,
-			CallToActionSliceDefaultPrimary,
-			CallToActionSliceVariation,
-			CallToActionSliceDefault,
-			CompaniesSlice,
-			CompaniesSliceDefaultPrimaryCompaniesItem,
-			CompaniesSliceDefaultPrimary,
-			CompaniesSliceVariation,
-			CompaniesSliceDefault,
-			ComplianceAuditSlice,
-			ComplianceAuditSliceDefaultPrimaryQuestionsItem,
-			ComplianceAuditSliceDefaultPrimaryAnswersTipsItem,
-			ComplianceAuditSliceDefaultPrimary,
-			ComplianceAuditSliceVariation,
-			ComplianceAuditSliceDefault,
-			ContactUsSlice,
-			ContactUsSliceDefaultPrimary,
-			ContactUsSliceVariation,
-			ContactUsSliceDefault,
-			FaqSlice,
-			FaqSliceDefaultPrimaryFaqsItem,
-			FaqSliceDefaultPrimary,
-			FaqSliceVariation,
-			FaqSliceDefault,
-			FinancialReliefSlice,
-			FinancialReliefSliceDefaultPrimaryCardsItem,
-			FinancialReliefSliceDefaultPrimaryFinancialTableItem,
-			FinancialReliefSliceDefaultPrimaryZeroClaimItemTitleItem,
-			FinancialReliefSliceDefaultPrimary,
-			FinancialReliefSliceVariation,
-			FinancialReliefSliceDefault,
-			HeroSectionSlice,
-			HeroSectionSliceDefaultPrimaryStatsItem,
-			HeroSectionSliceDefaultPrimary,
-			HeroSectionSliceVariation,
-			HeroSectionSliceDefault,
-			HowWeCanWelpSlice,
-			HowWeCanWelpSliceDefaultPrimaryIndustriesItem,
-			HowWeCanWelpSliceDefaultPrimary,
-			HowWeCanWelpSliceVariation,
-			HowWeCanWelpSliceDefault,
-			LegislativeSlice,
-			LegislativeSliceDefaultPrimary,
-			LegislativeSliceVariation,
-			LegislativeSliceDefault,
-			MeetTeamSlice,
-			MeetTeamSliceDefaultPrimaryTeamsItem,
-			MeetTeamSliceDefaultPrimary,
-			MeetTeamSliceVariation,
-			MeetTeamSliceDefault,
-			OurMissionSlice,
-			OurMissionSliceDefaultPrimaryCardItem,
-			OurMissionSliceDefaultPrimary,
-			OurMissionSliceVariation,
-			OurMissionSliceDefault,
-			PlatformAppsSlice,
-			PlatformAppsSliceDefaultPrimaryModulesItem,
-			PlatformAppsSliceDefaultPrimary,
-			PlatformAppsSliceVariation,
-			PlatformAppsSliceDefault,
-			SubpageHeroSectionSlice,
-			SubpageHeroSectionSliceDefaultPrimary,
-			SubpageHeroSectionSliceVariation,
-			SubpageHeroSectionSliceDefault,
-			TestimonialSlice,
-			TestimonialSliceDefaultPrimaryItemsItem,
-			TestimonialSliceDefaultPrimary,
-			TestimonialSliceVariation,
-			TestimonialSliceDefault,
-			TimelineSectionSlice,
-			TimelineSectionSliceDefaultPrimaryTimelineItem,
-			TimelineSectionSliceDefaultPrimary,
-			TimelineSectionSliceVariation,
-			TimelineSectionSliceDefault,
-			WhatWeDoSlice,
-			WhatWeDoSliceDefaultPrimaryBentoBoxCardsItem,
-			WhatWeDoSliceDefaultPrimary,
-			WhatWeDoSliceVariation,
-			WhatWeDoSliceDefault,
-			WhyChooseUsSlice,
-			WhyChooseUsSliceDefaultPrimaryWhoIsItForItemsItem,
-			WhyChooseUsSliceDefaultPrimary,
-			WhyChooseUsSliceVariation,
-			WhyChooseUsSliceDefault
-		}
-	}
-}
->>>>>>> 346d2b24a2aa69586c8aa76950183790e2f61a77

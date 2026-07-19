@@ -10,7 +10,6 @@
     "check-types": "tsc --noEmit --pretty",
     "format": "prettier --write .",
     "slicemachine": "start-slicemachine",
-    "create-industries": "tsx scripts/create-industries.ts",
     "create-demand-pages": "tsx scripts/create-demand-pages.ts",
     "create-done-with-you-page": "tsx scripts/create-done-with-you-page.ts"
   },
