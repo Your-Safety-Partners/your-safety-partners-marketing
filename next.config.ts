@@ -1,9 +1,17 @@
+import path from "node:path";
 import type { NextConfig } from "next";
 import { MODULE_REDIRECTS } from "./lib/module-routes";
+
+const projectRoot = path.resolve(process.cwd());
 
 const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
+  // Keep module resolution inside this app. Without this, the dev server
+  // looks for tailwindcss in the parent folder and fails.
+  turbopack: {
+    root: projectRoot,
+  },
   async redirects() {
     return MODULE_REDIRECTS;
   },
